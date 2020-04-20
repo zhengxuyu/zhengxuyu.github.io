@@ -13,7 +13,12 @@ sass:
   sass_dir: _sass
 plainwhite:
   name: Zhengxu Yu (余正旭)
-  tagline: Ph.D candidate | State Key Lab of CAD & CG | Zhejiang University
+  tagline: |
+  Ph.D candidate
+
+  State Key Lab of CAD & CG
+
+  Zhejiang University
   date_format: "%b %-d, %Y"
   sitemap: true # set to true to generate sitemap.xml content
 

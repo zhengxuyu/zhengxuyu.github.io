@@ -393,8 +393,7 @@ main .about img { max-width: 150px; }
 
 .post-meta { display: flex; justify-content: space-between; align-items: center; }
 
-@media screen and (max-width: 768px) { .post-meta { flex-direction: column-reverse; align-items: baseline; }
-  .post-meta .post-date { margin-bottom: 16px; } }
+@media screen and (max-width: 768px) { .post-meta { flex-direction: column-reverse; align-items: baseline; } .post-meta .post-date { margin-bottom: 16px; } }
 
 .post-link { text-decoration: none; }
 

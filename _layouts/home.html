@@ -3,43 +3,61 @@ layout: default
 ---
 
 {%- if page.title -%}
-  <h1 class="page-heading">{{ page.title }}</h1>
+<h1 class="page-heading">{{ page.title }}</h1>
 {%- endif -%}
 
 {{ content }}
 
-{%- if site.posts.size > 0 -%}
-  <ul class="posts">
+<ul class="posts">
     <li>
-      <h1 id="posts-label">Recent Works</h1>
+        <h1 id="AboutMe">Zhengxu Yu (余正旭)</h1>
+    </li>
+    <div class="post">
+        <p>I'm a third-year Ph.D student in the State Key Lab of CAD & CG at Zhejiang University in
+            China. My advisors are Prof. Deng Cai and Prof. Xiaofei He. Now I'm a intern at DAMO Academy, Alibaba China.
+            My research interests fall in the general areas and applications of machine learning and Computer Vision,
+            especially the recent developments in Causal Inference, Graph Neural Network and reinforcement learning to
+            work towards the goal of the combination of Representation Learning.
+            Welcome to checkout my <a href="https://dblp.org/pid/246/3155">DBLP page</a> and <a
+                    href="https://github.com/ZhengxuYu">Github</a>.
+        </p>
+    </div>
+</ul>
+
+
+{%- if site.posts.size > 0 -%}
+<ul class="posts">
+    <li>
+        <h1 id="posts-label">News</h1>
     </li>
 
     {%- for post in site.posts -%}
-      <li>
+    <li>
         {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
         <a class="post-link" href="{{ post.url | relative_url }}">
-          <h2 class="post-title">{{ post.title | escape }}</h2>
+            <h2 class="post-title">{{ post.title | escape }}</h2>
         </a>
         <div class="post-meta">
-          <ul class="post-categories">
-            {%- for tag in post.categories -%}
-              <li>{{ tag }}</li>
-            {%- endfor -%}
-          </ul>
-          <div class="post-date">
-            <i class="icon-calendar"></i>
-            {{ post.date | date: date_format }}</div>
+            <ul class="post-categories">
+                {%- for tag in post.categories -%}
+                <li>{{ tag }}</li>
+                {%- endfor -%}
+            </ul>
+            <div class="post-date">
+                <i class="icon-calendar"></i>
+                {{ post.date | date: date_format }}
+            </div>
         </div>
         <div class="post">
-          {%- if site.show_excerpts -%}
+            {%- if site.show_excerpts -%}
             {{ post.excerpt }}
-          {%- endif -%}
+            {%- endif -%}
         </div>
-      </li>
+    </li>
     {%- endfor -%}
-  </ul>
+</ul>
 
-  <!-- <p class="feed-subscribe"><svg class="svg-icon orange">
-		<use xlink:href="{{ '/assets/minima-social-icons.svg#rss' | relative_url }}"></use>
-	</svg><a href="{{ "/feed.xml" | relative_url }}">Subscribe</a></p> -->
+<!-- <p class="feed-subscribe"><svg class="svg-icon orange">
+      <use xlink:href="{{ '/assets/minima-social-icons.svg#rss' | relative_url }}"></use>
+  </svg><a href="{{ "/feed.xml" | relative_url }}">Subscribe</a></p> -->
 {%- endif -%}

@@ -12,16 +12,15 @@ show_excerpts: true # set to true to show excerpts on the homepage
 sass:
   sass_dir: _sass
 plainwhite:
-  name: Zhengxu Yu (余正旭)
   tagline: |
   Ph.D candidate
 
   State Key Lab of CAD & CG
 
   Zhejiang University
+  name: Zhengxu Yu (余正旭)
   date_format: "%b %-d, %Y"
   sitemap: true # set to true to generate sitemap.xml content
-
   navigation:
     - title: My Work
       url: "/my-work"

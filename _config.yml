@@ -2,9 +2,11 @@ title: Zhengxu Yu | Homepage
 author: ZhengxuYu
 email: yuzxfred AT gmail.com
 description: > # this means to ignore newlines until "show_exerpts:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  I'm Zhengxu Yu, a third-year Ph.D student in the State Key Lab of CAD & CG at Zhejiang University in
+  China. My advisors are Prof. Deng Cai and Prof. Xiaofei He. Now I'm a intern at DAMO Academy, Alibaba China.
+  My research interests fall in the general areas and applications of machine learning and Computer Vision,
+  especially the recent developments in Causal Inference, Graph Neural Network and reinforcement learning to
+  work towards the goal of the combination of Representation Learning.
 show_excerpts: true # set to true to show excerpts on the homepage
 
 # Minima date format

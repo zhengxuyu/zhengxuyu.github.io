@@ -10,7 +10,7 @@
         <h2 id="title">
           <a href="/">{{ site.plainwhite.name }}</a>
         </h2>
-        <p class="tagline">{{ site.plainwhite.tagline }}</p>
+        <p class="tagline" align="center" style="width:280px;">{{ site.plainwhite.tagline }}</p>
         <ul class="social">
           {%- if site.plainwhite.social_links.github -%}
             <a href="https://github.com/{{ site.plainwhite.social_links.github }}">
@@ -33,7 +33,13 @@
               </li>
             </a>
           {%- endif -%}
+          <a href="https://scholar.google.com/citations?user=qsLLazoAAAAJ&hl=zh-CN">
+              <li>
+                <i class="icon-google"></i>
+              </li>
+          </a>
         </ul>
+
 
         {%- if site.plainwhite.navigation -%}
           <nav class="navigation">
@@ -46,7 +52,7 @@
             </ul>
           </nav>
         {%- endif -%}
-
+        <p align="center" style="width:280px;">Contact: yuzxfred AT gmail.com</p>
         <p>&copy;
           {{ "now" | date: "%Y" }}</p>
       </section>

@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: post
 title:  New publication in IJCAI-PRICAI 2020.
 date:   2020-04-20 18:58:09 +0530
 categories: NewPublication

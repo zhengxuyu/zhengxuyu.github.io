@@ -13,14 +13,16 @@ sass:
   sass_dir: _sass
 plainwhite:
   name: Zhengxu Yu (余正旭)
-  tagline: Zhejiang University
+  tagline: |
+    State of Key Lab of CAD&CD
+    Zhejiang University
   date_format: "%b %-d, %Y"
   sitemap: true # set to true to generate sitemap.xml content
   navigation:
     - title: My Publications
-      url: "/my-work"
-    - title: Resume
-      url: "/resume"
+      url: "/pages/publication"
+    - title: Curriculum Vitae
+      url: "/pages/CV"
 
   # generate social links in footer
   social_links:

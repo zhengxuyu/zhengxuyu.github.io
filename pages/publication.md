@@ -30,7 +30,7 @@ date:   2020-04-20 18:58:09 +0530
   
   IEEE ACCESS (2019)
   
-  [[paper]](https://ieeexplore.ieee.org/document/8928590）
+  [[paper]](https://ieeexplore.ieee.org/document/8928590)
 
 - PI-RCNN: An Efficient Multi-sensor 3D Object Detector with Point-based Attentive Cont-conv Fusion Module.
 

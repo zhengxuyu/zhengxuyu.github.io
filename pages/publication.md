@@ -11,7 +11,7 @@ date:   2020-07-15 13:44:24 +0530
   
   Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence. Main track. Pages 2491-2497.
   
-  [[paper]](https://www.ijcai.org/Proceedings/2020/345) | [[BibTex]](https://www.ijcai.org/proceedings/2020/bibtex/345)
+  [[paper]](https://www.ijcai.org/Proceedings/2020/345) \| [[BibTex]](https://www.ijcai.org/proceedings/2020/bibtex/345)
   
 - SIF: Self-Inspirited Feature Learning for Person Re-Identification.
 

@@ -1,10 +1,18 @@
 ---
 layout: post
 title:  Publications
-date:   2020-04-20 18:58:09 +0530
+date:   2020-07-15 13:44:24 +0530
 ---
 
 # 2020
+- **(NEW)** MaCAR: Urban Traffic Light Control via Active Multi-agent Communication and Action Rectification.
+  
+  Zhengxu Yu, Shuxian Liang, Long Wei, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
+  
+  Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence. Main track. Pages 2491-2497.
+  
+  [[paper]](https://www.ijcai.org/Proceedings/2020/345) | [[BibTex]](https://www.ijcai.org/proceedings/2020/bibtex/345)
+  
 - SIF: Self-Inspirited Feature Learning for Person Re-Identification.
 
   Long Wei, Zhenyong Wei, Zhongming Jin, **Zhengxu Yu**, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua

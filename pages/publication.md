@@ -21,14 +21,15 @@ date:   2020-07-15 13:44:24 +0530
   
   [[paper]](https://ieeexplore.ieee.org/document/9024230)
 
-# 2019
-- Progressive Transfer Learning for Person Re-identification. 
+- PI-RCNN: An Efficient Multi-sensor 3D Object Detector with Point-based Attentive Cont-conv Fusion Module.
 
-  **Zhengxu Yu**, Zhongming Jin, Long Wei, Jishun Guo, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
+  Liang Xie, Chao Xiang, **Zhengxu Yu**, Guodong Xu, Zheng Yang, Deng Cai, Xiaofei He.
   
-  The 28th International Joint Conference on Artificial Intelligence (IJCAI-19). (Acceptence rate: 17.9% (850/4752)) 
+  The Thirty-Third AAAI Conference on Artificial Intelligence (AAAI'2020). (Acceptence rate: 16.2% (1150/7095)) 
   
-  [[paper]](https://www.ijcai.org/Proceedings/2019/586) \| [[Code]](https://github.com/ZJULearning/PTL) \| [[BibTex]](https://www.ijcai.org/proceedings/2019/bibtex/586)
+  [[paper]](https://aaai.org/Papers/AAAI/2020GB/AAAI-XieL.3324.pdf) \| [[BibTex]](https://dblp.uni-trier.de/rec/bibtex/journals/corr/abs-1911-06084)
+
+# 2019
   
 - Dual Graph for Traffic Forecasting.
 
@@ -40,10 +41,10 @@ date:   2020-07-15 13:44:24 +0530
   
   [[paper]](https://ieeexplore.ieee.org/document/8928590)
 
-- PI-RCNN: An Efficient Multi-sensor 3D Object Detector with Point-based Attentive Cont-conv Fusion Module.
+- Progressive Transfer Learning for Person Re-identification. 
 
-  Liang Xie, Chao Xiang, **Zhengxu Yu**, Guodong Xu, Zheng Yang, Deng Cai, Xiaofei He.
+  **Zhengxu Yu**, Zhongming Jin, Long Wei, Jishun Guo, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
   
-  The Thirty-Third AAAI Conference on Artificial Intelligence (AAAI-19). (Acceptence rate: 16.2% (1150/7095)) 
+  The 28th International Joint Conference on Artificial Intelligence (IJCAI-19). (Acceptence rate: 17.9% (850/4752)) 
   
-  [[paper]](https://aaai.org/Papers/AAAI/2020GB/AAAI-XieL.3324.pdf) \| [[BibTex]](https://dblp.uni-trier.de/rec/bibtex/journals/corr/abs-1911-06084)
+  [[paper]](https://www.ijcai.org/Proceedings/2019/586) \| [[Code]](https://github.com/ZJULearning/PTL) \| [[BibTex]](https://www.ijcai.org/proceedings/2019/bibtex/586)

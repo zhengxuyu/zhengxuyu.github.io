@@ -4,4 +4,4 @@ title:  Publication in IJCAI-PRICAI'2020 is online now.
 date:   2020-07-15 13:40:00 +0530
 categories: NewPublication
 ---
-Our paper "MaCAR: Urban Traffic Light Control via active Multi-agent Communication and Action Rectification" publised on IJCAI-PRICAI'2020 is online now. (Acceptence Rate: 12.3% (592/4717)) [[link]](https://www.ijcai.org/Proceedings/2020/345)
+[[link]](https://www.ijcai.org/Proceedings/2020/345) Our paper "MaCAR: Urban Traffic Light Control via active Multi-agent Communication and Action Rectification" publised on IJCAI-PRICAI'2020 is online now. (Acceptence Rate: 12.3% (592/4717)) 

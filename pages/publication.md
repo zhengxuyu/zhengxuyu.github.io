@@ -7,7 +7,7 @@ date:   2020-07-15 13:44:24 +0530
 # 2020
 - **(NEW)** MaCAR: Urban Traffic Light Control via Active Multi-agent Communication and Action Rectification.
   
-  Zhengxu Yu, Shuxian Liang, Long Wei, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
+  **Zhengxu Yu**, Shuxian Liang, Long Wei, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
   
   Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence. Main track. Pages 2491-2497.
   

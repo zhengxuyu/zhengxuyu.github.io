@@ -9,7 +9,7 @@ date:   2020-07-15 13:44:24 +0530
   
   **Zhengxu Yu**, Shuxian Liang, Long Wei, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
   
-  Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence. Main track. Pages 2491-2497.
+  Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence. Main track. Pages 2491-2497. (Acceptence Rate: 12.3% (592/4717))
   
   [[paper]](https://www.ijcai.org/Proceedings/2020/345) \| [[BibTex]](https://www.ijcai.org/proceedings/2020/bibtex/345)
   

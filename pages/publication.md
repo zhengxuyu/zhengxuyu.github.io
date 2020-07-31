@@ -1,15 +1,23 @@
 ---
 layout: post
 title:  Publications
-date:   2020-07-15 13:44:24 +0530
+date:   2020-07-30 14:11:00
 ---
 
 # 2020
+- **(NEW)** Stable Learning via Causality-based Feature Rectification .
+  
+  **Zhengxu Yu**, Pengfei Wang, Junkai Xu, Liang Xie, Zhongming Jin, Jianqiang Huang, Xiaofei He, Deng Cai, Xian-Sheng Hua
+  
+  *arXiv preprint* arXiv:2007.15241
+  
+  [[paper]](http://arxiv.org/abs/2007.15241) 
+
 - **(NEW)** MaCAR: Urban Traffic Light Control via Active Multi-agent Communication and Action Rectification.
   
   **Zhengxu Yu**, Shuxian Liang, Long Wei, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
   
-  Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence. Main track. Pages 2491-2497. (Acceptence Rate: 12.3% (592/4717))
+  Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence (IJCAI-PRICAI'2020). Main track. Pages 2491-2497. (Acceptence Rate: 12.3% (592/4717))
   
   [[paper]](https://www.ijcai.org/Proceedings/2020/345) \| [[BibTex]](https://www.ijcai.org/proceedings/2020/bibtex/345)
   
@@ -17,7 +25,7 @@ date:   2020-07-15 13:44:24 +0530
 
   Long Wei, Zhenyong Wei, Zhongming Jin, **Zhengxu Yu**, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
   
-  IEEE Trans. Image Processing 29: 4942-4951 (2020)
+  IEEE Trans. Image Processing (TIP) 29: 4942-4951 (2020)
   
   [[paper]](https://ieeexplore.ieee.org/document/9024230)
 
@@ -45,6 +53,6 @@ date:   2020-07-15 13:44:24 +0530
 
   **Zhengxu Yu**, Zhongming Jin, Long Wei, Jishun Guo, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
   
-  The 28th International Joint Conference on Artificial Intelligence (IJCAI-19). (Acceptence rate: 17.9% (850/4752)) 
+  The 28th International Joint Conference on Artificial Intelligence (IJCAI'2019). (Acceptence rate: 17.9% (850/4752)) 
   
   [[paper]](https://www.ijcai.org/Proceedings/2019/586) \| [[Code]](https://github.com/ZJULearning/PTL) \| [[BibTex]](https://www.ijcai.org/proceedings/2019/bibtex/586)

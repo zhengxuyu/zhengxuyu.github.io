@@ -4,11 +4,11 @@ title:  Curriculum Vitae
 date:   2020-04-20 18:58:09 +0530
 ---
 * [中文简历](/assets/CV_zh_200803.pdf)
-* [CV](/assets/CV_zh_200803.pdf)
+* [CV](/assets/CV_en_200803.pdf)
 
 # Education
 
-### 2017/09 - present \| Zhejiang Univeristy, China
+### 2017/09 - present \| Zhejiang University, China
 
 Ph.D in Computer Science and Technology
 

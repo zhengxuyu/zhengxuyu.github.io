@@ -3,6 +3,7 @@ layout: post
 title:  Curriculum Vitae
 date:   2020-04-20 18:58:09 +0530
 ---
+*You can found more detailed version at the bottom of this page.*
 
 # Education
 
@@ -24,3 +25,6 @@ BSc. Communications Engineering
 ### 2018/01 - present
 
   Research Intern at DAMO Academy, Alibaba Group, China.
+  
+# More detailed version
+* [中文简历](/assets/chinese_CV_0804.pdf)

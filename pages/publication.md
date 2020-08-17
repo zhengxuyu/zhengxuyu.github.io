@@ -1,11 +1,19 @@
 ---
 layout: post
 title:  Publications
-date:   2020-07-30 14:11:00
+date:   2020-08-17
 ---
 
 # 2020
-- **(NEW)** Stable Learning via Causality-based Feature Rectification .
+- **(NEW)** Apparel-invariant Feature Learning for Apparel-changed Person Re-identification.
+  
+  **Zhengxu Yu**, Yilun Zhao, Bin Hong, Zhongming Jin, Jianqiang Huang, Deng Cai, Xian-Sheng Hua
+  
+  *arXiv preprint* arXiv:2008.06181
+  
+  [[paper]](https://arxiv.org/abs/2008.06181) 
+  
+- **(NEW)** Stable Learning via Causality-based Feature Rectification.
   
   **Zhengxu Yu**, Pengfei Wang, Junkai Xu, Liang Xie, Zhongming Jin, Jianqiang Huang, Xiaofei He, Deng Cai, Xian-Sheng Hua
   

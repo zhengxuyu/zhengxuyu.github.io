@@ -3,8 +3,8 @@ layout: post
 title:  Curriculum Vitae
 date:   2020-04-20 18:58:09 +0530
 ---
-* [中文简历](/assets/200816中文简历.pdf)
-* [CV](/assets/200816_en.pdf)
+* [中文简历 (最后一次修改: 2020.08.17)](/assets/200817中文简历.pdf)
+* [CV (last modify: 2020.08.17)](/assets/200817_en.pdf)
 
 # Education
 

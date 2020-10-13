@@ -43,7 +43,7 @@ date:   2020-08-17
   
   The Thirty-Third AAAI Conference on Artificial Intelligence (AAAI'2020). (Acceptence rate: 16.2% (1150/7095)) 
   
-  [[paper]](https://aaai.org/Papers/AAAI/2020GB/AAAI-XieL.3324.pdf) \| [[BibTex]](https://dblp.uni-trier.de/rec/bibtex/journals/corr/abs-1911-06084)
+  [[paper]](https://aaai.org/ojs/index.php/AAAI/article/view/6933) \| [[BibTex]](https://dblp.uni-trier.de/rec/bibtex/journals/corr/abs-1911-06084)
 
 # 2019
   

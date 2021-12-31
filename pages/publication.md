@@ -3,9 +3,29 @@ layout: post
 title:  Publications
 date:   2020-08-17
 ---
+# 2021
+- **(NEW)** Urban Traffic Light Control via Active Multi-agent Communication and Supply-Demand Modeling.
+  
+  Xing Guo*, **Zhengxu Yu***, Pengfei Wang, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-shen Hua
+  (* Co-first author)
+  
+  *IEEE Transactions on Knowledge and Data Engineering* 
+  DOI: 10.1109/TMM.2021.3119133
+  
+  [[paper]](https://ieeexplore.ieee.org/document/9566823/) 
+
+
+- **(NEW)** Apparel-invariant Feature Learning for Apparel-changed Person Re-identification.
+  
+  **Zhengxu Yu**, Yilun Zhao, Bin Hong, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua  
+  *IEEE Transactions on Multimedia* 
+  
+  DOI: 10.1109/TMM.2021.3119133
+  
+  [[paper]](https://ieeexplore.ieee.org/document/9566823/) 
 
 # 2020
-- **(NEW)** Apparel-invariant Feature Learning for Apparel-changed Person Re-identification.
+- Apparel-invariant Feature Learning for Apparel-changed Person Re-identification.
   
   **Zhengxu Yu**, Yilun Zhao, Bin Hong, Zhongming Jin, Jianqiang Huang, Deng Cai, Xian-Sheng Hua
   
@@ -13,7 +33,7 @@ date:   2020-08-17
   
   [[paper]](https://arxiv.org/abs/2008.06181) 
   
-- **(NEW)** Stable Learning via Causality-based Feature Rectification.
+- Stable Learning via Causality-based Feature Rectification.
   
   **Zhengxu Yu**, Pengfei Wang, Junkai Xu, Liang Xie, Zhongming Jin, Jianqiang Huang, Xiaofei He, Deng Cai, Xian-Sheng Hua
   
@@ -21,7 +41,7 @@ date:   2020-08-17
   
   [[paper]](http://arxiv.org/abs/2007.15241) 
 
-- **(NEW)** MaCAR: Urban Traffic Light Control via Active Multi-agent Communication and Action Rectification.
+- MaCAR: Urban Traffic Light Control via Active Multi-agent Communication and Action Rectification.
   
   **Zhengxu Yu**, Shuxian Liang, Long Wei, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
   

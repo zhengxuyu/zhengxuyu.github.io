@@ -12,8 +12,9 @@ sass:
 plainwhite:
   name: Zhengxu Yu (余正旭)
   tagline: |
-    State of Key Lab of CAD&CD
-    Zhejiang University
+    City Brain Lab.
+    DAMO Academy
+    Alibaba Group
   date_format: "%b %-d, %Y"
   sitemap: true # set to true to generate sitemap.xml content
   navigation:

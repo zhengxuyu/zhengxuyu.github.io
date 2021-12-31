@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  New publication in IJCAI-PRICAI 2020.
-date:   2020-04-20 18:58:09 +0530
+title:  New publication in IEEE Transactions on Multimedia.
+date:   2021-12-31 00:00:00 +0000
 categories: NewPublication
 ---
-Our paper "MaCAR: Urban Traffic Light Control via active Multi-agent Communication and Action Rectification" got accepted in IJCAI-PRICAI 2020 (Acceptence Rate: 12.3% (592/4717)).
+Our paper "Apparel-invariant Feature Learning for Person Re-identification" got accepted by IEEE Transactions on Multimedia (CCF-B).

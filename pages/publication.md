@@ -1,12 +1,32 @@
 ---
 layout: post
 title:  Publications
-date:   2021-12-31
+date:   2024-06-16
 ---
-# 2021
-- **(NEW)** Urban Traffic Light Control via Active Multi-agent Communication and Supply-Demand Modeling.
+# 2023
+- Optimizing traffic efficiency via a reinforcement learning approach based on time allocation.
+
+  Xiang, Chao, Zhongming Jin, **Zhengxu Yu**, Xian-Sheng Hua, Yao Hu, Wei Qian, Kaili Zhu, Deng Cai, and Xiaofei He
+ 
+  *International Journal of Machine Learning and Cybernetics 14, no. 10 (2023): 3381-3391.* 
+
+# 2022
+- Progressive Transfer Learning.
   
-  Xing Guo*, **Zhengxu Yu***, Pengfei Wang, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-shen Hua
+  **Zhengxu Yu**, Zhongming Jin, Long Wei, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua
+  
+  *IEEE Trans. Image Processing (TIP), vol. 31, pp. 1340-1348, 2022, doi: 10.1109/TIP.2022.3141258.*
+
+- Lidar point cloud guided monocular 3d object detection.
+  
+  Peng, Liang, Fei Liu, **Zhengxu Yu**, Senbo Yan, Dan Deng, Zheng Yang, Haifeng Liu, and Deng Cai.
+
+  ECCV 2022
+
+# 2021
+- Urban Traffic Light Control via Active Multi-agent Communication and Supply-Demand Modeling.
+  
+  Xing Guo*, **Zhengxu Yu**, Pengfei Wang, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-shen Hua
   (* Co-first author)
   
   *IEEE Transactions on Knowledge and Data Engineering* 
@@ -15,7 +35,7 @@ date:   2021-12-31
   [[paper]](https://ieeexplore.ieee.org/document/9566823/) 
 
 
-- **(NEW)** Apparel-invariant Feature Learning for Apparel-changed Person Re-identification.
+- Apparel-invariant Feature Learning for Apparel-changed Person Re-identification.
   
   **Zhengxu Yu**, Yilun Zhao, Bin Hong, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua  
   *IEEE Transactions on Multimedia* 

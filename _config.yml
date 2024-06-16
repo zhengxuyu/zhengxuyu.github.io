@@ -12,8 +12,7 @@ sass:
 plainwhite:
   name: Zhengxu Yu (余正旭)
   tagline: |
-    City Brain Lab.
-    DAMO Academy
+    Alibaba Cloud,
     Alibaba Group
   date_format: "%b %-d, %Y"
   sitemap: true # set to true to generate sitemap.xml content
@@ -28,6 +27,8 @@ plainwhite:
     # twitter: thelehhman
     github:  ZhengxuYu
     email: yuzxfred AT gmail.com
+    dblp: Zhengxu_Yu
+    orcid: 0000-0002-6059-0300
     #linkedIn: in/thelehhman
     # rss: rss
     # dribbble: jekyll

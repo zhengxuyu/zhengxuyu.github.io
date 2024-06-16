@@ -1,16 +1,17 @@
 ---
 layout: post
 title:  Curriculum Vitae
-date:   2020-04-20 18:58:09 +0530
+date:   2024-06-16 18:58:09 +0530
 ---
-* [中文简历 (最后一次修改: 2020.08.17)](/assets/200817中文简历.pdf)
-* [CV (last modify: 2020.08.17)](/assets/200817_en.pdf)
+* [中文简历 (最后一次修改: 2020/08)](/assets/200817中文简历.pdf)
+* [CV (last modify: 2024/06)](/assets/zhengxuyu_cv_en.pdf)
 
 # Work Experience
-### 2021/04 - present \| City Brain Lab., DAMO Academy, Alibaba Group
+### 2023/10 - present \| Alibaba Cloud, Alibaba Group
+### 2021/04 - 2023/10 \| City Brain Lab., DAMO Academy, Alibaba Group
 
 Senior Algorithm Engineer
-Focus on Video based Big Data
+Focus on Reinforcement Learning
 
 # Internship Experiences
 

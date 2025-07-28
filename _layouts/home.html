@@ -74,7 +74,7 @@ layout: default
         <p><a href="/pages/blog">View all blog posts →</a></p>
     </li>
 
-    {%- for post in site.blogs limit:3 -%}
+    {%- for post in site.blogs limit:2 -%}
     <li>
         {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
         <a class="post-link" href="{{ post.url | relative_url }}">

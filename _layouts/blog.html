@@ -147,6 +147,21 @@ layout: default
   margin-top: 0.8rem;
   font-size: 0.9rem;
 }
+
+/* 草稿模式提示样式 */
+.draft-notice {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  color: #856404;
+  font-size: 0.9rem;
+}
+
+.draft-notice strong {
+  color: #d63031;
+}
 </style>
 
 <div class="blog-list">
@@ -156,41 +171,52 @@ layout: default
     <p>Towards a better understanding of the world.</p>
     <p>Here you can find all my blog posts and thoughts on research, technology, and industry insights.</p>
   </div>
+  
   {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
   
-  {%- for blog in site.blogs -%}
-    <article class="blog-item">
-      <div class="blog-title">
-        <a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a>
-      </div>
-      
-      <div class="blog-meta">
-        {%- if blog.categories -%}
-          <div class="blog-categories">
-            <ul>
-              {%- for category in blog.categories -%}
-                <li>{{ category }}</li>
-              {%- endfor -%}
-            </ul>
+  {%- comment -%} 过滤掉草稿文章，只显示已发布的文章 {%- endcomment -%}
+  {%- assign published_blogs = site.blogs | where_exp: "blog", "blog.draft != true" -%}
+  
+  {%- if published_blogs.size == 0 -%}
+    <div class="draft-notice">
+      <strong>暂无已发布的博客文章</strong><br>
+      目前所有文章都处于草稿状态。
+    </div>
+  {%- else -%}
+    {%- for blog in published_blogs -%}
+      <article class="blog-item">
+        <div class="blog-title">
+          <a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a>
+        </div>
+        
+        <div class="blog-meta">
+          {%- if blog.categories -%}
+            <div class="blog-categories">
+              <ul>
+                {%- for category in blog.categories -%}
+                  <li>{{ category }}</li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+          
+          <div class="blog-date">
+            <i class="icon-calendar"></i>
+            {{ blog.date | date: date_format }}
+          </div>
+        </div>
+        
+        {%- if blog.tldr -%}
+          <div class="post-tldr">
+            <strong>TL;DR:</strong> {{ blog.tldr }}
           </div>
         {%- endif -%}
-        
-        <div class="blog-date">
-          <i class="icon-calendar"></i>
-          {{ blog.date | date: date_format }}
-        </div>
-      </div>
-      
-      {%- if blog.tldr -%}
-        <div class="post-tldr">
-          <strong>TL;DR:</strong> {{ blog.tldr }}
-        </div>
-      {%- endif -%}
-      {%- if blog.excerpt -%}
-        <div class="blog-excerpt">
-          {{ blog.excerpt | strip_html | truncatewords: 50 }}
-        </div>
-      {%- endif -%}
-    </article>
-  {%- endfor -%}
+        {%- if blog.excerpt -%}
+          <div class="blog-excerpt">
+            {{ blog.excerpt | strip_html | truncatewords: 50 }}
+          </div>
+        {%- endif -%}
+      </article>
+    {%- endfor -%}
+  {%- endif -%}
 </div> 

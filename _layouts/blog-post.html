@@ -2,46 +2,94 @@
 layout: default
 ---
 
+<style>
+/* 草稿模式样式 */
+.draft-warning {
+  background: #fff3cd;
+  border: 2px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem 0;
+  text-align: center;
+  color: #856404;
+}
 
+.draft-warning h1 {
+  color: #d63031;
+  margin-bottom: 1rem;
+}
 
-<article class="post">
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title | escape }}</h1>
-    <p class="post-meta">
-      {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
-      <time datetime="{{ page.date | date_to_xmlschema }}">
-        {%- assign date_english = page.date | date: date_format -%}
-        <i class="icon-calendar"></i>
-        {{ date_english }}
-      </time>
-      {%- if page.categories -%}
-        <span class="post-categories">
-          {%- for category in page.categories -%}
-            <span class="post-category">{{ category }}</span>
+.draft-warning .draft-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.draft-warning .back-link {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #007acc;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.draft-warning .back-link:hover {
+  background: #005a9e;
+}
+</style>
+
+{%- comment -%} 检查是否为草稿文章 {%- endcomment -%}
+{%- if page.draft == true -%}
+  <div class="draft-warning">
+    <span class="draft-icon">📝</span>
+    <h1>草稿模式</h1>
+    <p>这篇文章目前处于草稿状态，尚未发布。</p>
+    <p>如果您是作者，请检查文章的front matter设置。</p>
+    <a href="/pages/blog/" class="back-link">返回博客列表</a>
+  </div>
+{%- else -%}
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">{{ page.title | escape }}</h1>
+      <p class="post-meta">
+        {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
+        <time datetime="{{ page.date | date_to_xmlschema }}">
+          {%- assign date_english = page.date | date: date_format -%}
+          <i class="icon-calendar"></i>
+          {{ date_english }}
+        </time>
+        {%- if page.categories -%}
+          <span class="post-categories">
+            {%- for category in page.categories -%}
+              <span class="post-category">{{ category }}</span>
+            {%- endfor -%}
+          </span>
+        {%- endif -%}
+      </p>
+      {%- if page.tags -%}
+        <div class="post-tags">
+          {%- for tag in page.tags -%}
+            <span class="post-tag">{{ tag }}</span>
           {%- endfor -%}
-        </span>
+        </div>
       {%- endif -%}
-    </p>
-    {%- if page.tags -%}
-      <div class="post-tags">
-        {%- for tag in page.tags -%}
-          <span class="post-tag">{{ tag }}</span>
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
-    {%- if page.tldr -%}
-      <div class="post-tldr">
-        <h3>TL;DR</h3>
-        <p>{{ page.tldr }}</p>
-      </div>
-    {%- endif -%}
-  </header>
+      {%- if page.tldr -%}
+        <div class="post-tldr">
+          <h3>TL;DR</h3>
+          <p>{{ page.tldr }}</p>
+        </div>
+      {%- endif -%}
+    </header>
 
-  <div class="post-content">
-    {{ content }}
-  </div>
+    <div class="post-content">
+      {{ content }}
+    </div>
 
-  <div class="post-navigation">
-    <a href="/pages/blog/" class="back-to-blog">← Back to Blog</a>
-  </div>
-</article> 
+    <div class="post-navigation">
+      <a href="/pages/blog/" class="back-to-blog">← Back to Blog</a>
+    </div>
+  </article>
+{%- endif -%} 

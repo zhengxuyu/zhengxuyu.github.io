@@ -5,6 +5,8 @@ description: "搜索Zhengxu Yu网站内容"
 keywords: "搜索, Zhengxu Yu, 余正旭"
 ---
 
+{% include search-data.html %}
+
 <div class="search-container">
   <h1>搜索网站内容</h1>
   
@@ -63,6 +65,12 @@ keywords: "搜索, Zhengxu Yu, 余正旭"
   border: 1px solid #eee;
   border-radius: 5px;
   background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.search-result-item:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
 }
 
 .search-result-item h3 {
@@ -70,9 +78,19 @@ keywords: "搜索, Zhengxu Yu, 余正旭"
   color: #007bff;
 }
 
+.search-result-item h3 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.search-result-item h3 a:hover {
+  text-decoration: underline;
+}
+
 .search-result-item p {
   margin: 0;
   color: #666;
+  line-height: 1.5;
 }
 
 .search-result-item .url {
@@ -81,37 +99,68 @@ keywords: "搜索, Zhengxu Yu, 余正旭"
   margin-top: 5px;
 }
 
+.search-result-item .meta {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.search-result-item .categories {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: 5px;
+}
+
+.search-result-item .category-tag {
+  background: #007bff;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  text-decoration: none;
+}
+
 .no-results {
   text-align: center;
   color: #666;
   font-style: italic;
+  padding: 40px 20px;
+}
+
+.search-stats {
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.highlight {
+  background-color: #fff3cd;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
 }
 </style>
 
 <script>
-// 网站内容数据（简化版）
-const siteContent = [
-  {
-    title: "Zhengxu Yu | Homepage",
-    url: "/",
-    content: "Webpage of Zhengxu Yu (余正旭), yuzhengxu. Alibaba Cloud, Alibaba Group"
-  },
-  {
-    title: "My Publications",
-    url: "/pages/publication",
-    content: "Research publications and papers by Zhengxu Yu"
-  },
-  {
-    title: "Curriculum Vitae",
-    url: "/pages/CV",
-    content: "CV and resume of Zhengxu Yu"
-  },
-  {
-    title: "Blog",
-    url: "/pages/blog",
-    content: "Blog posts and articles by Zhengxu Yu"
-  }
+// 获取搜索数据
+const searchData = JSON.parse(document.getElementById('searchData').textContent);
+
+// 合并所有内容
+const allContent = [
+  ...searchData.pages,
+  ...searchData.blogs,
+  ...searchData.posts
 ];
+
+function highlightText(text, searchTerm) {
+  if (!searchTerm || !text) return text;
+  const regex = new RegExp(`(${searchTerm})`, 'gi');
+  return text.replace(regex, '<span class="highlight">$1</span>');
+}
 
 function searchContent() {
   const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -122,25 +171,92 @@ function searchContent() {
     return;
   }
   
-  const results = siteContent.filter(item => 
-    item.title.toLowerCase().includes(searchTerm) ||
-    item.content.toLowerCase().includes(searchTerm)
-  );
+  const results = allContent.filter(item => {
+    const searchableText = [
+      item.title,
+      item.content,
+      item.excerpt || '',
+      item.tldr || '',
+      ...(item.categories || []),
+      ...(item.tags || [])
+    ].join(' ').toLowerCase();
+    
+    return searchableText.includes(searchTerm);
+  });
   
   if (results.length === 0) {
     resultsContainer.innerHTML = '<div class="no-results">未找到相关结果</div>';
     return;
   }
   
-  const resultsHTML = results.map(item => `
-    <div class="search-result-item">
-      <h3><a href="${item.url}">${item.title}</a></h3>
-      <p>${item.content}</p>
-      <div class="url">${window.location.origin}${item.url}</div>
-    </div>
-  `).join('');
+  const resultsHTML = results.map(item => {
+    const displayContent = item.excerpt || item.content || '';
+    const highlightedTitle = highlightText(item.title, searchTerm);
+    const highlightedContent = highlightText(displayContent, searchTerm);
+    
+    let metaHTML = '';
+    if (item.type === 'blog' || item.type === 'post') {
+      metaHTML = `
+        <div class="meta">
+          <span>📅 ${item.date}</span>
+          <span>📝 ${item.type}</span>
+          ${item.draft ? '<span>📋 草稿</span>' : ''}
+        </div>
+      `;
+    } else if (item.type === 'works') {
+      metaHTML = `
+        <div class="meta">
+          <span>💼 项目作品</span>
+        </div>
+      `;
+    } else if (item.type === 'cv') {
+      metaHTML = `
+        <div class="meta">
+          <span>📄 简历</span>
+        </div>
+      `;
+    } else if (item.type === 'publications') {
+      metaHTML = `
+        <div class="meta">
+          <span>📚 学术论文</span>
+        </div>
+      `;
+    } else if (item.type === 'homepage') {
+      metaHTML = `
+        <div class="meta">
+          <span>🏠 主页</span>
+        </div>
+      `;
+    } else if (item.type === 'blog-list') {
+      metaHTML = `
+        <div class="meta">
+          <span>📝 博客列表</span>
+        </div>
+      `;
+    }
+    
+    let categoriesHTML = '';
+    if (item.categories && item.categories.length > 0) {
+      categoriesHTML = `
+        <div class="categories">
+          ${item.categories.map(cat => `<a href="#" class="category-tag">${cat}</a>`).join('')}
+        </div>
+      `;
+    }
+    
+    return `
+      <div class="search-result-item">
+        <h3><a href="${item.url}">${highlightedTitle}</a></h3>
+        <p>${highlightedContent}</p>
+        ${metaHTML}
+        ${categoriesHTML}
+        <div class="url">${window.location.origin}${item.url}</div>
+      </div>
+    `;
+  }).join('');
   
-  resultsContainer.innerHTML = resultsHTML;
+  const statsHTML = `<div class="search-stats">找到 ${results.length} 个结果</div>`;
+  resultsContainer.innerHTML = statsHTML + resultsHTML;
 }
 
 // 支持回车键搜索
@@ -148,5 +264,10 @@ document.getElementById('searchInput').addEventListener('keypress', function(e) 
   if (e.key === 'Enter') {
     searchContent();
   }
+});
+
+// 页面加载时聚焦搜索框
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('searchInput').focus();
 });
 </script> 

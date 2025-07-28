@@ -1,0 +1,72 @@
+<!-- 搜索数据生成 -->
+<script type="application/json" id="searchData">
+{
+  "pages": [
+    {
+      "title": "Zhengxu Yu | Homepage",
+      "url": "/",
+      "content": "Webpage of Zhengxu Yu (余正旭), yuzhengxu. Alibaba Cloud, Alibaba Group",
+      "type": "homepage"
+    },
+    {
+      "title": "My Works",
+      "url": "/pages/works",
+      "content": "Research Projects: Progressive Transfer Learning, Proposed progressive transfer learning method that gradually adjusts the differences between source and target domains to achieve more effective knowledge transfer. Open Source Contributions: Research Code Repositories, Open source research code implementations, including complete code and experimental setups for progressive transfer learning, multi-agent traffic control, and other projects.",
+      "type": "works",
+      "categories": ["Transfer Learning", "Computer Vision", "Person Re-ID", "Open Source", "Research Code", "Reproducibility"]
+    },
+    {
+      "title": "Curriculum Vitae",
+      "url": "/pages/CV",
+      "content": "Work Experience: 2023/10 - present Alibaba Cloud Alibaba Group, 2021/04 - 2023/10 City Brain Lab DAMO Academy Alibaba Group Senior Algorithm Engineer Focus on Reinforcement Learning. Internship Experiences: 2018/01 - 2021/03 Research Intern at DAMO Academy Alibaba Group China. Education: 2017/09 - 2021/03 Zhejiang University China Ph.D in Computer Science and Technology, 2015/09 - 2016/12 University of Surrey UK MSc Information Systems, 2011/09 – 2015/06 Jilin University China BSc Communications Engineering",
+      "type": "cv",
+      "categories": ["Alibaba Cloud", "DAMO Academy", "Zhejiang University", "University of Surrey", "Jilin University", "Reinforcement Learning", "Computer Science"]
+    },
+    {
+      "title": "Publications",
+      "url": "/pages/publication",
+      "content": "2023: Optimizing traffic efficiency via a reinforcement learning approach based on time allocation. 2022: Progressive Transfer Learning IEEE Trans Image Processing, Lidar point cloud guided monocular 3d object detection ECCV 2022. 2021: Urban Traffic Light Control via Active Multi-agent Communication and Supply-Demand Modeling IEEE Transactions on Knowledge and Data Engineering, Apparel-invariant Feature Learning for Apparel-changed Person Re-identification IEEE Transactions on Multimedia. 2020: Apparel-invariant Feature Learning for Apparel-changed Person Re-identification arXiv preprint, Stable Learning via Causality-based Feature Rectification arXiv preprint, MaCAR Urban Traffic Light Control via Active Multi-agent Communication and Action Rectification IJCAI 2020, SIF Self-Inspirited Feature Learning for Person Re-Identification IEEE Trans Image Processing, PI-RCNN An Efficient Multi-sensor 3D Object Detector with Point-based Attentive Cont-conv Fusion Module AAAI 2020. 2019: Dual Graph for Traffic Forecasting IEEE ACCESS, Progressive Transfer Learning for Person Re-identification IJCAI 2019",
+      "type": "publications",
+      "categories": ["IEEE Transactions", "IJCAI", "AAAI", "ECCV", "arXiv", "Transfer Learning", "Person Re-identification", "Traffic Control", "Computer Vision", "Reinforcement Learning"]
+    },
+    {
+      "title": "Blog",
+      "url": "/pages/blog",
+      "content": "Blog posts and articles by Zhengxu Yu",
+      "type": "blog-list"
+    }
+  ],
+  "blogs": [
+    {% for blog in site.blogs %}
+    {
+      "title": {{ blog.title | jsonify }},
+      "url": {{ blog.url | relative_url | jsonify }},
+      "content": {{ blog.content | strip_html | truncatewords: 100 | jsonify }},
+      "excerpt": {{ blog.excerpt | strip_html | jsonify }},
+      "date": {{ blog.date | date: '%Y-%m-%d' | jsonify }},
+      "categories": {{ blog.categories | jsonify }},
+      "tags": {{ blog.tags | jsonify }},
+      "tldr": {{ blog.tldr | jsonify }},
+      "type": "blog",
+      "draft": {{ blog.draft | default: false | jsonify }}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ],
+  "posts": [
+    {% for post in site.posts %}
+    {
+      "title": {{ post.title | jsonify }},
+      "url": {{ post.url | relative_url | jsonify }},
+      "content": {{ post.content | strip_html | truncatewords: 100 | jsonify }},
+      "excerpt": {{ post.excerpt | strip_html | jsonify }},
+      "date": {{ post.date | date: '%Y-%m-%d' | jsonify }},
+      "categories": {{ post.categories | jsonify }},
+      "tags": {{ post.tags | jsonify }},
+      "tldr": {{ post.tldr | jsonify }},
+      "type": "post",
+      "draft": {{ post.draft | default: false | jsonify }}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+}
+</script> 

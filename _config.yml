@@ -21,6 +21,8 @@ plainwhite:
       url: "/pages/publication"
     - title: Curriculum Vitae
       url: "/pages/CV"
+    - title: Blog
+      url: "/pages/blog"
 
   # generate social links in footer
   social_links:
@@ -63,3 +65,9 @@ remote_theme: thelehhman/plainwhite-jekyll
 plugins:
   - jekyll-seo-tag
 #  - jekyll-feed
+
+# Blog configuration
+collections:
+  blogs:
+    output: true
+    permalink: /blog/:title/

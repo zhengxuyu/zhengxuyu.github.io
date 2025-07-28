@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.5.1)  10 FEB 2025 22:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.5.1)  14 DEC 2024 17:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**/Users/yuzhengxu/projects/zhengxuyu.github.io/myCV/rendercv_output/Zhengxu_Yu
-_CV.tex
-
-(/Users/yuzhengxu/projects/zhengxuyu.github.io/myCV/rendercv_output/Zhengxu_Yu_
+**/Users/yuzhengxu/projects/zhengxuyu.github.io/myCV/rendercv_output/余正旭_
 CV.tex
+
+(/Users/yuzhengxu/projects/zhengxuyu.github.io/myCV/rendercv_output/余正旭_C
+V.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-03-14>
 
@@ -722,8 +722,8 @@ LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/m/n' aliased to
 (Font)              `T1/SourceSansPro-TLF/regular/n' on input line 160.
 LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/regular/n' will be
 (Font)              scaled to size 10.0pt on input line 160.
-(./Zhengxu_Yu_CV.aux)
-\openout1 = `Zhengxu_Yu_CV.aux'.
+(./余正旭_CV.aux)
+\openout1 = `余正旭_CV.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 160.
 LaTeX Font Info:    ... okay on input line 160.
@@ -793,141 +793,32 @@ LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/m/n' aliased to
 (Font)              `T1/SourceSansPro-TLF/regular/n' on input line 170.
 LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/regular/n' will be
 (Font)              scaled to size 30.0pt on input line 170.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/m/n' aliased to
-(Font)              `T1/SourceSansPro-TLF/regular/n' on input line 175.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/regular/n' will be
-(Font)              scaled to size 8.0pt on input line 175.
-LaTeX Font Info:    Trying to load font information for U+fontawesomefree1 on i
-nput line 175.
 
-(/Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tin
-ytex-release/TinyTeX/texmf-dist/tex/latex/fontawesome5/ufontawesomefree1.fd)
-LaTeX Font Info:    Trying to load font information for U+fontawesomefree2 on i
-nput line 179.
+! LaTeX Error: Unicode character 余 (U+4F59)
+               not set up for use with LaTeX.
 
-(/Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tin
-ytex-release/TinyTeX/texmf-dist/tex/latex/fontawesome5/ufontawesomefree2.fd)
-LaTeX Font Info:    Trying to load font information for U+fontawesomebrands0 on
- input line 187.
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.170 ...   \fontsize{30 pt}{30 pt}\selectfont 余
+                                                  正旭
+? 
+! Emergency stop.
+ ...                                              
+                                                  
+l.170 ...   \fontsize{30 pt}{30 pt}\selectfont 余
+                                                  正旭
+You may provide a definition with
+\DeclareUnicodeCharacter 
 
-(/Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tin
-ytex-release/TinyTeX/texmf-dist/tex/latex/fontawesome5/ufontawesomebrands0.fd)
-LaTeX Font Info:    Font shape `U/fontawesomebrands0/solid/n' in size <8> not a
-vailable
-(Font)              Font shape `U/fontawesomebrands0/regular/n' tried instead o
-n input line 187.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/b/n' aliased to
-(Font)              `T1/SourceSansPro-TLF/bold/n' on input line 197.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/bold/n' will be
-(Font)              scaled to size 10.0pt on input line 197.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/b/n' aliased to
-(Font)              `T1/SourceSansPro-TLF/bold/n' on input line 197.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/bold/n' will be
-(Font)              scaled to size 12.0pt on input line 197.
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 2
-33.
-
-(/Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tin
-ytex-release/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
-File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 2
-33.
-
-(/Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tin
-ytex-release/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
-File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-233.
-
-(/Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tin
-ytex-release/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
-File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-233.
-
-(/Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tin
-ytex-release/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
-File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 233.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 233.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 233.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/m/n' aliased to
-(Font)              `T1/SourceSansPro-TLF/regular/n' on input line 233.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/regular/n' will be
-(Font)              scaled to size 9.0pt on input line 233.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 233.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 233.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/m/it' aliased to
-(Font)              `T1/SourceSansPro-TLF/regular/it' on input line 344.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/regular/it' will be
-(Font)              scaled to size 10.0pt on input line 344.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/m/it' aliased to
-(Font)              `T1/SourceSansPro-TLF/regular/it' on input line 344.
-LaTeX Font Info:    Font shape `T1/SourceSansPro-TLF/regular/it' will be
-(Font)              scaled to size 9.0pt on input line 344.
- [1
-
-{/Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tin
-ytex-release/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/Users/yuzhe
-ngxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tinytex-release/
-TinyTeX/texmf-dist/fonts/enc/dvips/sourcesanspro/a_emkxm5.enc}{/Users/yuzhengxu
-/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tinytex-release/Tiny
-TeX/texmf-dist/fonts/enc/dvips/fontawesome5/fa5free1.enc}{/Users/yuzhengxu/mini
-conda3/lib/python3.12/site-packages/rendercv/renderer/tinytex-release/TinyTeX/t
-exmf-dist/fonts/enc/dvips/fontawesome5/fa5free2.enc}{/Users/yuzhengxu/miniconda
-3/lib/python3.12/site-packages/rendercv/renderer/tinytex-release/TinyTeX/texmf-
-dist/fonts/enc/dvips/fontawesome5/fa5brands0.enc}{/Users/yuzhengxu/miniconda3/l
-ib/python3.12/site-packages/rendercv/renderer/tinytex-release/TinyTeX/texmf-dis
-t/fonts/enc/dvips/lm/lm-mathsy.enc}]
-Overfull \hbox (18.61911pt too wide) in paragraph at lines 345--346
-[]\T1/SourceSansPro-TLF/bold/n/10 Urban Traf-fic Light Con-trol via Ac-tive Mul
-ti-agent Com-mu-ni-ca-tion and Supply-Demand
- []
-
-[2] 
-enddocument/afterlastpage: lastpage setting LastPage.
-(./Zhengxu_Yu_CV.aux)
- ***********
-LaTeX2e <2023-11-01> patch level 1
-L3 programming layer <2024-03-14>
- ***********
- ) 
+ 
 Here is how much of TeX's memory you used:
- 15768 strings out of 476002
- 288104 string characters out of 5788363
- 1956496 words of memory out of 5000000
- 37653 multiletter control sequences out of 15000+600000
- 655383 words of font info for 71 fonts, out of 8000000 for 9000
+ 15420 strings out of 476002
+ 279541 string characters out of 5788363
+ 1925496 words of memory out of 5000000
+ 37368 multiletter control sequences out of 15000+600000
+ 580562 words of font info for 40 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 75i,10n,79p,516b,708s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/t
-inytex-release/TinyTeX/texmf-dist/fonts/type1/public/fontawesome5/FontAwesome5B
-rands-Regular.pfb></Users/yuzhengxu/miniconda3/lib/python3.12/site-packages/ren
-dercv/renderer/tinytex-release/TinyTeX/texmf-dist/fonts/type1/public/fontawesom
-e5/FontAwesome5Free-Regular.pfb></Users/yuzhengxu/miniconda3/lib/python3.12/sit
-e-packages/rendercv/renderer/tinytex-release/TinyTeX/texmf-dist/fonts/type1/pub
-lic/fontawesome5/FontAwesome5Free-Solid.pfb></Users/yuzhengxu/miniconda3/lib/py
-thon3.12/site-packages/rendercv/renderer/tinytex-release/TinyTeX/texmf-dist/fon
-ts/type1/adobe/sourcesanspro/SourceSansPro-Bold.pfb></Users/yuzhengxu/miniconda
-3/lib/python3.12/site-packages/rendercv/renderer/tinytex-release/TinyTeX/texmf-
-dist/fonts/type1/adobe/sourcesanspro/SourceSansPro-It.pfb></Users/yuzhengxu/min
-iconda3/lib/python3.12/site-packages/rendercv/renderer/tinytex-release/TinyTeX/
-texmf-dist/fonts/type1/adobe/sourcesanspro/SourceSansPro-Regular.pfb></Users/yu
-zhengxu/miniconda3/lib/python3.12/site-packages/rendercv/renderer/tinytex-relea
-se/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy9.pfb>
-Output written on Zhengxu_Yu_CV.pdf (2 pages, 206417 bytes).
-PDF statistics:
- 92 PDF objects out of 1000 (max. 8388607)
- 72 compressed objects within 1 object stream
- 8 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 75i,1n,79p,382b,382s stack positions out of 10000i,1000n,20000p,200000b,200000s
+!  ==> Fatal error occurred, no output PDF file produced!

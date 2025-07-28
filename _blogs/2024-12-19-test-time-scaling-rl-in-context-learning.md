@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: blog-post
 title: "Test-Time Scaling via Reinforcement Learning Based In-Context Learning"
 date: 19/12/2024 14:30:00 +0000
 categories: PaperReading

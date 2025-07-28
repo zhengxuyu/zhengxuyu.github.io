@@ -71,3 +71,5 @@ collections:
   blogs:
     output: true
     permalink: /blog/:title/
+    sort_by: date
+    sort_order: reverse

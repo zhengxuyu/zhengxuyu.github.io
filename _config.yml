@@ -44,10 +44,10 @@ plainwhite:
       url: "/pages/works"
     - title: My Publications
       url: "/pages/publication"
-    - title: Curriculum Vitae
+    - title: Resume
       url: "/pages/CV"
     - title: Blog
-      url: "/pages/blog"
+      url: "/blog"
     - title: Search
       url: "/search"
 

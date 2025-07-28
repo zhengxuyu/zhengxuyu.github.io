@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Curriculum Vitae
+title:  Resume
 date:   2024-06-16 18:58:09 +0530
 ---
 * [中文简历 (最后一次修改: 2020/08)](/assets/200817中文简历.pdf)

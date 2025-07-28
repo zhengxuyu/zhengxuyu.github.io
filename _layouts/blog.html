@@ -3,220 +3,475 @@ layout: default
 ---
 
 <style>
-/* 博客布局特殊样式 */
-/* 博客列表样式 */
-.blog-list {
-  margin-top: 2rem;
+/* 现代化博客布局样式 */
+.blog-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }
 
-/* 介绍文字和博客列表之间的分隔符 */
-.blog-intro {
-  margin-bottom: 3rem;
-  padding-bottom: 2rem;
-  border-bottom: 2px solid #e0e0e0;
-  position: relative;
+/* 头部介绍区域 */
+.blog-header {
   text-align: center;
-}
-
-.blog-intro::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, #007acc, #005a9e);
-  border-radius: 2px;
-}
-
-/* AI图片样式 */
-.blog-ai-image {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 2rem auto;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  margin-bottom: 4rem;
+  padding: 3rem 0;
+  background: url('/images/mywork_background.png') center center/cover no-repeat;
+  border-radius: 16px;
   position: relative;
   overflow: hidden;
 }
 
-.blog-ai-image::before {
-  content: '🤖';
-  font-size: 3rem;
-  animation: pulse 2s infinite;
-}
-
-.blog-ai-image::after {
+.blog-header::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-  animation: shine 3s infinite;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(2px);
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-@keyframes shine {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-}
-
-.blog-item {
-  margin-bottom: 1.5rem;
-  padding: 1.2rem 1.5rem;
-  border: 1px solid #e8e8e8;
-  border-radius: 6px;
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  transition: all 0.2s ease;
-}
-
-.blog-item:hover {
-  border-color: #007acc;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-  transform: translateY(-1px);
-}
-
-.blog-item:last-child {
-  margin-bottom: 0;
+.blog-header-content {
+  position: relative;
+  z-index: 1;
 }
 
 .blog-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.blog-subtitle {
+  font-size: 1.2rem;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+}
+
+.blog-description {
+  font-size: 1rem;
+  color: #718096;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* 博客文章列表 */
+.blog-list {
+  display: grid;
+  gap: 2rem;
+}
+
+.blog-item {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.blog-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e0;
+}
+
+.blog-item:hover::before {
+  transform: scaleX(1);
+}
+
+/* 文章标题 */
+.post-title {
+  margin-bottom: 1rem;
+}
+
+.post-title a {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  text-decoration: none;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.post-title a:hover {
+  color: #667eea;
+}
+
+/* 文章元信息 */
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.post-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #718096;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.post-date i {
+  color: #a0aec0;
+}
+
+/* 分类标签 */
+.post-categories {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.category-tag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.category-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* 文章摘要 */
+.post-excerpt {
+  color: #4a5568;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+/* TL;DR 部分 */
+.post-tldr {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-left: 4px solid #667eea;
+  padding: 1rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 1.5rem;
+}
+
+.post-tldr strong {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.post-tldr span {
+  color: #4a5568;
+}
+
+/* 阅读更多按钮 */
+.read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #667eea;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.read-more:hover {
+  color: #764ba2;
+  transform: translateX(4px);
+}
+
+.read-more::after {
+  content: '→';
+  transition: transform 0.2s ease;
+}
+
+.read-more:hover::after {
+  transform: translateX(4px);
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-radius: 12px;
+  border: 2px dashed #cbd5e0;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
   margin-bottom: 0.5rem;
 }
 
-.blog-title a {
-  color: #2c3e50;
-  text-decoration: none;
-  font-size: 1.4rem;
+.empty-state-description {
+  color: #718096;
+  font-size: 0.95rem;
+}
+
+/* 草稿文章样式 */
+.draft-section-divider {
+  margin: 3rem 0 2rem 0;
+  text-align: center;
+  position: relative;
+}
+
+.draft-section-divider h2 {
+  color: #718096;
+  font-size: 1.5rem;
   font-weight: 600;
-  line-height: 1.3;
-}
-
-.blog-title a:hover {
-  color: #007acc;
-  text-decoration: underline;
-}
-
-.blog-meta {
-  margin-bottom: 0.8rem;
-  font-size: 0.85rem;
-  color: #7f8c8d;
-}
-
-.blog-categories {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  padding: 1rem 2rem;
+  border-radius: 8px;
   display: inline-block;
-  margin-right: 1rem;
+  border: 1px solid #e2e8f0;
 }
 
-.blog-categories ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: inline;
+.draft-item {
+  position: relative;
+  opacity: 0.8;
+  border: 1px solid #fdcb6e;
+  background: linear-gradient(135deg, #fffbf0 0%, #fff8e1 100%);
 }
 
-.blog-categories li {
-  display: inline;
-  background: #ecf0f1;
-  padding: 0.15rem 0.4rem;
-  border-radius: 3px;
-  margin-right: 0.4rem;
+.draft-item:hover {
+  opacity: 1;
+  border-color: #f39c12;
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+}
+
+.draft-badge {
+  position: absolute;
+  top: -8px;
+  right: 1rem;
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
   font-size: 0.75rem;
-  color: #34495e;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
 }
 
-.blog-date {
-  display: inline-block;
+.draft-category {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+  opacity: 0.8;
 }
 
-.blog-excerpt {
-  color: #5a6c7d;
-  line-height: 1.5;
-  margin-top: 0.8rem;
-  font-size: 0.9rem;
+.draft-tldr {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%) !important;
+  border-left-color: #f39c12 !important;
 }
 
-/* 草稿模式提示样式 */
-.draft-notice {
-  background: #fff3cd;
-  border: 1px solid #ffeaa7;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-  margin-bottom: 1rem;
-  color: #856404;
-  font-size: 0.9rem;
+.draft-read-more {
+  color: #f39c12 !important;
+  border-color: #f39c12 !important;
 }
 
-.draft-notice strong {
-  color: #d63031;
+.draft-read-more:hover {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+  color: white !important;
 }
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .blog-container {
+    padding: 1rem;
+  }
+  
+  .blog-header {
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .blog-title {
+    font-size: 2rem;
+  }
+  
+  .blog-item {
+    padding: 1.5rem;
+  }
+  
+  .post-title a {
+    font-size: 1.25rem;
+  }
+  
+  .post-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.blog-item {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.blog-item:nth-child(1) { animation-delay: 0.1s; }
+.blog-item:nth-child(2) { animation-delay: 0.2s; }
+.blog-item:nth-child(3) { animation-delay: 0.3s; }
+.blog-item:nth-child(4) { animation-delay: 0.4s; }
+.blog-item:nth-child(5) { animation-delay: 0.5s; }
 </style>
 
-<div class="blog-list">
-  <div class="blog-intro">
-    <div class="blog-ai-image"></div>
-    <h1>Zhengxu's Blog</h1>
-    <p>Towards a better understanding of the world.</p>
-    <p>Here you can find all my blog posts and thoughts on research, technology, and industry insights.</p>
-  </div>
+<div class="blog-container">
+  <header class="blog-header">
+    <div class="blog-header-content">
+      <h1 class="blog-title">Zhengxu's Blog</h1>
+      <p class="blog-subtitle">Towards a better understanding of the world</p>
+      <p class="blog-description">探索技术前沿，分享研究心得，记录成长历程</p>
+    </div>
+  </header>
   
-  {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
-  
-  {%- comment -%} 过滤掉草稿文章，只显示已发布的文章 {%- endcomment -%}
+  <main class="blog-list">
+    {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
+    
+      {%- comment -%} 显示所有文章，包括草稿 {%- endcomment -%}
+  {%- assign all_blogs = site.blogs -%}
   {%- assign published_blogs = site.blogs | where_exp: "blog", "blog.draft != true" -%}
+  {%- assign draft_blogs = site.blogs | where_exp: "blog", "blog.draft == true" -%}
   
-  {%- if published_blogs.size == 0 -%}
-    <div class="draft-notice">
-      <strong>暂无已发布的博客文章</strong><br>
-      目前所有文章都处于草稿状态。
+  {%- if all_blogs.size == 0 -%}
+    <div class="empty-state">
+      <div class="empty-state-icon">📝</div>
+      <h2 class="empty-state-title">暂无博客文章</h2>
+      <p class="empty-state-description">还没有任何博客文章</p>
     </div>
   {%- else -%}
-    {%- for blog in published_blogs -%}
-      <article class="blog-item">
-        <div class="blog-title">
-          <a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a>
-        </div>
-        
-        <div class="blog-meta">
-          {%- if blog.categories -%}
-            <div class="blog-categories">
-              <ul>
+    {%- comment -%} 显示已发布的文章 {%- endcomment -%}
+    {%- if published_blogs.size > 0 -%}
+      {%- for blog in published_blogs -%}
+        <article class="blog-item">
+          <header class="post-title">
+            <a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a>
+          </header>
+          
+          <div class="post-meta">
+            <div class="post-date">
+              <i class="icon-calendar"></i>
+              {{ blog.date | date: date_format }}
+            </div>
+            
+            {%- if blog.categories -%}
+              <div class="post-categories">
                 {%- for category in blog.categories -%}
-                  <li>{{ category }}</li>
+                  <a href="#" class="category-tag">{{ category }}</a>
                 {%- endfor -%}
-              </ul>
+              </div>
+            {%- endif -%}
+          </div>
+          
+          {%- if blog.tldr -%}
+            <div class="post-tldr">
+              <strong>TL;DR:</strong> <span>{{ blog.tldr }}</span>
             </div>
           {%- endif -%}
           
-          <div class="blog-date">
-            <i class="icon-calendar"></i>
-            {{ blog.date | date: date_format }}
-          </div>
+          {%- if blog.excerpt -%}
+            <div class="post-excerpt">
+              {{ blog.excerpt | strip_html | truncatewords: 60 }}
+            </div>
+          {%- endif -%}
+          
+          <a href="{{ blog.url | relative_url }}" class="read-more">
+            阅读全文
+          </a>
+        </article>
+      {%- endfor -%}
+    {%- endif -%}
+    
+    {%- comment -%} 显示草稿文章 {%- endcomment -%}
+    {%- if draft_blogs.size > 0 -%}
+      {%- if published_blogs.size > 0 -%}
+        <div class="draft-section-divider">
+          <h2>草稿文章</h2>
         </div>
-        
-        {%- if blog.tldr -%}
-          <div class="post-tldr">
-            <strong>TL;DR:</strong> {{ blog.tldr }}
+      {%- endif -%}
+      
+      {%- for blog in draft_blogs -%}
+        <article class="blog-item draft-item">
+          <div class="draft-badge">📝 草稿</div>
+          <header class="post-title">
+            <a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a>
+          </header>
+          
+          <div class="post-meta">
+            <div class="post-date">
+              <i class="icon-calendar"></i>
+              {{ blog.date | date: date_format }}
+            </div>
+            
+            {%- if blog.categories -%}
+              <div class="post-categories">
+                {%- for category in blog.categories -%}
+                  <a href="#" class="category-tag draft-category">{{ category }}</a>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
           </div>
-        {%- endif -%}
-        {%- if blog.excerpt -%}
-          <div class="blog-excerpt">
-            {{ blog.excerpt | strip_html | truncatewords: 50 }}
-          </div>
-        {%- endif -%}
-      </article>
-    {%- endfor -%}
+          
+          {%- if blog.tldr -%}
+            <div class="post-tldr draft-tldr">
+              <strong>TL;DR:</strong> <span>{{ blog.tldr }}</span>
+            </div>
+          {%- endif -%}
+          
+          {%- if blog.excerpt -%}
+            <div class="post-excerpt">
+              {{ blog.excerpt | strip_html | truncatewords: 60 }}
+            </div>
+          {%- endif -%}
+          
+          <a href="{{ blog.url | relative_url }}" class="read-more draft-read-more">
+            预览草稿
+          </a>
+        </article>
+      {%- endfor -%}
+    {%- endif -%}
   {%- endif -%}
+  </main>
 </div> 

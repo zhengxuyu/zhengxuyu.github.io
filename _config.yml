@@ -1,9 +1,17 @@
 title: Zhengxu Yu | Homepage
-author: ZhengxuYu
+author: Zhengxu Yu
 email: yuzxfred AT gmail.com
+url: "https://zhengxuyu.github.io" # 添加网站URL
 description: > # this means to ignore newlines until "show_exerpts:"
   Webpage of Zhengxu Yu (余正旭), yuzhengxu.
 show_excerpts: true # set to true to show excerpts on the homepage
+
+# SEO Configuration
+keywords: "Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research, Computer Science"
+google_analytics: # 添加Google Analytics ID（如果需要）
+  - "G-6CYR8K1ZK6"
+google_site_verification: # 添加Google Search Console验证码（如果需要）
+#  - "xxxxxxxxxxxxxxxxxxxxx"
 
 # Minima date format
 # refer to http://shopify.github.io/liquid/filters/date/ if you want to customize this
@@ -23,6 +31,8 @@ plainwhite:
       url: "/pages/CV"
     - title: Blog
       url: "/pages/blog"
+    - title: Search
+      url: "/search"
 
   # generate social links in footer
   social_links:
@@ -64,6 +74,7 @@ remote_theme: thelehhman/plainwhite-jekyll
 
 plugins:
   - jekyll-seo-tag
+  - jekyll-sitemap
 #  - jekyll-feed
 
 # Blog configuration
@@ -73,3 +84,20 @@ collections:
     permalink: /blog/:title/
     sort_by: date
     sort_order: reverse
+
+# Defaults for SEO
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Zhengxu Yu"
+      keywords: "research, machine learning, AI, computer science"
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+      author: "Zhengxu Yu"
+      keywords: "Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research"

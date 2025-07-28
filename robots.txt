@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://zhengxuyu.github.io/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /_drafts/
+Disallow: /vendor/
+Disallow: /Gemfile*
+Disallow: /README.md
+Disallow: /DEVELOPMENT.md
+Disallow: /BLOG_*.md
+Disallow: /build_*.sh
+Disallow: /serve_*.sh
+
+# Allow important files
+Allow: /assets/
+Allow: /_posts/
+Allow: /_blogs/
+Allow: /pages/ 

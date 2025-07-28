@@ -1,0 +1,83 @@
+<!-- Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Zhengxu Yu",
+  "alternateName": "余正旭",
+  "url": "https://zhengxuyu.github.io",
+  "image": "https://zhengxuyu.github.io/assets/ZhengxuYu.jpeg",
+  "sameAs": [
+    "https://github.com/ZhengxuYu",
+    "https://dblp.org/pid/00/1-0000-0002-6059-0300"
+  ],
+  "jobTitle": "Research Scientist",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Alibaba Cloud"
+  },
+  "alumniOf": {
+    "@type": "Organization",
+    "name": "Alibaba Group"
+  },
+  "knowsAbout": [
+    "Machine Learning",
+    "Artificial Intelligence",
+    "Computer Science",
+    "Research"
+  ],
+  "email": "yuzxfred@gmail.com"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Zhengxu Yu | Homepage",
+  "url": "https://zhengxuyu.github.io",
+  "description": "Webpage of Zhengxu Yu (余正旭), yuzhengxu.",
+  "author": {
+    "@type": "Person",
+    "name": "Zhengxu Yu"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Zhengxu Yu"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://zhengxuyu.github.io/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+{% if page.layout == 'post' or page.layout == 'blog-post' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ page.title }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ page.author | default: site.author }}"
+  },
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "dateModified": "{{ page.last_modified_at | date_to_xmlschema | default: page.date | date_to_xmlschema }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ site.title }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zhengxuyu.github.io/assets/ZhengxuYu.jpeg"
+    }
+  },
+  "description": "{{ page.description | default: page.excerpt | strip_html | truncate: 160 }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ site.url }}{{ page.url }}"
+  }
+}
+</script>
+{% endif %} 

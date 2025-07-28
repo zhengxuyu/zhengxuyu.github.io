@@ -1,0 +1,152 @@
+---
+layout: default
+title: "搜索 - Zhengxu Yu"
+description: "搜索Zhengxu Yu网站内容"
+keywords: "搜索, Zhengxu Yu, 余正旭"
+---
+
+<div class="search-container">
+  <h1>搜索网站内容</h1>
+  
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="输入关键词搜索..." onkeyup="searchContent()">
+    <button onclick="searchContent()">搜索</button>
+  </div>
+  
+  <div id="searchResults" class="search-results">
+    <!-- 搜索结果将在这里显示 -->
+  </div>
+</div>
+
+<style>
+.search-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.search-box button {
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.search-box button:hover {
+  background-color: #0056b3;
+}
+
+.search-results {
+  min-height: 200px;
+}
+
+.search-result-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.search-result-item h3 {
+  margin: 0 0 10px 0;
+  color: #007bff;
+}
+
+.search-result-item p {
+  margin: 0;
+  color: #666;
+}
+
+.search-result-item .url {
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px;
+}
+
+.no-results {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+</style>
+
+<script>
+// 网站内容数据（简化版）
+const siteContent = [
+  {
+    title: "Zhengxu Yu | Homepage",
+    url: "/",
+    content: "Webpage of Zhengxu Yu (余正旭), yuzhengxu. Alibaba Cloud, Alibaba Group"
+  },
+  {
+    title: "My Publications",
+    url: "/pages/publication",
+    content: "Research publications and papers by Zhengxu Yu"
+  },
+  {
+    title: "Curriculum Vitae",
+    url: "/pages/CV",
+    content: "CV and resume of Zhengxu Yu"
+  },
+  {
+    title: "Blog",
+    url: "/pages/blog",
+    content: "Blog posts and articles by Zhengxu Yu"
+  }
+];
+
+function searchContent() {
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const resultsContainer = document.getElementById('searchResults');
+  
+  if (searchTerm.length < 2) {
+    resultsContainer.innerHTML = '<div class="no-results">请输入至少2个字符开始搜索</div>';
+    return;
+  }
+  
+  const results = siteContent.filter(item => 
+    item.title.toLowerCase().includes(searchTerm) ||
+    item.content.toLowerCase().includes(searchTerm)
+  );
+  
+  if (results.length === 0) {
+    resultsContainer.innerHTML = '<div class="no-results">未找到相关结果</div>';
+    return;
+  }
+  
+  const resultsHTML = results.map(item => `
+    <div class="search-result-item">
+      <h3><a href="${item.url}">${item.title}</a></h3>
+      <p>${item.content}</p>
+      <div class="url">${window.location.origin}${item.url}</div>
+    </div>
+  `).join('');
+  
+  resultsContainer.innerHTML = resultsHTML;
+}
+
+// 支持回车键搜索
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    searchContent();
+  }
+});
+</script> 

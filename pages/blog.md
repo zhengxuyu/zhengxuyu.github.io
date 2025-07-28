@@ -32,9 +32,9 @@ Here you can find all my blog posts and thoughts on research, technology, and in
         </div>
         <div class="post">
             {%- if site.show_excerpts and post.excerpt -%}
-            {{ post.excerpt }}
+            {{ post.excerpt | markdownify }}
             {%- else -%}
-            {{ post.content | strip_html | truncatewords: 50 }}
+            {{ post.content | strip_html | truncatewords: 50 | markdownify }}
             {%- endif -%}
         </div>
     </li>

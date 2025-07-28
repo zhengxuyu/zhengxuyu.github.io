@@ -3,7 +3,8 @@ layout: blog
 title: Thoughts on Reinforcement Learning in Urban Applications
 date:   2024-12-19 10:00:00 +0000
 categories: Research, Reinforcement Learning
-excerpt: Reinforcement learning (RL) has shown tremendous potential in various domains, and urban applications are no exception. In this post, I'll share some thoughts on applying RL to urban traffic control and city management.
+excerpt: |
+  Reinforcement learning (RL) has shown tremendous potential in various domains, and urban applications are no exception. In this post, I'll share some thoughts on applying RL to urban traffic control and city management.
 ---
 
 ## Introduction

@@ -2,6 +2,49 @@
 layout: default
 ---
 
+<style>
+/* 博客布局宽度控制 */
+@media screen and (min-width: 769px) {
+  .content {
+    max-width: 70% !important;
+    width: 70% !important;
+    margin-left: 220px !important;
+    padding-right: 50px !important;
+    box-sizing: border-box !important;
+  }
+  
+  .post {
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+  }
+  
+  .post img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  .post pre {
+    overflow-x: auto !important;
+    max-width: 100% !important;
+  }
+  
+  .post code {
+    word-break: break-all !important;
+  }
+}
+
+/* 移动端保持原有布局 */
+@media screen and (max-width: 768px) {
+  .content {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+</style>
+
 <article class="post">
   <header class="post-header">
     <h1 class="post-title">{{ page.title | escape }}</h1>

@@ -3,7 +3,8 @@ layout: blog
 title: Welcome to My Blog
 date:   2024-12-19 00:00:00 +0000
 categories: General
-excerpt: Welcome to my personal blog! Here I will share my thoughts on research, technology, and various topics related to my work in reinforcement learning, stable learning, and causal learning.
+excerpt: |
+  Welcome to my personal blog! Here I will share my thoughts on research, technology, and various topics related to my work in reinforcement learning, stable learning, and causal learning.
 ---
 
 Welcome to my personal blog! Here I will share my thoughts on research, technology, and various topics related to my work in reinforcement learning, stable learning, and causal learning.

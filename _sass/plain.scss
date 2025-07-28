@@ -67,7 +67,7 @@ main {
 
   .content {
     @media screen and (min-width: $mobileW + 1) {
-      max-width: calc(100% - #{$leftWidth});
+      max-width: calc(100% - 220px);
       margin-left: $leftWidth;
       width: 100%;
     }
@@ -237,6 +237,20 @@ main {
   h5,
   h6 {
     font-family: Raleway, sans-serif;
+  }
+  
+  // 确保博客列表中的内容正确显示
+  p {
+    margin: 0.5em 0;
+  }
+  
+  ul, ol {
+    margin: 0.5em 0;
+    padding-left: 1.5em;
+  }
+  
+  li {
+    margin: 0.2em 0;
   }
 }
 

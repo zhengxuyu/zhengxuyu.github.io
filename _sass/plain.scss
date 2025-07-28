@@ -258,7 +258,11 @@ main {
   }
 }
 
-#posts-label {
+#posts-label,
+#about-label,
+#works-label,
+#blog-label,
+#news-label {
   border-bottom: 1px solid #eee;
   font-size: 15px;
   color: #777;

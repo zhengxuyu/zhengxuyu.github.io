@@ -9,8 +9,17 @@ layout: default
 {{ content }}
 
 <!-- 个人介绍区域 -->
-{% capture about_me_content %}{% include about-me.md %}{% endcapture %}
-{{ about_me_content | markdownify }}
+<ul class="posts">
+    <li>
+        <h1 id="about-label">About Me</h1>
+    </li>
+    <li>
+        <div class="post">
+            {% capture about_me_content %}{% include about-me.md %}{% endcapture %}
+            {{ about_me_content | markdownify }}
+        </div>
+    </li>
+</ul>
 
 <!-- 分隔符 -->
 <hr class="section-divider">

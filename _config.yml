@@ -24,6 +24,7 @@ plainwhite:
     Alibaba Group
   date_format: "%b %-d, %Y"
   sitemap: true # set to true to generate sitemap.xml content
+  email_display: "yuzxfred AT gmail.com"
   navigation:
     - title: My Works
       url: "/pages/works"

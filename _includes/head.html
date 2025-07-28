@@ -4,17 +4,34 @@
 
 <!-- SEO Meta Tags -->
 <meta name="description" content="{{ page.description | default: site.description | strip_html | truncate: 160 }}">
-<meta name="keywords" content="{{ page.keywords | default: 'Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research' }}">
+<meta name="keywords" content="{{ page.keywords | default: 'Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research, 机器学习, 人工智能, 计算机科学' }}">
 <meta name="author" content="{{ site.author }}">
 <meta name="robots" content="index, follow">
+<meta name="language" content="zh-CN">
+<meta name="geo.region" content="CN">
+<meta name="geo.placename" content="China">
+<meta name="distribution" content="global">
+<meta name="rating" content="general">
+<meta name="revisit-after" content="7 days">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
+<meta property="og:type" content="{% if page.layout == 'post' or page.layout == 'blog-post' %}article{% else %}website{% endif %}">
 <meta property="og:url" content="{{ site.url }}{{ page.url }}">
 <meta property="og:title" content="{{ page.title | default: site.title }}">
 <meta property="og:description" content="{{ page.description | default: site.description | strip_html | truncate: 160 }}">
 <meta property="og:image" content="{{ site.url }}/assets/ZhengxuYu.jpeg">
 <meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+{% if page.layout == 'post' or page.layout == 'blog-post' %}
+<meta property="article:author" content="{{ site.author }}">
+<meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+<meta property="article:modified_time" content="{{ page.last_modified_at | date_to_xmlschema | default: page.date | date_to_xmlschema }}">
+<meta property="article:section" content="Research">
+<meta property="article:tag" content="{{ page.keywords | default: 'Machine Learning, AI, Research' }}">
+{% endif %}
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
@@ -22,9 +39,14 @@
 <meta property="twitter:title" content="{{ page.title | default: site.title }}">
 <meta property="twitter:description" content="{{ page.description | default: site.description | strip_html | truncate: 160 }}">
 <meta property="twitter:image" content="{{ site.url }}/assets/ZhengxuYu.jpeg">
+<meta property="twitter:site" content="@{{ site.twitter_username | default: 'ZhengxuYu' }}">
+<meta property="twitter:creator" content="@{{ site.twitter_username | default: 'ZhengxuYu' }}">
 
 <!-- Canonical URL -->
 <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+
+<!-- RSS Feed -->
+<link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS Feed" href="{{ site.url }}/feed.xml">
 
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -50,5 +72,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
 <link rel="stylesheet" href="{{ "/assets/css/custom-layout.css" | relative_url }}">
+
+<!-- Include structured data -->
+{% include structured-data.html %}
+{% include breadcrumb-structured-data.html %}
 
 <title>{{ page.title | default: site.title }}</title>

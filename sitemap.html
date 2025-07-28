@@ -1,0 +1,48 @@
+---
+layout: page
+title: "网站地图"
+permalink: /sitemap/
+---
+
+# 网站地图
+
+## 主要页面
+- [首页](/)
+- [我的工作](/pages/works)
+- [我的论文](/pages/publication)
+- [个人简历](/pages/CV)
+- [博客](/pages/blog)
+- [搜索](/search)
+
+## 博客文章
+
+### 2023年
+{% for post in site.posts %}
+{% if post.date.year == 2023 %}
+- [{{ post.title }}]({{ post.url }}) - {{ post.date | date: "%Y-%m-%d" }}
+{% endif %}
+{% endfor %}
+
+### 2021年
+{% for post in site.posts %}
+{% if post.date.year == 2021 %}
+- [{{ post.title }}]({{ post.url }}) - {{ post.date | date: "%Y-%m-%d" }}
+{% endif %}
+{% endfor %}
+
+### 2020年
+{% for post in site.posts %}
+{% if post.date.year == 2020 %}
+- [{{ post.title }}]({{ post.url }}) - {{ post.date | date: "%Y-%m-%d" }}
+{% endif %}
+{% endfor %}
+
+## 博客集合
+{% for post in site.blogs %}
+- [{{ post.title }}]({{ post.url }}) - {{ post.date | date: "%Y-%m-%d" }}
+{% endfor %}
+
+## 外部链接
+- [GitHub](https://github.com/ZhengxuYu)
+- [DBLP](https://dblp.org/pid/00/1-0000-0002-6059-0300)
+- [ORCID](https://orcid.org/0000-0002-6059-0300) 

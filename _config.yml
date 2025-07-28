@@ -7,11 +7,25 @@ description: > # this means to ignore newlines until "show_exerpts:"
 show_excerpts: true # set to true to show excerpts on the homepage
 
 # SEO Configuration
-keywords: "Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research, Computer Science"
+keywords: "Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research, Computer Science, 机器学习, 人工智能, 计算机科学"
 google_analytics: # 添加Google Analytics ID（如果需要）
   - "G-6CYR8K1ZK6"
 google_site_verification: # 添加Google Search Console验证码（如果需要）
 #  - "xxxxxxxxxxxxxxxxxxxxx"
+
+# Enhanced SEO Settings
+lang: zh-CN
+timezone: Asia/Shanghai
+encoding: utf-8
+markdown: kramdown
+highlighter: rouge
+permalink: /:year/:month/:day/:title/
+paginate: 10
+paginate_path: "/blog/page:num/"
+
+# Social Media Optimization
+twitter_username: ZhengxuYu
+github_username: ZhengxuYu
 
 # Minima date format
 # refer to http://shopify.github.io/liquid/filters/date/ if you want to customize this
@@ -36,6 +50,8 @@ plainwhite:
       url: "/pages/blog"
     - title: Search
       url: "/search"
+    - title: Sitemap
+      url: "/sitemap"
 
   # generate social links in footer
   social_links:

@@ -1,3 +1,44 @@
+# IDE files
 .idea
+.vscode
+
+# Jekyll build files
 _site
 .jekyll-cache
+.jekyll-metadata
+
+# Bundle files
+.bundle/
+vendor/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment files
+.env
+.env.local
+
+# Node modules (if using any Node.js tools)
+node_modules/
+
+# Ruby gems (if not using bundle)
+*.gem
+
+# Backup files
+*.bak
+*.backup
+
+# OS generated files
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db

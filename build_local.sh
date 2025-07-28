@@ -4,6 +4,9 @@
 
 echo "开始构建Jekyll网站..."
 
+# 设置 Homebrew Ruby 的 PATH
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+
 # 检查Docker是否可用
 if command -v docker &> /dev/null; then
     echo "使用Docker构建..."

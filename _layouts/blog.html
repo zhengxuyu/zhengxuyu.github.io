@@ -6,11 +6,32 @@ layout: default
 /* 博客布局宽度控制 */
 @media screen and (min-width: 769px) {
   .content {
-    max-width: 70% !important;
-    width: 70% !important;
-    margin-left: 220px !important;
-    padding-right: 50px !important;
+    max-width: 65% !important;
+    width: 65% !important;
+    margin-left: 240px !important;
+    padding-right: 60px !important;
     box-sizing: border-box !important;
+    position: relative !important;
+  }
+  
+  /* 添加左侧分割线 */
+  .content::before {
+    content: '';
+    position: absolute;
+    left: -15px;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: linear-gradient(to bottom, 
+      transparent 0%, 
+      #c0c0c0 20%, 
+      #a0a0a0 50%, 
+      #c0c0c0 80%, 
+      transparent 100%);
+    border-radius: 1px;
+    box-shadow: 
+      0 0 8px rgba(0,0,0,0.1),
+      inset 0 0 2px rgba(255,255,255,0.3);
   }
   
   .post {
@@ -41,6 +62,10 @@ layout: default
     width: 100% !important;
     margin-left: 0 !important;
     padding-right: 0 !important;
+  }
+  
+  .content::before {
+    display: none !important;
   }
 }
 
@@ -113,8 +138,9 @@ layout: default
 </style>
 
 <div class="blog-list">
-  <h1>博客文章</h1>
-  
+  <h1>Zhengxu's Blog</h1>
+  <p>Towards a better understanding of the world.</p>
+  <p>Here you can find all my blog posts and thoughts on research, technology, and industry insights.</p>
   {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
   
   {%- for blog in site.blogs -%}

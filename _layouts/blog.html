@@ -43,33 +43,108 @@ layout: default
     padding-right: 0 !important;
   }
 }
+
+/* 博客列表样式 */
+.blog-list {
+  margin-top: 2rem;
+}
+
+.blog-item {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.blog-item:last-child {
+  border-bottom: none;
+}
+
+.blog-title {
+  margin-bottom: 0.5rem;
+}
+
+.blog-title a {
+  color: #333;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.blog-title a:hover {
+  color: #007acc;
+}
+
+.blog-meta {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.blog-categories {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.blog-categories ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: inline;
+}
+
+.blog-categories li {
+  display: inline;
+  background: #f0f0f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.blog-date {
+  display: inline-block;
+}
+
+.blog-excerpt {
+  color: #555;
+  line-height: 1.6;
+  margin-top: 1rem;
+}
 </style>
 
-<article class="post">
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title | escape }}</h1>
-    <p class="post-meta">
-      {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
-      <time datetime="{{ page.date | date_to_xmlschema }}">
-        {%- assign date_english = page.date | date: date_format -%}
-        <i class="icon-calendar"></i>
-        {{ date_english }}
-      </time>
-      {%- if page.categories -%}
-        <span class="post-categories">
-          {%- for category in page.categories -%}
-            <span class="post-category">{{ category }}</span>
-          {%- endfor -%}
-        </span>
+<div class="blog-list">
+  <h1>博客文章</h1>
+  
+  {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
+  
+  {%- for blog in site.blogs -%}
+    <article class="blog-item">
+      <div class="blog-title">
+        <a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a>
+      </div>
+      
+      <div class="blog-meta">
+        {%- if blog.categories -%}
+          <div class="blog-categories">
+            <ul>
+              {%- for category in blog.categories -%}
+                <li>{{ category }}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+        
+        <div class="blog-date">
+          <i class="icon-calendar"></i>
+          {{ blog.date | date: date_format }}
+        </div>
+      </div>
+      
+      {%- if blog.excerpt -%}
+        <div class="blog-excerpt">
+          {{ blog.excerpt | strip_html | truncatewords: 50 }}
+        </div>
       {%- endif -%}
-    </p>
-  </header>
-
-  <div class="post-content">
-    {{ content }}
-  </div>
-
-  <div class="post-navigation">
-    <a href="/pages/blog/" class="back-to-blog">← Back to Blog</a>
-  </div>
-</article> 
+    </article>
+  {%- endfor -%}
+</div> 

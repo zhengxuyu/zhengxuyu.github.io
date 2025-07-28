@@ -1,5 +1,5 @@
 ---
-layout: blog
+layout: blog-post
 title: Thoughts on Reinforcement Learning in Urban Applications
 date:   2024-12-19 10:00:00 +0000
 categories: Research, Reinforcement Learning

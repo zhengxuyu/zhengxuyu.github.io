@@ -1,5 +1,5 @@
 ---
-layout: blog
+layout: blog-post
 title: Welcome to My Blog
 date:   2024-12-19 00:00:00 +0000
 categories: General

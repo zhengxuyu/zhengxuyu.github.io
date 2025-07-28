@@ -1,44 +1,7 @@
 ---
-layout: post
+layout: blog
 title: Blog
-date:   2024-12-19 00:00:00 +0000
+permalink: /pages/blog/
 ---
 
-# Blog Posts
-
-Here you can find all my blog posts and thoughts on research, technology, and industry insights:
-
-{%- if site.blogs.size > 0 -%}
-<ul class="posts">
-    {%- for post in site.blogs -%}
-    <li>
-        {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
-        <a class="post-link" href="{{ post.url | relative_url }}">
-            <h2 class="post-title">{{ post.title | escape }}</h2>
-        </a>
-        <div class="post-meta">
-            {%- if post.categories -%}
-            <ul class="post-categories">
-                {%- for tag in post.categories -%}
-                <li>{{ tag }}</li>
-                {%- endfor -%}
-            </ul>
-            {%- endif -%}
-            <div class="post-date">
-                <i class="icon-calendar"></i>
-                {{ post.date | date: date_format }}
-            </div>
-        </div>
-        <div class="post">
-            {%- if site.show_excerpts and post.excerpt -%}
-            {{ post.excerpt | markdownify }}
-            {%- else -%}
-            {{ post.content | strip_html | truncatewords: 50 | markdownify }}
-            {%- endif -%}
-        </div>
-    </li>
-    {%- endfor -%}
-</ul>
-{%- else -%}
-<p>No blog posts available yet.</p>
-{%- endif -%} 
+<!-- 这个页面会使用blog.html布局来显示所有博客文章 --> 

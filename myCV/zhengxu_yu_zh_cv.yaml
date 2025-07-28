@@ -10,20 +10,21 @@ cv:
       username: https://github.com/zhengxuyu
   sections:
     intro:
-      - I am currently a AI Algorithm Expert at Alibaba Group. I obtained my Ph.D. from Zhejiang University in 2021, advised by Prof. Deng Cai and Prof. Xiaofei He. Previously, I obtained my Master’s degree from University of Surrey, advised by Prof. H Lilian Tang.
-      - My research interests focus on Reinforcement Learning, Large language Model, Computer Vision to achieving embodied AGI. My current research goal is to exploring LLM reasoning capability and forming LLM agent to solve general real-world tasks.
-      - Previously, I has published eleven papers on top-tier peer-reviewed Artificial Intelligence international conferences and journals.
+      - 现为阿里巴巴集团的算法专家，博士毕业于浙江大学计算机科学与技术学院，师从蔡登和何晓飞教授。在此之前，我于英国萨里大学获得硕士学位，导师为H. Lilian Tang教授。
+      - His research interests focus on Reinforcement Learning, Machine Learning and Artificial General Intelligence, particularly in AI reasoning and decision-making models, alignment of AI decisions with human cognition, and stochastic modeling in dynamic systems.
+      - His current research goal is to develop Artificial General Intelligence models that can reason, learn, and make decisions in a human-like manner.
+      - Zhengxu has published 11 research articles in top-tier international conferences and journals in the field of Artificial Intelligence.
     experience:
       - company: Alibaba Group
-        position: Algorithm Expert
+        position: Senior Algorithm Researcher
         location: Hangzhou, China
         start_date: 2021-04
         end_date: present
         highlights:
-          - Developing Reinforcement Learning based self-improvement algorithms to train large language models (LLMs) to achieve superhuman performance in various tasks. Achieved state-of-the-art performance in several benchmarks like AIME MATH benchmark within same LLM parameter scale.
-          - Appling post-trained LLM models to build LLM Agent, and apply in real-world applications, such as Optimization Problem in Operations Research. 
-          - Leading cross-functional teams to deliver algorithm and applications to client. 
-          - Mentoring research interns and junior researchers.
+          - Developed Reinforcement Learning-based algorithms within the LLM post-training paradigm, focusing on reasoning and alignment tasks. Proposed a novel self-play approach and multiple training algorithms, enhancing the model's reasoning capabilities across several benchmarks.
+          - Applied post-trained LLM models to real-world LLM agent applications, such as automatic resource allocation and device operation. 
+          - Developed sequential reasoning and forecasting methods for temporal dynamic systems, including urban traffic systems. 
+          - Led cross-functional teams to deliver AI solutions and mentored research interns and junior researchers.
       - company: Damo Academy, Alibaba Group
         position: Research Intern
         location: Hangzhou, China
@@ -58,7 +59,21 @@ cv:
       - label: Languages & Technologies
         details: Python, PyTorch, Pandas, LangChain, vllm, ray, deepspeed
 
-    selected publications:
+    publications:
+      - title: Optimizing traffic efficiency via a reinforcement learning approach based on time allocation
+        authors:
+          - Cao, X.
+          - Jin, Z.
+          - '**Yu, Z.**'
+          - Hua, X.
+          - Hu, Y.
+          - Qian Wei.
+          - Zhu K.
+          - Cai D.
+          - He, X.
+        journal: International Journal of Machine Learning and Cybernetics
+        doi: 10.1007/s13042-023-01838-1
+        date: 2023
       - title: Progressive Transfer Learning
         authors:
           - '**Yu, Z.**'
@@ -71,6 +86,29 @@ cv:
         journal: IEEE Transactions on Image Processing (TIP)
         doi: 10.1109/TIP.2022.3141258
         date: 2022
+      - title: 'Lidar point cloud guided monocular 3D object detection'
+        authors:
+          - Peng,L.
+          - Liu,F.
+          - '**Yu,Z.**'
+          - Yan,S.
+          - Deng,D.
+          - Yang,Z.
+          - Liu,H.
+          - Cai,D.
+        journal: 'ECCV'
+        doi: 10.1007/978-3-031-19769-7-8
+        date: '2022'
+      - title: 'COP: customized correlation-based filter level pruning method for deep CNN compression'
+        authors:
+          - Wang, W.
+          - '**Yu, Z.**'
+          - Fu, C.
+          - Cai, D.
+          - He, X
+        journal: Neurocomputing
+        doi: 10.1109/TIP.2022.3141258
+        date: 2021
       - title: Urban Traffic Light Control via Active Multi-agent Communication and Supply-Demand Modeling
         authors:
           - 'Guo, X.+'
@@ -85,6 +123,18 @@ cv:
         journal: IEEE Transactions on Knowledge and Data Engineering
         doi: 10.1109/TKDE.2021.3130258
         date: 2021
+      - title: Apparel-invariant Feature Learning for Person Re-identification
+        authors:
+          - '**Yu, Z.**'
+          - Zhao, Y.
+          - Hong, B.
+          - Jin, Z.
+          - Huang, J.
+          - Cai, D.
+          - Hua, X.S.
+        journal: IEEE Transactions on Image Processing (TIP)
+        doi: 10.1109/TMM.2021.3119133
+        date: 2021
       - title: 'MaCAR: Urban Traffic Light Control via Active Multi-agent Communication and Action Rectification'
         authors:
           - '**Yu, Z.**'
@@ -97,6 +147,31 @@ cv:
           - Hua, X.S.
         journal: IJCAI
         doi: 10.24963/IJCAI.2020/345
+        date: 2020
+      - title: 'PI-RCNN: An efficient multi-sensor 3D object detector with point-based attentive cont-conv fusion module'
+        authors:
+          - Xie, L.
+          - Xiang, C.
+          - '**Yu, Z.**'
+          - Xu, G.
+          - Yang, Z.
+          - Cai, D.
+          - He, X.
+        journal: AAAI
+        date: 2020
+        doi: 10.1609/aaai.v34i07.6933
+      - title: 'SIF: Self-Inspirited Feature Learning for Person Re-Identification'
+        authors:
+          - Wei, L.
+          - Wei, Z.
+          - Jin, Z.
+          - '**Yu, Z.**'
+          - Huang, J.
+          - Cai, D.
+          - He, X.
+          - Hua, X.S.
+        journal: IEEE Transactions on Image Processing (TIP)
+        doi: 10.1109/TIP.2020.2975712
         date: 2020
       - title: Progressive Transfer Learning for Person Re-identification
         authors:
@@ -111,6 +186,20 @@ cv:
         journal: IJCAI-2019
         doi: 10.24963/ijcai.2019/586
         date: 2019
+      - title: Dual Graph for Traffic Forecasting
+        authors:
+          - 'Wei, L.+'
+          - '**Yu, Z.+**'
+          - Jin, Z.
+          - Xie, L.
+          - Huang, J.
+          - Cai, D.
+          - He, X.
+          - Hua, X.S.
+          - '(**+**Co-first author)'
+        journal: IEEE ACCESS
+        date: 2019
+        doi: 10.1109/ACCESS.2019.2958380
 
 design:
   theme: engineeringresumes

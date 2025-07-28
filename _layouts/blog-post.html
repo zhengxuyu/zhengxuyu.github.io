@@ -60,6 +60,19 @@ layout: default
         </span>
       {%- endif -%}
     </p>
+    {%- if page.tags -%}
+      <div class="post-tags">
+        {%- for tag in page.tags -%}
+          <span class="post-tag">{{ tag }}</span>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+    {%- if page.tldr -%}
+      <div class="post-tldr">
+        <h3>TL;DR</h3>
+        <p>{{ page.tldr }}</p>
+      </div>
+    {%- endif -%}
   </header>
 
   <div class="post-content">

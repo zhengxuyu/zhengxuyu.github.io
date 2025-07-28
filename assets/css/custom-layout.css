@@ -3,15 +3,16 @@
 /* 桌面端菜单栏宽度设置 */
 @media screen and (min-width: 769px) {
   .about {
-    width: 25% !important;
+    width: 10% !important;
     min-width: auto !important;
     max-width: none !important;
+    text-align: center !important;
   }
   
   .content {
-    margin-left: 25% !important;
-    max-width: 75% !important;
-    width: 75% !important;
+    margin-left: 10% !important;
+    max-width: 90% !important;
+    width: 90% !important;
   }
 }
 
@@ -35,6 +36,8 @@
   width: 100% !important;
   max-width: 90% !important;
   margin: 0 auto !important;
+  margin-left: 3% !important;
+  text-align: center !important;
 }
 
 /* 博客页面特殊适配 */

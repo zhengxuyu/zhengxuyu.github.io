@@ -8,9 +8,9 @@
       <section class="about">
         <a href="/"><img src="{{"/assets/ZhengxuYu.jpeg" | relative_url }}" alt="{{ site.plainwhite.name }}"></a>
         <h2 id="title">
-          <a href="/">{{ site.plainwhite.name }}</a>
+          <a href="/" style="width: 100%; font-size: 0.9em;">{{ site.plainwhite.name }}</a>
         </h2>
-        <p class="tagline" align="center" style="width:280px;">{{ site.plainwhite.tagline }}</p>
+        <p class="tagline" align="center" style="width:100%; font-size: 0.9em;">{{ site.plainwhite.tagline }}</p>
         <ul class="social">
           {%- if site.plainwhite.social_links.github -%}
             <a href="https://github.com/{{ site.plainwhite.social_links.github }}">
@@ -46,13 +46,13 @@
             <ul>
               {% for link in site.plainwhite.navigation %}
                 <li>
-                  <a href="{{ link.url }}">{{ link.title }}</a>
+                  <a href="{{ link.url }}" style="font-size: 0.9em;">{{ link.title }}</a>
                 </li>
               {% endfor %}
             </ul>
           </nav>
         {%- endif -%}
-        <p align="center" style="width:280px;">Contact: yuzxfred AT gmail.com</p>
+        <p align="center" style="width:100%; font-size: 0.9em;">Email: yuzxfred AT gmail.com</p>
         <p>&copy;
           {{ "now" | date: "%Y" }}</p>
       </section>

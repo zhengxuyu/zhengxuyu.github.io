@@ -104,6 +104,11 @@ layout: default
             </div>
         </div>
         <div class="post">
+            {%- if post.tldr -%}
+            <div class="post-tldr">
+                <strong>TL;DR:</strong> {{ post.tldr }}
+            </div>
+            {%- endif -%}
             {%- if site.show_excerpts -%}
             {{ post.excerpt }}
             {%- endif -%}
@@ -141,6 +146,11 @@ layout: default
             </div>
         </div>
         <div class="post">
+            {%- if post.tldr -%}
+            <div class="post-tldr">
+                <strong>TL;DR:</strong> {{ post.tldr }}
+            </div>
+            {%- endif -%}
             {%- if site.show_excerpts -%}
             {{ post.excerpt }}
             {%- endif -%}
@@ -149,3 +159,6 @@ layout: default
     {%- endfor -%}
 </ul>
 {%- endif -%}
+
+<!-- 页面结束分隔符 -->
+<hr class="section-divider">

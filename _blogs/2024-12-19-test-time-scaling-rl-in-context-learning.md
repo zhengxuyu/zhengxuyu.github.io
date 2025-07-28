@@ -4,6 +4,8 @@ title: "Test-Time Scaling via Reinforcement Learning Based In-Context Learning"
 date: 19/12/2024 14:30:00 +0000
 categories: PaperReading
 tags: [Reinforcement Learning, In-Context Learning, Test-Time Adaptation, Large Language Models]
+tldr: "本文提出了一种结合强化学习和上下文学习的新方法，用于大语言模型的动态测试时缩放。该方法能够根据计算资源和任务需求自动调整模型行为，在保持性能的同时提高效率。"
+
 ---
 
 ## Introduction

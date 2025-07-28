@@ -14,6 +14,19 @@ layout: default
     </ul>
     <div class="post-date"><i class="icon-calendar"></i>{{ page.date | date: date_format }}</div>
   </div>
+  {%- if page.tags -%}
+    <div class="post-tags">
+      {%- for tag in page.tags -%}
+        <span class="post-tag">{{ tag }}</span>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+  {%- if page.tldr -%}
+    <div class="post-tldr">
+      <h3>TL;DR</h3>
+      <p>{{ page.tldr }}</p>
+    </div>
+  {%- endif -%}
   <div class="post">
     {{ content }}
   </div>

@@ -27,7 +27,7 @@ layout: default
         <h1 id="posts-label">News</h1>
     </li>
 
-    {%- for post in site.posts -%}
+    {%- for post in site.posts limit:5 -%}
     <li>
         {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
         <a class="post-link" href="{{ post.url | relative_url }}">
@@ -56,4 +56,38 @@ layout: default
 <!-- <p class="feed-subscribe"><svg class="svg-icon orange">
       <use xlink:href="{{ '/assets/minima-social-icons.svg#rss' | relative_url }}"></use>
   </svg><a href="{{ "/feed.xml" | relative_url }}">Subscribe</a></p> -->
+{%- endif -%}
+
+{%- if site.blogs.size > 0 -%}
+<ul class="posts">
+    <li>
+        <h1 id="blog-label">Latest Blog Posts</h1>
+        <p><a href="/pages/blog">View all blog posts →</a></p>
+    </li>
+
+    {%- for post in site.blogs limit:2 -%}
+    <li>
+        {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
+        <a class="post-link" href="{{ post.url | relative_url }}">
+            <h2 class="post-title">{{ post.title | escape }}</h2>
+        </a>
+        <div class="post-meta">
+            <ul class="post-categories">
+                {%- for tag in post.categories -%}
+                <li>{{ tag }}</li>
+                {%- endfor -%}
+            </ul>
+            <div class="post-date">
+                <i class="icon-calendar"></i>
+                {{ post.date | date: date_format }}
+            </div>
+        </div>
+        <div class="post">
+            {%- if site.show_excerpts -%}
+            {{ post.excerpt }}
+            {%- endif -%}
+        </div>
+    </li>
+    {%- endfor -%}
+</ul>
 {%- endif -%}

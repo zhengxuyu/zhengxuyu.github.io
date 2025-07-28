@@ -6,7 +6,7 @@ $linkColor: #0a59b0;
 $mobileW: 768px;
 $smallMobileW: 480px;
 $bigScreenW: 1600px;
-$leftWidth: 220px;
+$leftWidth: 25%; // 改为百分比宽度
 
 *,
 *:before,
@@ -67,9 +67,9 @@ main {
 
   .content {
     @media screen and (min-width: $mobileW + 1) {
-      max-width: calc(100% - 220px);
+      max-width: 75%;
       margin-left: $leftWidth;
-      width: 100%;
+      width: 75%;
     }
   }
   .about {
@@ -84,7 +84,7 @@ main {
     @media screen and (min-width: $mobileW + 1) {
       position: fixed;
     }
-    min-width: $leftWidth;
+    min-width: auto;
     justify-content: center;
     flex-direction: column;
     align-items: center;
@@ -125,7 +125,7 @@ main {
 }
 
 .navigation {
-  width: 80%;
+  width: 90%;
 
   ul {
     list-style-type: none;

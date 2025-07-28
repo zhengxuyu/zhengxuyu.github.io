@@ -1,0 +1,49 @@
+/* 自定义布局样式 - 菜单栏宽度比例设置 */
+
+/* 桌面端菜单栏宽度设置 */
+@media screen and (min-width: 769px) {
+  .about {
+    width: 25% !important;
+    min-width: auto !important;
+    max-width: none !important;
+  }
+  
+  .content {
+    margin-left: 25% !important;
+    max-width: 75% !important;
+    width: 75% !important;
+  }
+}
+
+/* 移动端保持原有布局 */
+@media screen and (max-width: 768px) {
+  .about {
+    width: 100% !important;
+    min-width: auto !important;
+    max-width: none !important;
+  }
+  
+  .content {
+    margin-left: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* 确保导航菜单在比例宽度下正确显示 */
+.navigation {
+  width: 100% !important;
+  max-width: 90% !important;
+  margin: 0 auto !important;
+}
+
+/* 博客页面特殊适配 */
+.blog-list {
+  margin-top: 2rem;
+  padding-right: 2rem;
+}
+
+/* 确保内容不会与菜单栏重叠 */
+main {
+  overflow-x: hidden;
+} 

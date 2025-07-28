@@ -46,4 +46,49 @@
 /* 确保内容不会与菜单栏重叠 */
 main {
   overflow-x: hidden;
+}
+
+/* 区域分隔符样式 */
+.section-divider {
+  border: none;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #007acc, transparent);
+  margin: 3rem 0;
+  opacity: 0.6;
+}
+
+/* 区域标题样式 */
+#AboutMe, #works-label, #blog-label, #news-label {
+  color: #2c3e50;
+  border-bottom: 2px solid #007acc;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* My Works 区域特殊样式 */
+#works-label + p {
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  color: #666;
+}
+
+/* 工作项目样式 */
+.posts li .post-title {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.posts li .post p {
+  margin: 0.3rem 0;
+  line-height: 1.4;
+}
+
+.posts li .post strong {
+  color: #007acc;
+}
+
+.posts li .post em {
+  color: #666;
+  font-size: 0.9rem;
 } 

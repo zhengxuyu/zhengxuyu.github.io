@@ -8,9 +8,10 @@ layout: default
 
 {{ content }}
 
+<!-- 个人介绍区域 -->
 <ul class="posts">
     <li>
-        <h1 id="AboutMe">Zhengxu Yu (余正旭)</h1>
+        <h1 id="AboutMe">About Me</h1>
     </li>
     <div class="post">
         <p>* Zhengxu Yu is currently a Senior Algorithm Engineer in the City Brain Lab., DAMO Academy, Alibaba Group.
@@ -20,14 +21,72 @@ layout: default
     </div>
 </ul>
 
+<!-- 分隔符 -->
+<hr class="section-divider">
 
-{%- if site.posts.size > 0 -%}
+<!-- My Works 区域 -->
 <ul class="posts">
     <li>
-        <h1 id="posts-label">News</h1>
+        <h1 id="works-label">My Works</h1>
+        <p><a href="/pages/publication">View all publications →</a></p>
+    </li>
+    
+    <!-- 精选的3-4个代表性工作 -->
+    <li>
+        <h2 class="post-title">Progressive Transfer Learning</h2>
+        <div class="post-meta">
+            <div class="post-date">
+                <i class="icon-calendar"></i>
+                2022
+            </div>
+        </div>
+        <div class="post">
+            <p><strong>Zhengxu Yu</strong>, Zhongming Jin, Long Wei, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua</p>
+            <p><em>IEEE Trans. Image Processing (TIP), vol. 31, pp. 1340-1348, 2022</em></p>
+        </div>
+    </li>
+    
+    <li>
+        <h2 class="post-title">Urban Traffic Light Control via Active Multi-agent Communication and Supply-Demand Modeling</h2>
+        <div class="post-meta">
+            <div class="post-date">
+                <i class="icon-calendar"></i>
+                2021
+            </div>
+        </div>
+        <div class="post">
+            <p>Xing Guo*, <strong>Zhengxu Yu</strong>, Pengfei Wang, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-shen Hua (* Co-first author)</p>
+            <p><em>IEEE Transactions on Knowledge and Data Engineering</em></p>
+        </div>
+    </li>
+    
+    <li>
+        <h2 class="post-title">MaCAR: Urban Traffic Light Control via Active Multi-agent Communication and Action Rectification</h2>
+        <div class="post-meta">
+            <div class="post-date">
+                <i class="icon-calendar"></i>
+                2020
+            </div>
+        </div>
+        <div class="post">
+            <p><strong>Zhengxu Yu</strong>, Shuxian Liang, Long Wei, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua</p>
+            <p><em>Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence (IJCAI-PRICAI'2020)</em></p>
+        </div>
+    </li>
+</ul>
+
+<!-- 分隔符 -->
+<hr class="section-divider">
+
+<!-- Blogs 区域 -->
+{%- if site.blogs.size > 0 -%}
+<ul class="posts">
+    <li>
+        <h1 id="blog-label">Blogs</h1>
+        <p><a href="/pages/blog">View all blog posts →</a></p>
     </li>
 
-    {%- for post in site.posts limit:5 -%}
+    {%- for post in site.blogs limit:3 -%}
     <li>
         {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
         <a class="post-link" href="{{ post.url | relative_url }}">
@@ -52,23 +111,19 @@ layout: default
     </li>
     {%- endfor -%}
 </ul>
-
-<!-- <p class="feed-subscribe"><svg class="svg-icon orange">
-      <use xlink:href="{{ '/assets/minima-social-icons.svg#rss' | relative_url }}"></use>
-  </svg><a href="{{ "/feed.xml" | relative_url }}">Subscribe</a></p> -->
 {%- endif -%}
 
 <!-- 分隔符 -->
 <hr class="section-divider">
 
-{%- if site.blogs.size > 0 -%}
+<!-- News 区域 -->
+{%- if site.posts.size > 0 -%}
 <ul class="posts">
     <li>
-        <h1 id="blog-label">Blogs</h1>
-        <p><a href="/pages/blog">View all blog posts →</a></p>
+        <h1 id="news-label">News</h1>
     </li>
 
-    {%- for post in site.blogs limit:2 -%}
+    {%- for post in site.posts limit:5 -%}
     <li>
         {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
         <a class="post-link" href="{{ post.url | relative_url }}">

@@ -50,8 +50,6 @@ plainwhite:
       url: "/pages/blog"
     - title: Search
       url: "/search"
-    - title: Sitemap
-      url: "/sitemap"
 
   # generate social links in footer
   social_links:

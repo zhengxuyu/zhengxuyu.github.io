@@ -9,16 +9,8 @@ layout: default
 {{ content }}
 
 <!-- 个人介绍区域 -->
-<ul class="posts">
-    <li>
-        <h1 id="AboutMe">About Me</h1>
-    </li>
-    <div class="post">
-        <p>* I was an Algorithm Expert at the Apsara Lab (formerly City Brain Lab, DAMO Academy), Alibaba Cloud, Alibaba Group. Before joining Alibaba, I received my Ph.D. from Zhejiang University, under the supervision of Prof. Deng Cai and Prof. Xiaofei He.
-             <br>* My research interests mainly lie in Reinforcement Learning, Large Language Models, and In-Context Learning. Here is my <a href="https://dblp.org/pid/246/3155">DBLP page</a>.<br>
-        </p>
-    </div>
-</ul>
+{% capture about_me_content %}{% include about-me.md %}{% endcapture %}
+{{ about_me_content | markdownify }}
 
 <!-- 分隔符 -->
 <hr class="section-divider">

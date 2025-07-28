@@ -4,68 +4,6 @@ layout: default
 
 <style>
 /* 博客布局特殊样式 */
-@media screen and (min-width: 769px) {
-  .content {
-    padding-right: 60px !important;
-    box-sizing: border-box !important;
-    position: relative !important;
-  }
-  
-  /* 添加左侧分割线 */
-  .content::before {
-    content: '';
-    position: absolute;
-    left: -15px;
-    top: 20px;
-    bottom: 20px;
-    width: 2px;
-    background: linear-gradient(to bottom, 
-      transparent 0%, 
-      #c0c0c0 20%, 
-      #a0a0a0 50%, 
-      #c0c0c0 80%, 
-      transparent 100%);
-    border-radius: 1px;
-    box-shadow: 
-      0 0 8px rgba(0,0,0,0.1),
-      inset 0 0 2px rgba(255,255,255,0.3);
-  }
-  
-  .post {
-    max-width: 100% !important;
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
-  }
-  
-  .post img {
-    max-width: 100% !important;
-    height: auto !important;
-  }
-  
-  .post pre {
-    overflow-x: auto !important;
-    max-width: 100% !important;
-  }
-  
-  .post code {
-    word-break: break-all !important;
-  }
-}
-
-/* 移动端保持原有布局 */
-@media screen and (max-width: 768px) {
-  .content {
-    max-width: 100% !important;
-    width: 100% !important;
-    margin-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  
-  .content::before {
-    display: none !important;
-  }
-}
-
 /* 博客列表样式 */
 .blog-list {
   margin-top: 2rem;

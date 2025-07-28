@@ -15,12 +15,13 @@ $leftWidth: 10%; // 改为百分比宽度
 }
 
 body {
-  font-family: "Raleway", sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
-  line-height: 1.2em;
+  line-height: 1.5em;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
 }
 
 img,
@@ -96,7 +97,7 @@ main {
       margin-top: 25px;
       margin-bottom: 0;
       color: #222222;
-      font-weight: normal;
+      font-weight: 500;
     }
     .tagline {
       font-size: 22px;
@@ -144,7 +145,7 @@ main {
 
     a {
       display: block;
-      font-family: 'Merriweather';
+      font-family: 'Inter', sans-serif;
       text-align: center;
       padding: 1rem 0;
       text-decoration: none;
@@ -222,10 +223,10 @@ main {
   padding-left: 30px;
 }
 .post {
-  font-family: "Merriweather", sans-serif;
-  font-weight: 300;
+  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
   color: #222;
-  line-height: 1.9em;
+  line-height: 1.7em;
   a {
     color: $linkColor;
     text-decoration: none;
@@ -240,7 +241,7 @@ main {
   h4,
   h5,
   h6 {
-    font-family: Raleway, sans-serif;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
   
   // 确保博客列表中的内容正确显示
@@ -264,12 +265,12 @@ main {
 #blog-label,
 #news-label {
   border-bottom: 1px solid #eee;
-  font-size: 15px;
-  color: #777;
+  font-size: 18px;
+  color: #555;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding-bottom: 10px;
-  font-weight: normal;
+  font-weight: 500;
 }
 
 .section-divider {

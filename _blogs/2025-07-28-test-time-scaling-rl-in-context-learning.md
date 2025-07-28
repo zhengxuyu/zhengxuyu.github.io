@@ -5,13 +5,19 @@ date: 28/07/2025 14:30:00 +0000
 categories: PaperReading
 tags: [Reinforcement Learning, In-Context Learning, Test-Time Adaptation, Large Language Models]
 draft: true
-tldr: "本文提出了一种结合强化学习和上下文学习的新方法，用于大语言模型的动态测试时缩放。该方法能够根据计算资源和任务需求自动调整模型行为，在保持性能的同时提高效率。"
+tldr: "This blog is a paper reading summary on LLMs, Reinforcement Learning, and In-Context Learning."
 
 ---
 
 ## Introduction
 
-In recent years, the field of machine learning has witnessed remarkable advancements in large language models (LLMs) and their ability to perform in-context learning (ICL). However, a significant challenge remains: how to effectively scale and adapt these models during test time to improve their performance on specific tasks. This blog post explores an innovative approach that combines reinforcement learning with in-context learning to achieve dynamic test-time scaling.
+In recent years, the field of machine learning has witnessed remarkable advancements in large language models (LLMs) and their ability to perform in-context learning (ICL). However, a significant challenge remains: how to effectively scale and adapt these models during test time to improve their performance on specific tasks. This blog post explores innovative approaches recently that combines reinforcement learning with in-context learning to achieve dynamic test-time scaling.
+
+### Why Reinforcement Learning
+
+Reinforcement Learning (RL) offers a natural framework for decision-making under uncertainty, making it a compelling choice for test-time adaptation. In the context of LLMs, RL enables the model to learn a policy that dynamically selects or modifies in-context examples to optimise performance for each test instance. Unlike static prompt selection methods, which often rely on heuristics or fixed templates, RL can adaptively tailor the context based on task feedback.
+
+Moreover, the test-time setting presents an environment where rewards (e.g., task accuracy or confidence) can be observed, allowing an RL agent to iteratively improve its strategy through interaction. This is particularly advantageous in few-shot scenarios, where the selection and ordering of in-context examples can significantly affect outcomes. By framing in-context example selection or weighting as a sequential decision process, RL facilitates a more principled and automated approach to prompt optimisation.
 
 ## The Problem of Test-Time Adaptation
 

@@ -263,3 +263,14 @@ main {
   padding-bottom: 10px;
   font-weight: normal;
 }
+
+.section-divider {
+  margin: 40px 30px 20px 40px;
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #ddd, transparent);
+  @media screen and (max-width: $smallMobileW) {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}

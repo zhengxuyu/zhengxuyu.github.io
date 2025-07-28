@@ -1,5 +1,5 @@
 current directory: /Users/yuzhengxu/projects/zhengxuyu.github.io/vendor/bundle/ruby/2.6.0/gems/ffi-1.12.2/ext/ffi_c
-/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20250728-46172-x5lasr.rb extconf.rb
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20250728-49221-kjk2y2.rb extconf.rb
 checking for ffi_call() in -lffi... yes
 checking for ffi_closure_alloc()... yes
 checking for shlwapi.h... no

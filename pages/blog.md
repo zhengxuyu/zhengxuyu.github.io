@@ -8,10 +8,9 @@ date:   2024-12-19 00:00:00 +0000
 
 Here you can find all my blog posts and thoughts on research, technology, and industry insights:
 
-{%- assign blogs = site.blogs | sort: 'date' | reverse -%}
-{%- if blogs.size > 0 -%}
+{%- if site.blogs.size > 0 -%}
 <ul class="posts">
-    {%- for post in blogs -%}
+    {%- for post in site.blogs -%}
     <li>
         {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
         <a class="post-link" href="{{ post.url | relative_url }}">
@@ -20,8 +19,8 @@ Here you can find all my blog posts and thoughts on research, technology, and in
         <div class="post-meta">
             {%- if post.categories -%}
             <ul class="post-categories">
-                {%- for category in post.categories -%}
-                <li>{{ category }}</li>
+                {%- for tag in post.categories -%}
+                <li>{{ tag }}</li>
                 {%- endfor -%}
             </ul>
             {%- endif -%}

@@ -283,6 +283,11 @@ main {
   }
 }
 
+// About Me 部分后的分隔线特殊样式
+.posts + .section-divider {
+  margin-top: 20px;
+}
+
 // TL;DR 样式
 .post-tldr {
   background: #f8f9fa;

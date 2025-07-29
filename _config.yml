@@ -93,7 +93,6 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-paginate
-  - jekyll-scholar
 #  - jekyll-feed
 
 # Blog configuration
@@ -103,10 +102,6 @@ collections:
     permalink: /blog/:title/
     sort_by: date
     sort_order: reverse
-
-# Jekyll Scholar configuration
-scholar:
-  style: modern-language-association
 
 # Defaults for SEO
 defaults:

@@ -1,0 +1,143 @@
+{%- if include.references -%}
+  <h2 id="references">References</h2>
+  <ol class="bibliography">
+    {%- for ref_key in include.references -%}
+      {%- assign ref = site.data.references[ref_key] -%}
+      {%- if ref -%}
+        <li id="{{ ref_key }}">
+          {%- case ref.type -%}
+            {%- when "article" -%}
+              {%- assign authors = ref.author | split: " and " -%}
+              {%- if authors.size > 3 -%}
+                {%- assign first_author = authors[0] | split: ", " -%}
+                {{ first_author[0] }} et al.
+              {%- else -%}
+                {{ ref.author }}
+              {%- endif -%}
+              , "{{ ref.title }}," 
+              {%- if ref.journaltitle -%}
+                <em>{{ ref.journaltitle }}</em>
+              {%- endif -%}
+              {%- if ref.volume -%}
+                , vol. {{ ref.volume }}
+              {%- endif -%}
+              {%- if ref.number -%}
+                , no. {{ ref.number }}
+              {%- endif -%}
+              {%- if ref.pages -%}
+                , pp. {{ ref.pages }}
+              {%- endif -%}
+              {%- if ref.date -%}
+                , {{ ref.date }}
+              {%- endif -%}
+              {%- if ref.doi -%}
+                . doi: <a href="{{ ref.url }}">{{ ref.doi }}</a>
+              {%- endif -%}
+              .
+
+            {%- when "inproceedings" -%}
+              {%- assign authors = ref.author | split: " and " -%}
+              {%- if authors.size > 3 -%}
+                {%- assign first_author = authors[0] | split: ", " -%}
+                {{ first_author[0] }} et al.
+              {%- else -%}
+                {{ ref.author }}
+              {%- endif -%}
+              , "{{ ref.title }}," in 
+              {%- if ref.booktitle -%}
+                <em>{{ ref.booktitle }}</em>
+              {%- endif -%}
+              {%- if ref.organization -%}
+                , {{ ref.organization }}
+              {%- endif -%}
+              {%- if ref.pages -%}
+                , pp. {{ ref.pages }}
+              {%- endif -%}
+              {%- if ref.date -%}
+                , {{ ref.date }}
+              {%- endif -%}
+              .
+
+            {%- when "incollection" -%}
+              {%- assign authors = ref.author | split: " and " -%}
+              {%- if authors.size > 3 -%}
+                {%- assign first_author = authors[0] | split: ", " -%}
+                {{ first_author[0] }} et al.
+              {%- else -%}
+                {{ ref.author }}
+              {%- endif -%}
+              , "{{ ref.title }}," in 
+              {%- if ref.booktitle -%}
+                <em>{{ ref.booktitle }}</em>
+              {%- endif -%}
+              {%- if ref.publisher -%}
+                , {{ ref.publisher }}
+              {%- endif -%}
+              {%- if ref.pages -%}
+                , pp. {{ ref.pages }}
+              {%- endif -%}
+              {%- if ref.date -%}
+                , {{ ref.date }}
+              {%- endif -%}
+              .
+
+            {%- when "thesis" -%}
+              {%- assign authors = ref.author | split: " and " -%}
+              {%- if authors.size > 3 -%}
+                {%- assign first_author = authors[0] | split: ", " -%}
+                {{ first_author[0] }} et al.
+              {%- else -%}
+                {{ ref.author }}
+              {%- endif -%}
+              , "{{ ref.title }}," 
+              {%- if ref.institution -%}
+                {{ ref.institution }}
+              {%- endif -%}
+              {%- if ref.date -%}
+                , {{ ref.date }}
+              {%- endif -%}
+              .
+
+            {%- else -%}
+              {%- assign authors = ref.author | split: " and " -%}
+              {%- if authors.size > 3 -%}
+                {%- assign first_author = authors[0] | split: ", " -%}
+                {{ first_author[0] }} et al.
+              {%- else -%}
+                {{ ref.author }}
+              {%- endif -%}
+              , "{{ ref.title }}," 
+              {%- if ref.journaltitle -%}
+                <em>{{ ref.journaltitle }}</em>
+              {%- endif -%}
+              {%- if ref.booktitle -%}
+                <em>{{ ref.booktitle }}</em>
+              {%- endif -%}
+              {%- if ref.volume -%}
+                , vol. {{ ref.volume }}
+              {%- endif -%}
+              {%- if ref.number -%}
+                , no. {{ ref.number }}
+              {%- endif -%}
+              {%- if ref.pages -%}
+                , pp. {{ ref.pages }}
+              {%- endif -%}
+              {%- if ref.publisher -%}
+                , {{ ref.publisher }}
+              {%- endif -%}
+              {%- if ref.organization -%}
+                , {{ ref.organization }}
+              {%- endif -%}
+              {%- if ref.date -%}
+                , {{ ref.date }}
+              {%- endif -%}
+              {%- if ref.doi -%}
+                . doi: <a href="{{ ref.url }}">{{ ref.doi }}</a>
+              {%- endif -%}
+              .
+          {%- endcase -%}
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ol>
+{%- endif -%} 

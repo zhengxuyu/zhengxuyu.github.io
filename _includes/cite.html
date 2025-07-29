@@ -1,0 +1,13 @@
+{%- assign ref = site.data.references[include.key] -%}
+{%- if ref -%}
+  {%- assign authors = ref.author | split: " and " -%}
+  {%- if authors.size > 3 -%}
+    {%- assign first_author = authors[0] | split: ", " -%}
+    <a class="citation" href="#{{ include.key }}">({{ first_author[0] }} et al., {{ ref.date }})</a>
+  {%- else -%}
+    {%- assign author_list = authors | map: "split" | map: "first" | join: ", " -%}
+    <a class="citation" href="#{{ include.key }}">({{ author_list }}, {{ ref.date }})</a>
+  {%- endif -%}
+{%- else -%}
+  <span class="citation-error">[Reference not found: {{ include.key }}]</span>
+{%- endif -%} 

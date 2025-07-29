@@ -19,6 +19,18 @@ Focus on Reinforcement Learning
 
   Research Intern at DAMO Academy, Alibaba Group, China.
 
+# Academic Service
+
+### Conference Reviewer
+**ICML**, **NeurIPS**, **ICLR**, **AAAI**, **IJCAI**
+
+### Journal Reviewer
+- **IEEE Transactions on Knowledge and Data Engineering (TKDE)**
+- **IEEE Transactions on Cognitive and Developmental Systems (TCDS)**
+- **IEEE Transactions on Multimedia (TMM)**
+- **Electronics**
+- **Sensors**
+
 # Education
 
 ### 2017/09 - 2021/03 \| Zhejiang University, China

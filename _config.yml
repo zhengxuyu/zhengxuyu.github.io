@@ -19,6 +19,9 @@ timezone: Asia/Shanghai
 encoding: utf-8
 markdown: kramdown
 highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
 permalink: /:year/:month/:day/:title/
 paginate: 10
 paginate_path: "/blog/page:num/"

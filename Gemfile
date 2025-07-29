@@ -9,8 +9,9 @@ gem "jekyll", "~> 4.3.0"
 gem "csv"
 gem "base64"
 
-# Theme (using local files instead of gem)
+# Theme (using GitHub Pages remote theme)
 # gem "plainwhite"
+gem "jekyll-remote-theme"
 
 # Jekyll plugins
 group :jekyll_plugins do

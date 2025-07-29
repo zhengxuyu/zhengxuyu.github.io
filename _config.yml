@@ -34,6 +34,8 @@ sass:
 
 # Theme configuration
 # theme: plainwhite  # Commented out since using local theme files
+# GitHub Pages configuration
+remote_theme: pages-themes/plainwhite@v0.2
 
 plainwhite:
   name: Zhengxu Yu
@@ -94,6 +96,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-paginate
+  - jekyll-remote-theme
 #  - jekyll-feed
 
 # Blog configuration

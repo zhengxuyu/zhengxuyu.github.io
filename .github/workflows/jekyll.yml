@@ -24,8 +24,11 @@ jobs:
         bundle install --path vendor/bundle
 
     - name: Build site
+      env:
+        JEKYLL_ENV: production
+        JEKYLL_THEME: null
       run: |
-        JEKYLL_ENV=production bundle exec jekyll build --verbose --trace
+        bundle exec jekyll build --verbose --trace
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3

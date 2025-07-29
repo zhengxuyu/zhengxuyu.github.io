@@ -40,6 +40,19 @@ github:
   is_project_page: false
   source: master
 
+# Explicitly disable GitHub Pages automatic theme
+theme: null
+
+# Force GitHub Pages to use local theme files
+exclude:
+  - private/
+
+# GitHub Pages specific configuration
+github:
+  is_project_page: false
+  source: master
+  theme: null
+
 plainwhite:
   name: Zhengxu Yu
   tagline: |

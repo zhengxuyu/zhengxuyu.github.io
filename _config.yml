@@ -47,7 +47,7 @@ plainwhite:
     - title: Resume
       url: "/pages/CV"
     - title: Blog
-      url: "/blog"
+      url: "/pages/blog"
     - title: Search
       url: "/search"
 

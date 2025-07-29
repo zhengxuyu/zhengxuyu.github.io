@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Resume
-date:   29-07-2025 18:58:09 +0530
+date:   2025-07-29 18:58:09 +0530
 ---
 * [中文简历 (最后一次修改: 2020/08)](/assets/200817中文简历.pdf)
 * [CV (last modify: 2024/06)](/assets/zhengxuyu_cv_en_0621.pdf)

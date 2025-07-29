@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages (Backup)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+        bundler-cache: false
+
+    - name: Install dependencies
+      run: |
+        bundle lock --add-platform x86_64-linux
+        bundle install --path vendor/bundle --jobs 4 --retry 3
+
+    - name: Build site
+      env:
+        JEKYLL_ENV: production
+        JEKYLL_THEME: null
+      run: |
+        bundle exec jekyll build --verbose --trace
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./_site
+        force_orphan: true
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: 'Deploy Jekyll site to GitHub Pages' 

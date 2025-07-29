@@ -104,6 +104,13 @@ collections:
     sort_by: date
     sort_order: reverse
 
+# Jekyll Scholar configuration
+scholar:
+  style: modern-language-association
+  locale: en
+  bibliography_list_tag: ol
+  bibliography_item_tag: li
+
 # Defaults for SEO
 defaults:
   - scope:

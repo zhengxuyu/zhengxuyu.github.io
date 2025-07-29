@@ -1,0 +1,37 @@
+name: Jekyll site CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7'
+        bundler-cache: true
+
+    - name: Install dependencies
+      run: |
+        bundle install --path vendor/bundle
+
+    - name: Build site
+      env:
+        JEKYLL_ENV: production
+        JEKYLL_THEME: null
+      run: |
+        bundle exec jekyll build --verbose --trace
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: site
+        path: _site/

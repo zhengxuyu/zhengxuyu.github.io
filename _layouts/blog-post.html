@@ -469,6 +469,11 @@ layout: default
 
       <div class="article-content">
         {{ content }}
+        
+        {%- if page.bibliography -%}
+          <h2 id="references">References</h2>
+          {% bibliography %}
+        {%- endif -%}
       </div>
 
       <nav class="article-navigation">

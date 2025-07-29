@@ -1,14 +1,18 @@
-name: Jekyll site CI
+name: Jekyll site CI/CD
 
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch: # 允许手动触发
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    outputs:
+      site_path: ${{ steps.upload.outputs.site_path }}
 
     steps:
     - uses: actions/checkout@v4
@@ -32,14 +36,30 @@ jobs:
         bundle exec jekyll build --verbose --trace
 
     - name: Upload build artifacts
+      id: upload
       uses: actions/upload-artifact@v4
       with:
         name: site
         path: _site/
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: site
+        path: ./_site
+
     - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./_site
+        force_orphan: true
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: 'Deploy Jekyll site to GitHub Pages'

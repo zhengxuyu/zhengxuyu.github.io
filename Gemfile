@@ -9,8 +9,8 @@ gem "jekyll", "~> 4.3.0"
 gem "csv"
 gem "base64"
 
-# Theme
-gem "plainwhite"
+# Theme (using local files instead of gem)
+# gem "plainwhite"
 
 # Jekyll plugins
 group :jekyll_plugins do

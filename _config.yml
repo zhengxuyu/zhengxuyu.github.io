@@ -33,7 +33,7 @@ sass:
   style: compressed
 
 # Theme configuration
-theme: plainwhite
+# theme: plainwhite  # Commented out since using local theme files
 
 plainwhite:
   name: Zhengxu Yu

@@ -1,0 +1,153 @@
+cv:
+  name: Zhengxu Yu
+  email: yuzxfred@gmail.com
+  phone: tel:+447852446689
+  website: https://zhengxuyu.github.io
+  social_networks:
+    - network: LinkedIn
+      username: https://www.linkedin.com/in/yuzhengxu
+    - network: GitHub
+      username: https://github.com/zhengxuyu
+  sections:
+    intro:
+      - I am currently a AI Algorithm Expert at Alibaba Group. I obtained my Ph.D. from Zhejiang University in 2021, advised by Prof. Deng Cai and Prof. Xiaofei He. Previously, I obtained my Master’s degree from University of Surrey, advised by Prof. H Lilian Tang.
+      - My research interests focus on Reinforcement Learning, Large language Model, Computer Vision to achieving embodied AGI. My current research goal is to exploring LLM reasoning capability and forming LLM agent to solve general real-world tasks.
+      - Previously, I has published eleven papers on top-tier peer-reviewed Artificial Intelligence international conferences and journals.
+    experience:
+      - company: Alibaba Group
+        position: Algorithm Expert
+        location: Hangzhou, China
+        start_date: 2021-04
+        end_date: present
+        highlights:
+          - Developing Reinforcement Learning based self-improvement algorithms to train large language models (LLMs) to achieve superhuman performance in various tasks. Achieved state-of-the-art performance in several benchmarks like AIME MATH benchmark within same LLM parameter scale.
+          - Appling post-trained LLM models to build LLM Agent, and apply in real-world applications, such as Optimization Problem in Operations Research. 
+          - Leading cross-functional teams to deliver algorithm and applications to client. 
+          - Mentoring research interns and junior researchers.
+      - company: Damo Academy, Alibaba Group
+        position: Research Intern
+        location: Hangzhou, China
+        start_date: 2018-01
+        end_date: 2021-04
+        highlights:
+          - Proposed multi-agent reinforcement learning methods to facilitate the coordination of multiple agents in cooperative and competitive scenarios.
+          - Proposed several optimization methods to improve the generalization ability of deep neural networks in computer vision tasks.
+          - Proposed Generative Adversarial Network (GAN) based synthetic data generating model for augmenting training data in computer vision tasks.
+          - Proposed several Deep Graph Neural Network (GNN) models for stochastic modeling tasks in dynamic systems.
+    education:
+      - institution: Zhejiang University
+        area: Computer Science
+        degree: Ph.D.
+        start_date: 2017-09
+        end_date: 2021-03
+        highlights:
+          - '**Research Interests**: Machine Learning, Computer Vision, Generative Model, Data Mining'
+      - institution: University of Surrey
+        area: Information Systems
+        degree: M.Sc.
+        start_date: 2015-09
+        end_date: 2016-11
+        highlights:
+          - '**Research Interests**: Machine Learning, Computer Vision, Data Mining'
+      - institution: Jilin University
+        area: Communication Engineering
+        degree: B.Sc.
+        start_date: 2011-09
+        end_date: 2015-06
+    technologies:
+      - label: Languages & Technologies
+        details: Python, PyTorch, Pandas, LangChain, vllm, ray, deepspeed
+
+    selected publications:
+      - title: Progressive Transfer Learning
+        authors:
+          - '**Yu, Z.**'
+          - Jin, Z.
+          - Wei, L.
+          - Huang, J.
+          - Cai, D.
+          - He, X.
+          - Hua, X.S.
+        journal: IEEE Transactions on Image Processing (TIP)
+        doi: 10.1109/TIP.2022.3141258
+        date: 2022
+      - title: Urban Traffic Light Control via Active Multi-agent Communication and Supply-Demand Modeling
+        authors:
+          - 'Guo, X.+'
+          - '**Yu, Z.+**'
+          - Wang, P.
+          - Jin, Z.
+          - Huang, J.
+          - Cai, D.
+          - He, X.
+          - Hua, X.S.
+          - '(**+**Co-first author)'
+        journal: IEEE Transactions on Knowledge and Data Engineering
+        doi: 10.1109/TKDE.2021.3130258
+        date: 2021
+      - title: 'MaCAR: Urban Traffic Light Control via Active Multi-agent Communication and Action Rectification'
+        authors:
+          - '**Yu, Z.**'
+          - Liang, S.
+          - Wei, L.
+          - Jin, Z.
+          - Huang, J.
+          - Cai, D.
+          - He, X.
+          - Hua, X.S.
+        journal: IJCAI
+        doi: 10.24963/IJCAI.2020/345
+        date: 2020
+      - title: Progressive Transfer Learning for Person Re-identification
+        authors:
+          - '**Yu, Z.**'
+          - Jin, Z.
+          - Wei, L.
+          - Guo, J.
+          - Huang, J.
+          - Cai, D.
+          - He, X.
+          - Hua, X.S.
+        journal: IJCAI-2019
+        doi: 10.24963/ijcai.2019/586
+        date: 2019
+
+design:
+  theme: engineeringresumes
+  font: Source Sans 3
+  font_size: 10pt
+  page_size: letterpaper
+  color: '#004f90'
+  disable_external_link_icons: false
+  disable_page_numbering: false
+  page_numbering_style: NAME - Page PAGE_NUMBER of TOTAL_PAGES
+  disable_last_updated_date: false
+  last_updated_date_style: Last updated in TODAY
+  header_font_size: 30 pt
+  text_alignment: justified
+  seperator_between_connections: ''
+  use_icons_for_connections: true
+  margins:
+    page:
+      top: 2 cm
+      bottom: 2 cm
+      left: 2 cm
+      right: 2 cm
+    section_title:
+      top: 0.3 cm
+      bottom: 0.2 cm
+    entry_area:
+      left_and_right: 0.2 cm
+      vertical_between: 0.2 cm
+      date_and_location_width: 4.5 cm
+#      education_degree_width: 1 cm
+    highlights_area:
+      top: 0.10 cm
+      left: 0.4 cm
+      vertical_between_bullet_points: 0.10 cm
+    header:
+      vertical_between_name_and_connections: 0.3 cm
+      bottom: 0.3 cm
+      horizontal_between_connections: 0.5 cm
+#  show_timespan_in:
+#    - Experience

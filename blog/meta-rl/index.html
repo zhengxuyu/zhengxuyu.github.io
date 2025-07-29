@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<!-- SEO Meta Tags -->
+<meta name="description" content="Webpage of Zhengxu Yu (余正旭), yuzhengxu.
+">
+<meta name="keywords" content="Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research, 机器学习, 人工智能, 计算机科学">
+<meta name="author" content="Zhengxu Yu">
+<meta name="robots" content="index, follow">
+<meta name="language" content="zh-CN">
+<meta name="geo.region" content="CN">
+<meta name="geo.placename" content="China">
+<meta name="distribution" content="global">
+<meta name="rating" content="general">
+<meta name="revisit-after" content="7 days">
+<meta name="googlebot" content="index, follow">
+<meta name="bingbot" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://zhengxuyu.github.io/blog/meta-rl/">
+<meta property="og:title" content="A Survey of Meta Reinforcement Learning for Large Language Model training">
+<meta property="og:description" content="Webpage of Zhengxu Yu (余正旭), yuzhengxu.
+">
+<meta property="og:image" content="https://zhengxuyu.github.io/assets/ZhengxuYu.jpeg">
+<meta property="og:site_name" content="Zhengxu Yu | Homepage">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+
+<meta property="article:author" content="Zhengxu Yu">
+<meta property="article:published_time" content="2025-07-28T22:30:00+08:00">
+<meta property="article:modified_time" content="2025-07-28T22:30:00+08:00">
+<meta property="article:section" content="Research">
+<meta property="article:tag" content="Machine Learning, AI, Research">
+
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://zhengxuyu.github.io/blog/meta-rl/">
+<meta property="twitter:title" content="A Survey of Meta Reinforcement Learning for Large Language Model training">
+<meta property="twitter:description" content="Webpage of Zhengxu Yu (余正旭), yuzhengxu.
+">
+<meta property="twitter:image" content="https://zhengxuyu.github.io/assets/ZhengxuYu.jpeg">
+<meta property="twitter:site" content="@ZhengxuYu">
+<meta property="twitter:creator" content="@ZhengxuYu">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="https://zhengxuyu.github.io/blog/meta-rl/">
+
+<!-- RSS Feed -->
+<link rel="alternate" type="application/rss+xml" title="Zhengxu Yu | Homepage RSS Feed" href="https://zhengxuyu.github.io/feed.xml">
+
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Preconnect to external domains for performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-6CYR8K1ZK6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6CYR8K1ZK6');
+</script><!-- Fonts and Styles -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/custom-layout.css">
+
+<!-- MathJax Configuration -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      ignoreHtmlClass: 'tex2jax_ignore',
+      processHtmlClass: 'tex2jax_process'
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<!-- Include structured data -->
+<!-- Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Zhengxu Yu",
+  "alternateName": "余正旭",
+  "url": "https://zhengxuyu.github.io",
+  "image": "https://zhengxuyu.github.io/assets/ZhengxuYu.jpeg",
+  "sameAs": [
+    "https://github.com/ZhengxuYu",
+    "https://dblp.org/pid/00/1-0000-0002-6059-0300",
+    "https://orcid.org/0000-0002-6059-0300"
+  ],
+  "jobTitle": "Research Scientist",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Alibaba Cloud"
+  },
+  "alumniOf": {
+    "@type": "Organization",
+    "name": "Alibaba Group"
+  },
+  "knowsAbout": [
+    "Machine Learning",
+    "Artificial Intelligence",
+    "Computer Science",
+    "Research",
+    "机器学习",
+    "人工智能",
+    "计算机科学",
+    "深度学习",
+    "强化学习",
+    "自然语言处理"
+  ],
+  "email": "yuzxfred@gmail.com"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Zhengxu Yu | Homepage",
+  "url": "https://zhengxuyu.github.io",
+  "description": "Webpage of Zhengxu Yu (余正旭), yuzhengxu.",
+  "author": {
+    "@type": "Person",
+    "name": "Zhengxu Yu"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Zhengxu Yu"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://zhengxuyu.github.io/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "A Survey of Meta Reinforcement Learning for Large Language Model training",
+  "author": {
+    "@type": "Person",
+    "name": "Zhengxu Yu"
+  },
+  "datePublished": "2025-07-28T22:30:00+08:00",
+  "dateModified": "2025-07-28T22:30:00+08:00",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zhengxu Yu | Homepage",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zhengxuyu.github.io/assets/ZhengxuYu.jpeg"
+    }
+  },
+  "description": "Key Takeaways
+",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://zhengxuyu.github.io/blog/meta-rl/"
+  }
+}
+</script>
+ 
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://zhengxuyu.github.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://zhengxuyu.github.io/pages/blog"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "A Survey of Meta Reinforcement Learning for Large Language Model training",
+      "item": "https://zhengxuyu.github.io/blog/meta-rl/"
+    }
+  ]
+}
+</script>
+
+
+ 
+
+<title>A Survey of Meta Reinforcement Learning for Large Language Model training</title><!-- Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Zhengxu Yu",
+  "alternateName": "余正旭",
+  "url": "https://zhengxuyu.github.io",
+  "image": "https://zhengxuyu.github.io/assets/ZhengxuYu.jpeg",
+  "sameAs": [
+    "https://github.com/ZhengxuYu",
+    "https://dblp.org/pid/00/1-0000-0002-6059-0300",
+    "https://orcid.org/0000-0002-6059-0300"
+  ],
+  "jobTitle": "Research Scientist",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Alibaba Cloud"
+  },
+  "alumniOf": {
+    "@type": "Organization",
+    "name": "Alibaba Group"
+  },
+  "knowsAbout": [
+    "Machine Learning",
+    "Artificial Intelligence",
+    "Computer Science",
+    "Research",
+    "机器学习",
+    "人工智能",
+    "计算机科学",
+    "深度学习",
+    "强化学习",
+    "自然语言处理"
+  ],
+  "email": "yuzxfred@gmail.com"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Zhengxu Yu | Homepage",
+  "url": "https://zhengxuyu.github.io",
+  "description": "Webpage of Zhengxu Yu (余正旭), yuzhengxu.",
+  "author": {
+    "@type": "Person",
+    "name": "Zhengxu Yu"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Zhengxu Yu"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://zhengxuyu.github.io/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "A Survey of Meta Reinforcement Learning for Large Language Model training",
+  "author": {
+    "@type": "Person",
+    "name": "Zhengxu Yu"
+  },
+  "datePublished": "2025-07-28T22:30:00+08:00",
+  "dateModified": "2025-07-28T22:30:00+08:00",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zhengxu Yu | Homepage",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zhengxuyu.github.io/assets/ZhengxuYu.jpeg"
+    }
+  },
+  "description": "Key Takeaways
+",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://zhengxuyu.github.io/blog/meta-rl/"
+  }
+}
+</script>
+ <style>
+    /* 全局分割线样式 - 从blog.html复用 */
+    @media screen and (min-width: 769px) {
+      .content {
+        padding-right: 60px !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+      }
+      
+      /* 添加左侧分割线 */
+      .content::before {
+        content: '';
+        position: absolute;
+        left: -15px;
+        top: 20px;
+        bottom: 20px;
+        width: 2px;
+        background: linear-gradient(to bottom, 
+          transparent 0%, 
+          #c0c0c0 20%, 
+          #a0a0a0 50%, 
+          #c0c0c0 80%, 
+          transparent 100%);
+        border-radius: 1px;
+        box-shadow: 
+          0 0 8px rgba(0,0,0,0.1),
+          inset 0 0 2px rgba(255,255,255,0.3);
+      }
+      
+      .post {
+        max-width: 100% !important;
+        overflow-wrap: break-word !important;
+        word-wrap: break-word !important;
+      }
+      
+      .post img {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+      
+      .post pre {
+        overflow-x: auto !important;
+        max-width: 100% !important;
+      }
+      
+      .post code {
+        word-break: break-all !important;
+      }
+    }
+
+    /* 移动端保持原有布局 */
+    @media screen and (max-width: 768px) {
+      .content {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      
+      .content::before {
+        display: none !important;
+      }
+    }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <section class="about">
+        <a href="/"><img src="/assets/ZhengxuYu.jpeg" alt="Zhengxu Yu"></a>
+        <h2 id="title">
+          <a href="/" style="width: 100%; font-size: 0.9em;">Zhengxu Yu</a>
+        </h2>
+        <p class="tagline" align="center" style="width:100%; font-size: 0.9em;">Alibaba Cloud,
+Alibaba Group
+</p>
+        <ul class="social"><a href="https://github.com/ZhengxuYu">
+              <li>
+                <i class="icon-github-circled"></i>
+              </li>
+            </a><a href="https://scholar.google.com/citations?user=qsLLazoAAAAJ&hl=zh-CN">
+              <li>
+                <i class="icon-google"></i>
+              </li>
+          </a>
+        </ul><nav class="navigation">
+            <ul>
+              
+                <li>
+                  <a href="/pages/works" style="font-size: 0.9em;">My Works</a>
+                </li>
+              
+                <li>
+                  <a href="/pages/publication" style="font-size: 0.9em;">My Publications</a>
+                </li>
+              
+                <li>
+                  <a href="/pages/CV" style="font-size: 0.9em;">Resume</a>
+                </li>
+              
+                <li>
+                  <a href="/pages/blog" style="font-size: 0.9em;">Blog</a>
+                </li>
+              
+                <li>
+                  <a href="/search" style="font-size: 0.9em;">Search</a>
+                </li>
+              
+            </ul>
+          </nav><p align="center" style="width:100%; font-size: 0.9em;">Email: yuzxfred AT gmail.com</p>
+        <p>&copy;
+          2025</p>
+      </section>
+      <section class="content">
+        <style>
+/* Modern Blog Post Layout Styles */
+.article-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Draft Mode Styles */
+.draft-warning {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border: 2px solid #fdcb6e;
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  margin: 2rem 0;
+  text-align: center;
+  color: #856404;
+  box-shadow: 0 8px 32px rgba(253, 203, 110, 0.2);
+}
+
+.draft-warning h1 {
+  color: #d63031;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.draft-warning .draft-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+  opacity: 0.8;
+}
+
+.draft-warning .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.draft-warning .back-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Article Header */
+.article-header {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #e2e8f0;
+  position: relative;
+}
+
+.article-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.article-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Article Meta Information */
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.article-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #718096;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.article-date i {
+  color: #a0aec0;
+  font-size: 1rem;
+}
+
+/* Category Tags */
+.article-categories {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.category-tag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.category-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Article Tags */
+.article-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.tag-item {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  color: #4a5568;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.tag-item:hover {
+  background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+  transform: translateY(-1px);
+}
+
+/* TL;DR Section */
+.article-tldr {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-left: 4px solid #667eea;
+  padding: 1.5rem 2rem;
+  border-radius: 0 12px 12px 0;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.article-tldr::before {
+  content: '💡';
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 1.2rem;
+  opacity: 0.6;
+}
+
+.article-tldr h3 {
+  color: #2d3748;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.article-tldr p {
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Article Content */
+.article-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #2d3748;
+}
+
+/* Article Content Style Optimization */
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  color: #2d3748;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.article-content h1 { font-size: 2rem; }
+.article-content h2 { font-size: 1.75rem; }
+.article-content h3 { font-size: 1.5rem; }
+.article-content h4 { font-size: 1.25rem; }
+.article-content h5 { font-size: 1.1rem; }
+.article-content h6 { font-size: 1rem; }
+
+.article-content p {
+  margin-bottom: 1.5rem;
+  color: #4a5568;
+}
+
+.article-content a {
+  color: #667eea;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.article-content a:hover {
+  color: #764ba2;
+  border-bottom-color: #764ba2;
+}
+
+.article-content blockquote {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-left: 4px solid #667eea;
+  padding: 1.5rem 2rem;
+  margin: 2rem 0;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: #4a5568;
+}
+
+.article-content blockquote p {
+  margin: 0;
+}
+
+.article-content code {
+  background: #f7fafc;
+  color: #e53e3e;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 1px solid #e2e8f0;
+}
+
+.article-content pre {
+  background: #2d3748;
+  color: #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 2rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.article-content pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.article-content ul,
+.article-content ol {
+  margin: 1.5rem 0;
+  padding-left: 2rem;
+}
+
+.article-content li {
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+}
+
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 2rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.article-content th,
+.article-content td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.article-content th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+}
+
+.article-content tr:hover {
+  background: #f7fafc;
+}
+
+/* Article Navigation */
+.article-navigation {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 2px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.back-to-blog {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #667eea;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.back-to-blog:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.back-to-blog::before {
+  content: '←';
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .article-container {
+    padding: 1rem;
+  }
+  
+  .article-title {
+    font-size: 2rem;
+  }
+  
+  .article-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .article-content {
+    font-size: 1rem;
+  }
+  
+  .article-content h1 { font-size: 1.75rem; }
+  .article-content h2 { font-size: 1.5rem; }
+  .article-content h3 { font-size: 1.25rem; }
+  
+  .article-navigation {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .back-to-blog {
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* References Section */
+.references {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-radius: 12px;
+  border-left: 4px solid #667eea;
+}
+
+.references li {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  line-height: 1.6;
+  color: #4a5568;
+}
+
+.references li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.references li a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.references li a:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+/* Citation Links */
+.citation {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.citation:hover {
+  color: #764ba2;
+  background: rgba(118, 75, 162, 0.1);
+  text-decoration: none;
+}
+
+/* Animation Effects */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.article-header,
+.article-content,
+.article-navigation {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.article-content {
+  animation-delay: 0.2s;
+}
+
+.article-navigation {
+  animation-delay: 0.4s;
+}
+</style><div class="article-container">
+    <article class="article">
+      <header class="article-header">
+        <h1 class="article-title">A Survey of Meta Reinforcement Learning for Large Language Model training</h1>
+        
+        <div class="article-meta"><div class="article-date">
+            <i class="icon-calendar"></i>
+            <time datetime="2025-07-28T22:30:00+08:00">
+              Jul 28, 2025
+            </time>
+          </div><div class="article-categories"><a href="#" class="category-tag">PaperReading</a></div></div><div class="article-tags"><span class="tag-item">Meta Reinforcement Learning</span><span class="tag-item">Large Language Models</span></div><div class="article-tldr">
+            <h3>TL;DR</h3>
+            <p>This blog is a paper reading summary on meta reinforcement learning, and its application in LLM training procedure.</p>
+          </div></header>
+
+      <div class="article-content">
+        <h2 id="key-takeaways">Key Takeaways</h2>
+
+<h2 id="meta-rl-definition">Meta-RL Definition</h2>
+
+<p><img src="/images/mrl/mrl.png" alt="Meta Reinforcement Learning Overview" width="400" style="max-width: 100%; height: auto; display: block; margin: 2rem auto;" /></p>
+
+<p>RL algorithms are traditionally designed, engineered, and tested by humans. The idea of meta-RL is instead to learn (parts of) an algorithm $f$ using machine learning. Where RL learns a policy, meta-RL learns the RL algorithm $f$ that outputs the policy.</p>
+
+<p>Formally, in standard RL, we learn a policy $\pi: \mathcal{S} \rightarrow \mathcal{A}$ that maps states to actions. In meta-RL, we learn a learning algorithm $f: \mathcal{M} \rightarrow \Pi$ that maps from a task distribution $\mathcal{M}$ to a policy space $\Pi$.</p>
+
+<p>This does not remove all of the human effort from the process, but shifts it from directly designing and implementing the RL algorithms into developing the training environments and parameterizations required for learning parts
+of them in a data-driven way <a href="#ref-beck_tutorial_2025" class="citation">[1]</a>.</p>
+
+<p>The concept of meta-learning dates back to the early work of <a href="#ref-schmidhuber_evolutionary_1987" class="citation">[2]</a>, who introduced the idea of learning to learn. Later, <a href="#ref-thrun_lifelong_1998" class="citation">[3]</a> formalized lifelong learning algorithms, which laid the foundation for modern meta-RL approaches.</p>
+
+<p>In recent years, the field of machine learning has witnessed remarkable advancements in large language models (LLMs) and their ability to perform in-context learning (ICL). However, a significant challenge remains: how to effectively scale and adapt these models during test time to improve their performance on specific tasks. This blog post explores innovative approaches recently that combines reinforcement learning with in-context learning to achieve dynamic test-time scaling <a href="#ref-wang_learning_2016" class="citation">[4]</a>.</p>
+
+<h2 id="test-section">Test Section</h2>
+
+<p>Here is a test citation: <a href="#ref-beck_tutorial_2025" class="citation">[1]</a>.</p>
+
+
+        <ol class="references">
+<li id="ref-beck_tutorial_2025">Beck et al., "A Tutorial on Meta-Reinforcement Learning," <em>Foundations and Trends® in Machine Learning</em>, vol. 18, no. 2, pp. 224--384, 2025. doi: 10.1561/2200000080.</li>
+<li id="ref-schmidhuber_evolutionary_1987">Schmidhuber, "Evolutionary principles in self-referential learning, or on learning how to learn: the meta-meta-... hook," Institut f{\"u}r Informatik, Technische Universit{\"a}t M{\"u}nchen, 1987.</li>
+<li id="ref-thrun_lifelong_1998">Thrun, Pratt, "Lifelong learning algorithms," in <em>Learning to learn</em>, Springer, pp. 181--209, 1998.</li>
+<li id="ref-wang_learning_2016">Wang et al., "Learning to reinforcement learn," <em>arXiv preprint arXiv:1611.05763</em>, 2016.</li>
+</ol>
+      </div>
+
+      <nav class="article-navigation">
+        <a href="/pages/blog/" class="back-to-blog">Back to Blog List</a>
+      </nav>
+    </article>
+  </div>
+      </section>
+    </main></body>
+</html>

@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Crawl-delay for all bots
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://zhengxuyu.github.io/sitemap.xml
+
+# Additional sitemaps
+Sitemap: https://zhengxuyu.github.io/sitemap-posts.xml
+Sitemap: https://zhengxuyu.github.io/sitemap-pages.xml
+
+# Disallow admin and private areas
+Disallow: /_drafts/
+Disallow: /vendor/
+Disallow: /Gemfile*
+Disallow: /README.md
+Disallow: /DEVELOPMENT.md
+Disallow: /BLOG_*.md
+Disallow: /build_*.sh
+Disallow: /serve_*.sh
+
+# Allow important files
+Allow: /assets/
+Allow: /_posts/
+Allow: /_blogs/
+Allow: /pages/ 

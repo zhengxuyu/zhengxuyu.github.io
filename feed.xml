@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zhengxu Yu | Homepage</title>
+    <description>Webpage of Zhengxu Yu (余正旭), yuzhengxu.
+</description>
+    <link>https://zhengxuyu.github.io</link>
+    <atom:link href="https://zhengxuyu.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <language>zh-CN</language>
+    <lastBuildDate>2025-07-30T06:14:44+08:00</lastBuildDate>
+    
+    
+    <item>
+      <guid isPermaLink="true">https://zhengxuyu.github.io/2023/12/31/UTLC-TDKEpaper/</guid>
+      <title>New publication in IEEE Transactions on Knowledge and Data Engineering.</title>
+      <link>https://zhengxuyu.github.io/2023/12/31/UTLC-TDKEpaper/</link>
+      <description>Our paper “Urban Traffic Light Control via Active Multi-agent Communication and Supply-Demand Modeling” got accepted by IEEE Transactions on Knowledge and Data Engineering.
+</description>
+      <pubDate>2023-12-31T08:00:00+08:00</pubDate>
+      <author>Zhengxu Yu</author>
+    </item>
+    
+    <item>
+      <guid isPermaLink="true">https://zhengxuyu.github.io/2021/12/31/AIFL-TMMpaper/</guid>
+      <title>New publication in IEEE Transactions on Multimedia.</title>
+      <link>https://zhengxuyu.github.io/2021/12/31/AIFL-TMMpaper/</link>
+      <description>Our paper “Apparel-invariant Feature Learning for Person Re-identification” got accepted by IEEE Transactions on Multimedia (CCF-B).
+</description>
+      <pubDate>2021-12-31T08:00:00+08:00</pubDate>
+      <author>Zhengxu Yu</author>
+    </item>
+    
+    <item>
+      <guid isPermaLink="true">https://zhengxuyu.github.io/2020/08/17/NewPulishOnArxiv/</guid>
+      <title>New publication on arXiv.</title>
+      <link>https://zhengxuyu.github.io/2020/08/17/NewPulishOnArxiv/</link>
+      <description>[link] Our work “Apparel-invariant Feature Learning for Apparel-changed Person Re-identification” is on arXiv now.
+</description>
+      <pubDate>2020-08-17T00:00:00+08:00</pubDate>
+      <author>Zhengxu Yu</author>
+    </item>
+    
+    <item>
+      <guid isPermaLink="true">https://zhengxuyu.github.io/2020/07/30/NewPulishOnArxiv/</guid>
+      <title>New publication on arXiv.</title>
+      <link>https://zhengxuyu.github.io/2020/07/30/NewPulishOnArxiv/</link>
+      <description>[link] Our work “Stable Learning via Causality-based Feature Rectification “ is on arXiv now.
+</description>
+      <pubDate>2020-07-30T21:50:00+08:00</pubDate>
+      <author>Zhengxu Yu</author>
+    </item>
+    
+    <item>
+      <guid isPermaLink="true">https://zhengxuyu.github.io/2020/07/15/IJCAI20paper/</guid>
+      <title>Publication in IJCAI-PRICAI'2020 is online now.</title>
+      <link>https://zhengxuyu.github.io/2020/07/15/IJCAI20paper/</link>
+      <description>[link] Our paper “MaCAR: Urban Traffic Light Control via active Multi-agent Communication and Action Rectification” publised on IJCAI-PRICAI’2020 is online now. (Acceptence Rate: 12.3% (592/4717))
+</description>
+      <pubDate>2020-07-15T16:10:00+08:00</pubDate>
+      <author>Zhengxu Yu</author>
+    </item>
+    
+    <item>
+      <guid isPermaLink="true">https://zhengxuyu.github.io/2020/04/20/IJCAI20paper/</guid>
+      <title>New publication in IJCAI-PRICAI 2020.</title>
+      <link>https://zhengxuyu.github.io/2020/04/20/IJCAI20paper/</link>
+      <description>Our paper “MaCAR: Urban Traffic Light Control via active Multi-agent Communication and Action Rectification” got accepted in IJCAI-PRICAI 2020 (Acceptence Rate: 12.3% (592/4717)).
+</description>
+      <pubDate>2020-04-20T21:28:09+08:00</pubDate>
+      <author>Zhengxu Yu</author>
+    </item>
+    
+    
+    
+    <item>
+      <guid isPermaLink="true">https://zhengxuyu.github.io/blog/test-time-scaling-rl-in-context-learning/</guid>
+      <title>Test-Time Scaling via Reinforcement Learning Based In-Context Learning</title>
+      <link>https://zhengxuyu.github.io/blog/test-time-scaling-rl-in-context-learning/</link>
+      <description>Introduction
+</description>
+      <pubDate>2025-07-28T22:30:00+08:00</pubDate>
+      <author>Zhengxu Yu</author>
+    </item>
+    
+    <item>
+      <guid isPermaLink="true">https://zhengxuyu.github.io/blog/meta-rl/</guid>
+      <title>A Survey of Meta Reinforcement Learning for Large Language Model training</title>
+      <link>https://zhengxuyu.github.io/blog/meta-rl/</link>
+      <description>Key Takeaways
+</description>
+      <pubDate>2025-07-28T22:30:00+08:00</pubDate>
+      <author>Zhengxu Yu</author>
+    </item>
+    
+  </channel>
+</rss> 

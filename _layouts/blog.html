@@ -241,7 +241,7 @@ layout: default
   font-size: 0.95rem;
 }
 
-/* 草稿文章样式 */
+/* Drafts */
 .draft-section-divider {
   margin: 3rem 0 2rem 0;
   text-align: center;
@@ -370,7 +370,7 @@ layout: default
   <main class="blog-list">
     {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
     
-      {%- comment -%} 显示所有文章，包括草稿 {%- endcomment -%}
+      {%- comment -%} All blogs, including drafts {%- endcomment -%}
   {%- assign all_blogs = site.blogs -%}
   {%- assign published_blogs = site.blogs | where_exp: "blog", "blog.draft != true" -%}
   {%- assign draft_blogs = site.blogs | where_exp: "blog", "blog.draft == true" -%}
@@ -378,11 +378,11 @@ layout: default
   {%- if all_blogs.size == 0 -%}
     <div class="empty-state">
       <div class="empty-state-icon">📝</div>
-      <h2 class="empty-state-title">暂无博客文章</h2>
-      <p class="empty-state-description">还没有任何博客文章</p>
+      <h2 class="empty-state-title">No blogs yet</h2>
+      <p class="empty-state-description">No blogs yet</p>
     </div>
   {%- else -%}
-    {%- comment -%} 显示已发布的文章 {%- endcomment -%}
+    {%- comment -%} Published blogs {%- endcomment -%}
     {%- if published_blogs.size > 0 -%}
       {%- for blog in published_blogs -%}
         <article class="blog-item">
@@ -424,17 +424,17 @@ layout: default
       {%- endfor -%}
     {%- endif -%}
     
-    {%- comment -%} 显示草稿文章 {%- endcomment -%}
+    {%- comment -%} Drafts {%- endcomment -%}
     {%- if draft_blogs.size > 0 -%}
       {%- if published_blogs.size > 0 -%}
         <div class="draft-section-divider">
-          <h2>草稿文章</h2>
+          <h2>Drafts</h2>
         </div>
       {%- endif -%}
       
       {%- for blog in draft_blogs -%}
         <article class="blog-item draft-item">
-          <div class="draft-badge">📝 草稿</div>
+          <div class="draft-badge">📝 Draft</div>
           <header class="post-title">
             <a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a>
           </header>
@@ -467,7 +467,7 @@ layout: default
           {%- endif -%}
           
           <a href="{{ blog.url | relative_url }}" class="read-more draft-read-more">
-            预览草稿
+            Preview Draft
           </a>
         </article>
       {%- endfor -%}

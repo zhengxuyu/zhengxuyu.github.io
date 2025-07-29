@@ -32,10 +32,13 @@ sass:
   sass_dir: _sass
   style: compressed
 
-# Theme configuration
-# theme: plainwhite  # Commented out since using local theme files
-# GitHub Pages configuration
-remote_theme: pages-themes/plainwhite@v0.2
+# Theme configuration - using local theme files
+# remote_theme: samarsault/plainwhite-jekyll
+
+# GitHub Pages specific settings
+github:
+  is_project_page: false
+  source: master
 
 plainwhite:
   name: Zhengxu Yu
@@ -96,7 +99,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-paginate
-  - jekyll-remote-theme
+#  - jekyll-remote-theme
 #  - jekyll-feed
 
 # Blog configuration

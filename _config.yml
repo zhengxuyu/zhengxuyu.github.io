@@ -92,6 +92,8 @@ remote_theme: thelehhman/plainwhite-jekyll
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
+  - jekyll-paginate
+  - jekyll-scholar
 #  - jekyll-feed
 
 # Blog configuration

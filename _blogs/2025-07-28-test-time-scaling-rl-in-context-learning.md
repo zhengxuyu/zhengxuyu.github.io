@@ -19,6 +19,13 @@ Reinforcement Learning (RL) offers a natural framework for decision-making under
 
 Moreover, the test-time setting presents an environment where rewards (e.g., task accuracy or confidence) can be observed, allowing an RL agent to iteratively improve its strategy through interaction. This is particularly advantageous in few-shot scenarios, where the selection and ordering of in-context examples can significantly affect outcomes. By framing in-context example selection or weighting as a sequential decision process, RL facilitates a more principled and automated approach to prompt optimisation.
 
+Key takeaways of this blog:
+- **Dynamic Adaptation**: Models can now adapt to changing requirements during deployment
+- **Resource Efficiency**: Better utilization of available computational resources
+- **Flexible Performance**: Trade-offs between performance and efficiency can be managed dynamically
+- **Practical Deployment**: More realistic deployment scenarios can be handled
+
+
 ## The Problem of Test-Time Adaptation
 
 Traditional machine learning models are typically trained on a fixed dataset and deployed with static parameters. However, real-world scenarios often require models to adapt to new data distributions, task requirements, or performance constraints during deployment. This challenge is particularly acute for large language models, where:
@@ -62,86 +69,17 @@ The reward function balances multiple objectives:
 - **Efficiency**: Computational cost and latency
 - **Consistency**: Stability of performance over time
 
-## Key Components of the Approach
 
-### Dynamic Context Selection
-Instead of using a fixed number of examples, the RL agent dynamically selects the most relevant examples based on:
-- Similarity to the current query
-- Historical effectiveness
-- Computational constraints
+# Taxonomy
 
-### Adaptive Prompt Engineering
-The agent learns to construct optimal prompts by:
-- Selecting appropriate examples
-- Ordering examples for maximum impact
-- Adjusting prompt length based on constraints
+1. Training 
 
-### Resource-Aware Scaling
-The system monitors and adapts to:
-- Available memory and compute resources
-- Latency requirements
-- Energy consumption constraints
 
-## Experimental Results
-
-Preliminary experiments with this approach have shown promising results:
-
-- **Performance Improvement**: 15-25% improvement in task accuracy compared to static ICL
-- **Efficiency Gains**: 30-40% reduction in computational overhead
-- **Adaptability**: Successful adaptation to varying resource constraints
-- **Consistency**: Stable performance across different task domains
-
-## Challenges and Future Directions
-
-### Current Challenges
-1. **Training Complexity**: RL training requires significant computational resources
-2. **Reward Design**: Balancing multiple objectives in the reward function
-3. **Generalization**: Ensuring the approach works across diverse tasks and domains
-4. **Interpretability**: Understanding the agent's decision-making process
-
-### Future Research Directions
-1. **Multi-Objective Optimization**: Developing more sophisticated reward functions
-2. **Meta-Learning Integration**: Combining with meta-learning for faster adaptation
-3. **Hierarchical RL**: Implementing hierarchical policies for complex scaling decisions
-4. **Online Learning**: Enabling continuous learning during deployment
-
-## Practical Applications
-
-This approach has potential applications in various domains:
-
-### Natural Language Processing
-- Dynamic summarization based on available time
-- Adaptive question answering with resource constraints
-- Flexible text generation for different use cases
-
-### Computer Vision
-- Adaptive image classification with varying accuracy requirements
-- Dynamic object detection based on computational resources
-- Flexible image generation for different quality levels
-
-### Robotics
-- Adaptive planning with varying computational budgets
-- Dynamic sensor fusion based on available resources
-- Flexible control policies for different environments
-
-## Conclusion
-
-The integration of reinforcement learning with in-context learning for test-time scaling represents a significant step forward in making large language models more practical and efficient. This approach enables models to dynamically adapt to varying constraints while maintaining high performance.
-
-Key takeaways:
-- **Dynamic Adaptation**: Models can now adapt to changing requirements during deployment
-- **Resource Efficiency**: Better utilization of available computational resources
-- **Flexible Performance**: Trade-offs between performance and efficiency can be managed dynamically
-- **Practical Deployment**: More realistic deployment scenarios can be handled
-
-As research in this area continues, we can expect to see more sophisticated approaches that further improve the efficiency and effectiveness of large language models in real-world applications.
 
 ## References
 
-1. Brown, T., et al. "Language Models are Few-Shot Learners." NeurIPS 2020.
-2. Chen, L., et al. "In-Context Learning: A Survey." arXiv preprint arXiv:2301.00234, 2023.
-3. Sutton, R. S., & Barto, A. G. "Reinforcement Learning: An Introduction." MIT Press, 2018.
-4. Wang, Y., et al. "Test-Time Adaptation for Large Language Models." ICML 2023.
+
+[1] A. A. Team et al., ‘Human-Timescale Adaptation in an Open-Ended Task Space’, Jan. 18, 2023, arXiv: arXiv:2301.07608. doi: 10.48550/arXiv.2301.07608.
 
 ---
 

@@ -73,6 +73,24 @@
 <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
 <link rel="stylesheet" href="{{ "/assets/css/custom-layout.css" | relative_url }}">
 
+<!-- MathJax Configuration -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      ignoreHtmlClass: 'tex2jax_ignore',
+      processHtmlClass: 'tex2jax_process'
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 <!-- Include structured data -->
 {% include structured-data.html %}
 {% include breadcrumb-structured-data.html %}

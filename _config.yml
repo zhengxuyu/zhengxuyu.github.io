@@ -52,12 +52,7 @@ exclude:
   - vendor/
   - .jekyll-cache/
   - .sass-cache/
-
-# GitHub Pages specific configuration
-github:
-  is_project_page: false
-  source: master
-  theme: null
+  - .github/
 
 plainwhite:
   name: Zhengxu Yu

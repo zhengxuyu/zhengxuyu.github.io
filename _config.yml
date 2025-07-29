@@ -46,6 +46,9 @@ theme: null
 # Force GitHub Pages to use local theme files
 exclude:
   - private/
+  - vendor/
+  - .jekyll-cache/
+  - .sass-cache/
 
 # GitHub Pages specific configuration
 github:

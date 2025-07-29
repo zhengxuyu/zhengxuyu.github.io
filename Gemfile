@@ -2,16 +2,23 @@
 
 source "https://rubygems.org"
 
-# 添加缺失的依赖
-gem "bigdecimal"
-gem "logger"
-gem "base64"
-gem "csv"
-gem "kramdown-parser-gfm"
-gem "jekyll-sitemap", "~> 1.4.0"
-gem "jekyll-seo-tag", "~> 2.8.0"
-gem "jekyll-paginate", "~> 1.1"
-gem "bibtex-ruby", "~> 6.2"
+# Jekyll
+gem "jekyll", "~> 4.3.0"
 
-gemspec
+# Ruby 3.4 compatibility
+gem "csv"
+gem "base64"
+
+# Theme
+gem "plainwhite"
+
+# Jekyll plugins
+group :jekyll_plugins do
+  gem "jekyll-seo-tag", "~> 2.8.0"
+  gem "jekyll-sitemap", "~> 1.4.0"
+  gem "jekyll-paginate", "~> 1.1"
+end
+
+# Optional: for bibliography support
+gem "bibtex-ruby", "~> 6.2"
 

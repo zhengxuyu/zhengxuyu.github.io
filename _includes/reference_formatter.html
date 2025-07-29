@@ -1,0 +1,51 @@
+{%- comment -%}
+  Reference formatter for different citation styles
+  Usage: {% include reference_formatter.html key="beck_tutorial_2025" style="apa" %}
+{%- endcomment -%}
+
+{%- assign ref = site.data.references[include.key] -%}
+{%- assign style = include.style | default: "apa" -%}
+
+{%- if ref -%}
+  {%- case style -%}
+    {%- when "apa" -%}
+      {%- case ref.type -%}
+        {%- when "article" -%}
+          {{ ref.authors }}. ({{ ref.year }}). {{ ref.title }}. <em>{{ ref.journal }}</em>{%- if ref.volume -%}, {{ ref.volume }}{%- endif -%}{%- if ref.number -%}({{ ref.number }}){%- endif -%}{%- if ref.pages -%}, {{ ref.pages }}{%- endif -%}.{%- if ref.doi -%} <a href="https://doi.org/{{ ref.doi }}">doi:{{ ref.doi }}</a>{%- endif -%}
+        {%- when "inproceedings" -%}
+          {{ ref.authors }}. ({{ ref.year }}). {{ ref.title }}. In <em>{{ ref.booktitle }}</em>{%- if ref.pages -%} (pp. {{ ref.pages }}){%- endif -%}.{%- if ref.organization -%} {{ ref.organization }}.{%- endif -%}
+        {%- when "incollection" -%}
+          {{ ref.authors }}. ({{ ref.year }}). {{ ref.title }}. In <em>{{ ref.booktitle }}</em>{%- if ref.pages -%} (pp. {{ ref.pages }}){%- endif -%}.{%- if ref.publisher -%} {{ ref.publisher }}.{%- endif -%}
+        {%- when "thesis" -%}
+          {{ ref.authors }}. ({{ ref.year }}). {{ ref.title }}.{%- if ref.institution -%} {{ ref.institution }}.{%- endif -%}
+        {%- else -%}
+          {{ ref.authors }}. ({{ ref.year }}). {{ ref.title }}.{%- if ref.journal -%} <em>{{ ref.journal }}</em>.{%- endif -%}{%- if ref.doi -%} <a href="https://doi.org/{{ ref.doi }}">doi:{{ ref.doi }}</a>{%- endif -%}
+      {%- endcase -%}
+    {%- when "bibtex" -%}
+      @{{ ref.type }}{ {{ include.key }},
+        title = { {{ ref.title }} },
+        author = { {{ ref.authors }} },
+        {%- if ref.journal -%}journal = { {{ ref.journal }} },{%- endif -%}
+        {%- if ref.booktitle -%}booktitle = { {{ ref.booktitle }} },{%- endif -%}
+        {%- if ref.volume -%}volume = { {{ ref.volume }} },{%- endif -%}
+        {%- if ref.number -%}number = { {{ ref.number }} },{%- endif -%}
+        {%- if ref.pages -%}pages = { {{ ref.pages }} },{%- endif -%}
+        {%- if ref.publisher -%}publisher = { {{ ref.publisher }} },{%- endif -%}
+        {%- if ref.institution -%}institution = { {{ ref.institution }} },{%- endif -%}
+        year = { {{ ref.year }} },
+        {%- if ref.doi -%}doi = { {{ ref.doi }} },{%- endif -%}
+        {%- if ref.url -%}url = { {{ ref.url }} }{%- endif -%}
+      }
+    {%- else -%}
+      {{ ref.authors }}. {{ ref.title }}. {{ ref.year }}.
+  {%- endcase -%}
+{%- else -%}
+  <span class="reference-error">[Reference not found: {{ include.key }}]</span>
+{%- endif -%}
+
+<style>
+.reference-error {
+  color: #e53e3e;
+  font-style: italic;
+}
+</style> 

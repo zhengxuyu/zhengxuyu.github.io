@@ -1,0 +1,47 @@
+# References database for the site
+# Usage in posts: {% assign ref = site.data.references['beck_tutorial_2025'] %}
+
+beck_tutorial_2025:
+  title: "A Tutorial on Meta-Reinforcement Learning"
+  authors: "Beck, J., Vuorio, R., Liu, E. Z., Xiong, Z., Zintgraf, L., Finn, C., & Whiteson, S."
+  journal: "Foundations and Trends® in Machine Learning"
+  volume: "18"
+  number: "2"
+  pages: "224-384"
+  year: "2025"
+  doi: "10.1561/2200000080"
+  url: "http://arxiv.org/abs/2301.08028"
+  type: "article"
+
+schmidhuber_evolutionary_1987:
+  title: "Evolutionary principles in self-referential learning, or on learning how to learn: the meta-meta-... hook"
+  authors: "Schmidhuber, J."
+  institution: "Institut für Informatik, Technische Universität München"
+  year: "1987"
+  type: "thesis"
+
+thrun_lifelong_1998:
+  title: "Lifelong learning algorithms"
+  authors: "Thrun, S., & Pratt, L."
+  booktitle: "Learning to learn"
+  pages: "181-209"
+  publisher: "Springer"
+  year: "1998"
+  type: "incollection"
+
+wang_learning_2016:
+  title: "Learning to reinforcement learn"
+  authors: "Wang, J. X., Kurth-Nelson, Z., Tirumala, D., Soyer, H., Leibo, J. Z., Munos, R., Blundell, C., Kumaran, D., & Botvinick, M."
+  journal: "arXiv preprint arXiv:1611.05763"
+  year: "2016"
+  url: "https://arxiv.org/abs/1611.05763"
+  type: "article"
+
+human_timescale_2023:
+  title: "Human-Timescale Adaptation in an Open-Ended Task Space"
+  authors: "A. A. Team et al."
+  journal: "arXiv preprint arXiv:2301.07608"
+  year: "2023"
+  url: "https://arxiv.org/abs/2301.07608"
+  doi: "10.48550/arXiv.2301.07608"
+  type: "article" 

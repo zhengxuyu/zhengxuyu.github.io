@@ -27,10 +27,14 @@ paginate_path: "/blog/page:num/"
 twitter_username: ZhengxuYu
 github_username: ZhengxuYu
 
-# Minima date format
-# refer to http://shopify.github.io/liquid/filters/date/ if you want to customize this
+# Sass configuration
 sass:
   sass_dir: _sass
+  style: compressed
+
+# Theme configuration
+theme: plainwhite
+
 plainwhite:
   name: Zhengxu Yu
   tagline: |
@@ -86,9 +90,6 @@ plainwhite:
 # - about.md
 
 # Build settings
-#theme: plainwhite
-remote_theme: thelehhman/plainwhite-jekyll
-
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap

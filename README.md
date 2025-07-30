@@ -45,7 +45,7 @@ My recent work focuses on:
 
 ## License
 
-This project and its content are restricted and not available for reuse. All rights reserved.
+This project is open source and available under the [LICENSE.txt](LICENSE.txt) file.
 
 ---
 

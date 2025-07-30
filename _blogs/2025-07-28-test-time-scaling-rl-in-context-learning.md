@@ -4,7 +4,7 @@ title: "Test-Time Scaling via Reinforcement Learning Based In-Context Learning"
 date: 28/07/2025 14:30:00 +0000
 categories: PaperReading
 tags: [Reinforcement Learning, In-Context Learning, Test-Time Adaptation, Large Language Models]
-draft: true
+draft: false
 tldr: "This blog is a paper reading summary on LLMs, Reinforcement Learning, and In-Context Learning."
 
 ---
@@ -39,9 +39,23 @@ Traditional machine learning models are typically trained on a fixed dataset and
 
 In-context learning (ICL) has emerged as a powerful paradigm where models learn to perform new tasks by conditioning on a few examples provided in the input context. This approach offers several advantages:
 
+- **on-the-fly learning**: 
 - **Few-shot Learning**: Models can adapt to new tasks with minimal training data
 - **Flexibility**: No need to retrain or fine-tune the model
 - **Interpretability**: The learning process is transparent through the provided examples
+
+### Few-shot Learning vs. On-the-fly learning
+
+| Concept | Few-shot Learning | On-the-fly Learning |
+|--------|-------------------|---------------------|
+| **Core Idea** | Learns to solve a new task using a few examples | Learns to solve a task through interaction |
+| **When Learning Happens** | Before acting (prompted with support examples) | During acting (learns while interacting with the task) |
+| **Learning Signal** | A small number of examples (e.g., prompt data) | Trial-and-error feedback from the environment |
+| **Computational Cost** | Lower, as examples are fixed | Higher, due to dynamic processing and selection |
+| **Model Update** | Typically no gradient updates, uses memory/prompting | No weight updates; adapts via internal state/memory |
+| **Memory Usage** | Minimal additional memory | Requires memory for adaptation mechanisms |
+| **Involves Exploration?** | No (just inference based on prompt) | Yes (tries actions, observes outcomes, adapts) |
+| **Type of Decision** | Often single-shot | Typically multi-step, sequential decision-making |
 
 However, ICL has limitations in terms of scalability and efficiency, especially when dealing with varying computational constraints.
 
@@ -72,7 +86,9 @@ The reward function balances multiple objectives:
 
 # Taxonomy
 
-1. Training 
+1. few-shot vs. zero-shot
+2. online training vs. offline training
+3. 
 
 
 

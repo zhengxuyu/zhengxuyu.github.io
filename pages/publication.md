@@ -5,6 +5,7 @@ date:   2024-06-16
 ---
 # 2025
 - TokenSqueeze: Performance-Preserving Compression for Reasoning LLMs.
+
   Yuxiang Zhang*, **Zhengxu Yu***, Weihang Pan, Zhongming Jin, Qiang Fu, Binbin Lin, Deng Cai, Jieping Ye. (\* Co-first author)
   *NeurIPS'25*
 

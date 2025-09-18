@@ -3,6 +3,11 @@ layout: post
 title:  Publications
 date:   2024-06-16
 ---
+# 2025
+- TokenSqueeze: Performance-Preserving Compression for Reasoning LLMs.
+  Yuxiang Zhang*, **Zhengxu Yu***, Weihang Pan, Zhongming Jin, Qiang Fu, Binbin Lin, Deng Cai, Jieping Ye. (\* Co-first author)
+  *NeurIPS'25*
+
 # 2023
 - Optimizing traffic efficiency via a reinforcement learning approach based on time allocation.
 
@@ -26,7 +31,7 @@ date:   2024-06-16
 # 2021
 - Urban Traffic Light Control via Active Multi-agent Communication and Supply-Demand Modeling.
   
-  Xing Guo*, **Zhengxu Yu**, Pengfei Wang, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-shen Hua
+  Xing Guo*, **Zhengxu Yu***, Pengfei Wang, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-shen Hua
   (* Co-first author)
   
   *IEEE Transactions on Knowledge and Data Engineering* 

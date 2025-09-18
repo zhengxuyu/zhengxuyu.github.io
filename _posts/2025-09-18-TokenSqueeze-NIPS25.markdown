@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  New publication in NeurIPS 25.
+title:  New publication in NeurIPS'25.
 date:   2025-09-18 00:00:00 +0000
 categories: NewPublication
 ---

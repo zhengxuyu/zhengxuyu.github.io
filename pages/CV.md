@@ -4,7 +4,7 @@ title:  Resume
 date:   2025-07-29 18:58:09 +0530
 ---
 <!-- * [中文简历 (最后一次修改: 2020/08)](/assets/200817中文简历.pdf) -->
-* [CV (last modify: 2025/09)](/assets/zhengxu_cv_en_0918.pdf)
+* [CV (last modify: 2025/09)](/assets/zhengxu_cv_en_0923.pdf)
 
 <!-- # Work Experience
 ### 2021/04 - 2025/07 \| Aspara Lab. (former City Brain Lab., DAMO Academy), Alibaba Cloud, Alibaba Group 

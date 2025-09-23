@@ -119,8 +119,8 @@ plainwhite:
   navigation:
     - title: My Work
       url: "/my-work"
-    - title: Resume
-      url: "/resume"
+    - title: CV
+      url: "/CV"
 ```
 
 **Mobile**

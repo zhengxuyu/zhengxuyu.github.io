@@ -67,7 +67,7 @@ plainwhite:
       url: "/pages/works"
     - title: My Publications
       url: "/pages/publication"
-    - title: Resume
+    - title: CV
       url: "/pages/CV"
     - title: Blog
       url: "/pages/blog"

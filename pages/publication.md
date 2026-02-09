@@ -6,6 +6,13 @@ description: "Publications by Zhengxu Yu in Machine Learning, Reinforcement Lear
 keywords: "publications, papers, machine learning, reinforcement learning, computer vision, NeurIPS, IJCAI, AAAI, Zhengxu Yu"
 ---
 # 2025
+- ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning.
+
+  Weihang Pan, **Zhengxu Yu**, Yuxiang Zhang, Zhongming Jin, Binbin Lin, Xiaofei He, Jieping Ye
+  *AAAI'26*
+
+  [[paper]](https://openreview.net/forum?id=kmX7p4Xa0Y)
+
 - TokenSqueeze: Performance-Preserving Compression for Reasoning LLMs.
 
   Yuxiang Zhang*, **Zhengxu Yu***, Weihang Pan, Zhongming Jin, Qiang Fu, Binbin Lin, Deng Cai, Jieping Ye. (\* Co-first author)

@@ -1,7 +1,7 @@
 ---
 layout: blog-post
 title: "Why Creativity Might Not Exist"
-date: 09/02/2025 14:30:00 +0000
+date: 2025-02-09 14:30:00 +0000
 categories: Blog
 tags: [Creativity, Philosophy, AI]
 draft: false

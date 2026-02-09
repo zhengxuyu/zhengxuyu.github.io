@@ -12,6 +12,7 @@ layout: null
     <lastBuildDate>{{ site.time | date_to_xmlschema }}</lastBuildDate>
     
     {% for post in site.posts limit:20 %}
+    {% unless post.draft %}
     <item>
       <guid isPermaLink="true">{{ site.url }}{{ post.url }}</guid>
       <title>{{ post.title }}</title>
@@ -20,9 +21,11 @@ layout: null
       <pubDate>{{ post.date | date_to_xmlschema }}</pubDate>
       <author>{{ site.author }}</author>
     </item>
+    {% endunless %}
     {% endfor %}
-    
+
     {% for post in site.blogs limit:20 %}
+    {% unless post.draft %}
     <item>
       <guid isPermaLink="true">{{ site.url }}{{ post.url }}</guid>
       <title>{{ post.title }}</title>
@@ -31,6 +34,7 @@ layout: null
       <pubDate>{{ post.date | date_to_xmlschema }}</pubDate>
       <author>{{ site.author }}</author>
     </item>
+    {% endunless %}
     {% endfor %}
   </channel>
 </rss> 

@@ -2,6 +2,8 @@
 layout: post
 title:  CV
 date:   2025-07-29 18:58:09 +0530
+description: "Curriculum Vitae of Zhengxu Yu (余正旭), Research Scientist at Alibaba Cloud specializing in Machine Learning and Reinforcement Learning."
+keywords: "CV, curriculum vitae, resume, Zhengxu Yu, Alibaba Cloud, machine learning"
 ---
 <!-- * [中文简历 (最后一次修改: 2020/08)](/assets/200817中文简历.pdf) -->
 * [CV (last modify: 2025/09)](/assets/zhengxuyu_cv_en_0924.pdf)

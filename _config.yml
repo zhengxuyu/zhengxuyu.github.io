@@ -3,7 +3,7 @@ author: Zhengxu Yu
 email: yuzxfred AT gmail.com
 url: "https://zhengxuyu.github.io" # 添加网站URL
 description: > # this means to ignore newlines until "show_exerpts:"
-  Webpage of Zhengxu Yu (余正旭), yuzhengxu.
+  Personal website of Zhengxu Yu (余正旭), Research Scientist at Alibaba Cloud. Research on Machine Learning, Reinforcement Learning, and Large Language Models.
 show_excerpts: true # set to true to show excerpts on the homepage
 
 # SEO Configuration
@@ -140,3 +140,11 @@ defaults:
       layout: "page"
       author: "Zhengxu Yu"
       keywords: "Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research"
+  - scope:
+      path: ""
+      type: "blogs"
+    values:
+      layout: "blog-post"
+      author: "Zhengxu Yu"
+      description: "Blog post by Zhengxu Yu on Machine Learning, Reinforcement Learning, and AI research."
+      keywords: "machine learning, reinforcement learning, AI, research, Zhengxu Yu"

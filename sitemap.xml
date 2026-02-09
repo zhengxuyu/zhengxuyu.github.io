@@ -45,22 +45,26 @@ layout: null
         
         <!-- Blog posts -->
         {%- for post in site.posts -%}
+        {%- unless post.draft -%}
             <url>
                 <loc>{{ site.url }}{{ post.url }}</loc>
                 <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
                 <changefreq>monthly</changefreq>
                 <priority>0.80</priority>
             </url>
+        {%- endunless -%}
         {%- endfor -%}
-        
+
         <!-- Blog collection -->
         {%- for post in site.blogs -%}
+        {%- unless post.draft -%}
             <url>
                 <loc>{{ site.url }}{{ post.url }}</loc>
                 <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
                 <changefreq>monthly</changefreq>
                 <priority>0.80</priority>
             </url>
+        {%- endunless -%}
         {%- endfor -%}
         
         <!-- Pages -->

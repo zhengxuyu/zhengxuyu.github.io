@@ -1,8 +1,8 @@
 ---
 layout: blog-post
-title: "The Illusion of Creativity: Why Originality Might Not Exist"
+title: "Why Creativity Might Not Exist"
 date: 09/02/2025 14:30:00 +0000
-categories: Essay
+categories: Blog
 tags: [Creativity, Philosophy, AI]
 draft: false
 description: "An essay arguing that creativity is recombination of experience perturbed by noise and filtered by selection, not a magical spark of originality."

@@ -1,14 +1,81 @@
 @use 'ext/solarized-light';
 
 .highlight {
-	background-color: #f4f4f4;
+  background-color: var(--color-code-bg, #f4f4f4);
+  transition: var(--transition-theme);
 }
 
 div.highlight {
-	padding: 5px 20px;
+  padding: 5px 20px;
+  border-radius: var(--border-radius, 8px);
 }
+
 pre.highlight, code {
-	font-family: 'Consolas', Menlo, monospace;
-	line-height: 1.4em;
-	tab-size: 4;
+  font-family: var(--font-mono, 'Consolas', Menlo, monospace);
+  line-height: 1.4em;
+  tab-size: 4;
+}
+
+// Dark mode syntax highlighting
+[data-theme="dark"] {
+  .highlight {
+    background-color: #18181b;
+  }
+
+  // Override solarized-light colors for dark mode
+  .highlight {
+    .c, .cm, .c1, .cs { color: #71717a; } // comments
+    .k, .kc, .kd, .kn, .kp, .kr, .kt { color: #7dd3fc; } // keywords
+    .s, .sb, .sc, .sd, .s2, .se, .sh, .si, .sx, .s1 { color: #86efac; } // strings
+    .na { color: #93c5fd; } // name attribute
+    .nb { color: #c4b5fd; } // name builtin
+    .nc { color: #fca5a5; } // name class
+    .no { color: #fbbf24; } // name constant
+    .nd { color: #93c5fd; } // name decorator
+    .ni { color: #e4e4e7; } // name entity
+    .ne { color: #fca5a5; } // name exception
+    .nf { color: #93c5fd; } // name function
+    .nn { color: #fca5a5; } // name namespace
+    .nt { color: #7dd3fc; } // name tag
+    .nv, .vc, .vg, .vi { color: #fbbf24; } // variables
+    .o, .ow { color: #a1a1aa; } // operators
+    .p { color: #e4e4e7; } // punctuation
+    .m, .mf, .mh, .mi, .mo { color: #c4b5fd; } // numbers
+    .err { color: #fca5a5; } // error
+    .gd { color: #fca5a5; } // diff deleted
+    .gi { color: #86efac; } // diff inserted
+    .w { color: #71717a; } // whitespace
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    .highlight {
+      background-color: #18181b;
+    }
+
+    .highlight {
+      .c, .cm, .c1, .cs { color: #71717a; }
+      .k, .kc, .kd, .kn, .kp, .kr, .kt { color: #7dd3fc; }
+      .s, .sb, .sc, .sd, .s2, .se, .sh, .si, .sx, .s1 { color: #86efac; }
+      .na { color: #93c5fd; }
+      .nb { color: #c4b5fd; }
+      .nc { color: #fca5a5; }
+      .no { color: #fbbf24; }
+      .nd { color: #93c5fd; }
+      .ni { color: #e4e4e7; }
+      .ne { color: #fca5a5; }
+      .nf { color: #93c5fd; }
+      .nn { color: #fca5a5; }
+      .nt { color: #7dd3fc; }
+      .nv, .vc, .vg, .vi { color: #fbbf24; }
+      .o, .ow { color: #a1a1aa; }
+      .p { color: #e4e4e7; }
+      .m, .mf, .mh, .mi, .mo { color: #c4b5fd; }
+      .err { color: #fca5a5; }
+      .gd { color: #fca5a5; }
+      .gi { color: #86efac; }
+      .w { color: #71717a; }
+    }
+  }
 }

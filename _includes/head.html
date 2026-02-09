@@ -2,6 +2,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+<!-- FOUC Prevention: set theme before any rendering -->
+<script>
+  (function() {
+    var saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+    // 'auto' or null: no attribute, let CSS media query handle it
+  })();
+</script>
+
 <!-- SEO Meta Tags -->
 {% assign seo_description = page.description | default: page.tldr | default: site.description | strip_html | truncate: 160 %}
 <meta name="description" content="{{ seo_description }}">
@@ -70,7 +83,7 @@
 {%- endif -%}
 
 <!-- Fonts and Styles -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
 <link rel="stylesheet" href="{{ "/assets/css/custom-layout.css" | relative_url }}">
 

@@ -1,0 +1,107 @@
+// =============================================================================
+// Design System: CSS Custom Properties
+// =============================================================================
+
+:root {
+  // Colors - Light Theme
+  --color-accent: #2698ba;
+  --color-accent-hover: #1e7a96;
+  --color-accent-light: rgba(38, 152, 186, 0.1);
+
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-card: #ffffff;
+
+  --color-text-primary: #212529;
+  --color-text-secondary: #495057;
+  --color-text-tertiary: #868e96;
+
+  --color-border: #e2e8f0;
+  --color-divider: #dee2e6;
+
+  // Shadows
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  // Typography
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Consolas', 'Monaco', 'Menlo', monospace;
+  --font-size-base: 16px;
+  --line-height: 1.7;
+
+  // Layout
+  --sidebar-width: 240px;
+  --content-max-width: 930px;
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+
+  // Transitions
+  --transition-speed: 0.3s;
+  --transition-theme: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+
+  // Code blocks (light)
+  --color-code-bg: #f7f8fa;
+  --color-code-text: #e53e3e;
+  --color-code-border: #e2e8f0;
+  --color-pre-bg: #2d3748;
+  --color-pre-text: #e2e8f0;
+}
+
+// Dark Theme
+[data-theme="dark"] {
+  --color-accent: #2698ba;
+  --color-accent-hover: #3ab4d6;
+  --color-accent-light: rgba(38, 152, 186, 0.15);
+
+  --color-bg-primary: #1c1c1d;
+  --color-bg-secondary: #242426;
+  --color-bg-card: #242426;
+
+  --color-text-primary: #e4e4e7;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+
+  --color-border: #3f3f46;
+  --color-divider: #3f3f46;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+  --color-code-bg: #2a2a2e;
+  --color-code-text: #ff8b8b;
+  --color-code-border: #3f3f46;
+  --color-pre-bg: #18181b;
+  --color-pre-text: #e4e4e7;
+}
+
+// System auto-detect (only applies when no data-theme is set)
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --color-accent: #2698ba;
+    --color-accent-hover: #3ab4d6;
+    --color-accent-light: rgba(38, 152, 186, 0.15);
+
+    --color-bg-primary: #1c1c1d;
+    --color-bg-secondary: #242426;
+    --color-bg-card: #242426;
+
+    --color-text-primary: #e4e4e7;
+    --color-text-secondary: #a1a1aa;
+    --color-text-tertiary: #71717a;
+
+    --color-border: #3f3f46;
+    --color-divider: #3f3f46;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+    --color-code-bg: #2a2a2e;
+    --color-code-text: #ff8b8b;
+    --color-code-border: #3f3f46;
+    --color-pre-bg: #18181b;
+    --color-pre-text: #e4e4e7;
+  }
+}

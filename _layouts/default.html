@@ -3,137 +3,107 @@
   <head>
     {%- include head.html -%}
     {%- include structured-data.html -%}
-    <style>
-    /* 全局分割线样式 - 从blog.html复用 */
-    @media screen and (min-width: 769px) {
-      .content {
-        padding-right: 60px !important;
-        box-sizing: border-box !important;
-        position: relative !important;
-      }
-      
-      /* 添加左侧分割线 */
-      .content::before {
-        content: '';
-        position: absolute;
-        left: -15px;
-        top: 20px;
-        bottom: 20px;
-        width: 2px;
-        background: linear-gradient(to bottom, 
-          transparent 0%, 
-          #c0c0c0 20%, 
-          #a0a0a0 50%, 
-          #c0c0c0 80%, 
-          transparent 100%);
-        border-radius: 1px;
-        box-shadow: 
-          0 0 8px rgba(0,0,0,0.1),
-          inset 0 0 2px rgba(255,255,255,0.3);
-      }
-      
-      .post {
-        max-width: 100% !important;
-        overflow-wrap: break-word !important;
-        word-wrap: break-word !important;
-      }
-      
-      .post img {
-        max-width: 100% !important;
-        height: auto !important;
-      }
-      
-      .post pre {
-        overflow-x: auto !important;
-        max-width: 100% !important;
-      }
-      
-      .post code {
-        word-break: break-all !important;
-      }
-    }
-
-    /* 移动端保持原有布局 */
-    @media screen and (max-width: 768px) {
-      .content {
-        max-width: 100% !important;
-        width: 100% !important;
-        margin-left: 0 !important;
-        padding-right: 0 !important;
-      }
-      
-      .content::before {
-        display: none !important;
-      }
-    }
-    </style>
   </head>
   <body>
     <main class="container">
       <section class="about">
         <a href="/"><img src="{{"/assets/ZhengxuYu.jpeg" | relative_url }}" alt="{{ site.plainwhite.name }}"></a>
         <h2 id="title">
-          <a href="/" style="width: 100%; font-size: 0.9em;">{{ site.plainwhite.name }}</a>
+          <a href="/">{{ site.plainwhite.name }}</a>
         </h2>
-        <p class="tagline" align="center" style="width:100%; font-size: 0.9em;">{{ site.plainwhite.tagline }}</p>
+        <p class="tagline">{{ site.plainwhite.tagline }}</p>
         <ul class="social">
           {%- if site.plainwhite.social_links.github -%}
             <a href="https://github.com/{{ site.plainwhite.social_links.github }}">
-              <li>
-                <i class="icon-github-circled"></i>
-              </li>
+              <li><i class="icon-github-circled"></i></li>
             </a>
           {%- endif -%}
           {%- if site.plainwhite.social_links.linkedIn -%}
             <a href="https://www.linkedin.com/{{ site.plainwhite.social_links.linkedIn }}">
-              <li>
-                <i class="icon-linkedin-squared"></i>
-              </li>
+              <li><i class="icon-linkedin-squared"></i></li>
             </a>
           {%- endif -%}
           {%- if site.plainwhite.social_links.twitter -%}
             <a href="https://twitter.com/{{ site.plainwhite.social_links.twitter }}">
-              <li>
-                <i class="icon-twitter-squared"></i>
-              </li>
+              <li><i class="icon-twitter-squared"></i></li>
             </a>
           {%- endif -%}
           <a href="https://scholar.google.com/citations?user=qsLLazoAAAAJ&hl=zh-CN">
-              <li>
-                <i class="icon-google"></i>
-              </li>
+              <li><i class="icon-google"></i></li>
           </a>
         </ul>
-
 
         {%- if site.plainwhite.navigation -%}
           <nav class="navigation">
             <ul>
               {% for link in site.plainwhite.navigation %}
                 <li>
-                  <a href="{{ link.url }}" style="font-size: 0.9em;">{{ link.title }}</a>
+                  <a href="{{ link.url }}">{{ link.title }}</a>
                 </li>
               {% endfor %}
             </ul>
           </nav>
         {%- endif -%}
-        <p align="center" style="width:100%; font-size: 0.9em;">Email: {{ site.plainwhite.email_display }}</p>
-        <p>&copy;
-          {{ "now" | date: "%Y" }}</p>
+
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></svg>
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.98 6.98 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/></svg>
+          <svg class="icon-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2V4a8 8 0 1 0 0 16z"/></svg>
+        </button>
+
+        <p>Email: {{ site.plainwhite.email_display }}</p>
+        <p>&copy; {{ "now" | date: "%Y" }}</p>
       </section>
       <section class="content">
         {{ content }}
       </section>
     </main>
+
     {%- if site.plainwhite.analytics_id -%}
       <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.plainwhite.analytics_id }}"></script>
       <script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag() { dataLayer.push(arguments); }
-		gtag('js', new Date());
-
-		gtag('config', '{{ site.plainwhite.analytics_id }}');
-	</script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', '{{ site.plainwhite.analytics_id }}');
+      </script>
     {%- endif -%}
+
+    <!-- Theme Toggle Script -->
+    <script>
+      (function() {
+        var btn = document.getElementById('theme-toggle');
+        // States: 'auto' -> 'light' -> 'dark' -> 'auto'
+        var states = ['auto', 'light', 'dark'];
+        var current = localStorage.getItem('theme') || 'auto';
+
+        function applyTheme(theme) {
+          current = theme;
+          localStorage.setItem('theme', theme);
+
+          if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            btn.className = 'theme-toggle theme-dark';
+          } else if (theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.className = 'theme-toggle';
+          } else {
+            // auto
+            document.documentElement.removeAttribute('data-theme');
+            btn.className = 'theme-toggle theme-auto';
+          }
+        }
+
+        // Initialize
+        applyTheme(current);
+
+        btn.addEventListener('click', function() {
+          var idx = states.indexOf(current);
+          var next = states[(idx + 1) % states.length];
+          applyTheme(next);
+        });
+      })();
+    </script>
   </body>
 </html>

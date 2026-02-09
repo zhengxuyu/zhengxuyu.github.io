@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Publications
-date: 2024-06-16
+date: 2026-02-09
 description: "Publications by Zhengxu Yu in Machine Learning, Reinforcement Learning, Computer Vision, and AI. Published at NeurIPS, IJCAI, AAAI, IEEE TIP, and more."
 keywords: "publications, papers, machine learning, reinforcement learning, computer vision, NeurIPS, IJCAI, AAAI, Zhengxu Yu"
 ---

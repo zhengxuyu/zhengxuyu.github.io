@@ -10,6 +10,16 @@ show_excerpts: true # set to true to show excerpts on the homepage
 keywords: "Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research, Computer Science, 机器学习, 人工智能, 计算机科学"
 google_analytics: # 添加Google Analytics ID（如果需要）
   - "G-6CYR8K1ZK6"
+
+# Umami Analytics (隐私友好的后台分析)
+# 注册 https://cloud.umami.is 获取 website_id 和 script_url
+umami:
+  enabled: true
+  website_id: "5d47ee59-3f4e-4dbf-954e-622d575c19ae"
+  script_url: "https://cloud.umami.is/script.js"
+
+# 不蒜子访问计数器 (页面上显示访问次数)
+busuanzi: true
 google_site_verification: # 添加Google Search Console验证码（如果需要）
 #  - "xxxxxxxxxxxxxxxxxxxxx"
 

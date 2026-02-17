@@ -239,6 +239,23 @@ layout: default
   background: var(--color-bg-secondary);
 }
 
+/* Post Stats (busuanzi) */
+.post-stats {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: 1.5rem;
+  color: var(--color-text-tertiary);
+  font-size: 0.88rem;
+}
+
+.post-stats .stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 /* Disqus */
 #disqus_thread {
   margin-top: 2.5rem;
@@ -303,6 +320,14 @@ layout: default
   <div class="post">
     {{ content }}
   </div>
+  {%- if site.busuanzi -%}
+  <div class="post-stats">
+    <span class="stat-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span id="busuanzi_value_page_pv">-</span> views
+    </span>
+  </div>
+  {%- endif -%}
   {%- if site.plainwhite.disqus_shortname -%}
   <div id="disqus_thread" style="margin-top:25px"></div>
   <script>

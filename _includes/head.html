@@ -82,6 +82,16 @@
 </script>
 {%- endif -%}
 
+<!-- Umami Analytics -->
+{%- if site.umami.enabled -%}
+<script defer src="{{ site.umami.script_url }}" data-website-id="{{ site.umami.website_id }}"></script>
+{%- endif -%}
+
+<!-- 不蒜子访问计数 -->
+{%- if site.busuanzi -%}
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+{%- endif -%}
+
 <!-- Fonts and Styles -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">

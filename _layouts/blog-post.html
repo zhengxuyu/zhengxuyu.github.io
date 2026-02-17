@@ -284,6 +284,23 @@ layout: default
   background: var(--color-bg-secondary);
 }
 
+/* Article Stats (busuanzi) */
+.article-stats {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: 1.5rem;
+  color: var(--color-text-tertiary);
+  font-size: 0.88rem;
+}
+
+.article-stats .stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 /* Article Navigation */
 .article-navigation {
   margin-top: 3rem;
@@ -441,6 +458,15 @@ layout: default
         {{ content | citation_links | split: '<!--references-->' | first }}
         {% bibtex_references %}
       </div>
+
+      {%- if site.busuanzi -%}
+      <div class="article-stats">
+        <span class="stat-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span id="busuanzi_value_page_pv">-</span> views
+        </span>
+      </div>
+      {%- endif -%}
 
       <nav class="article-navigation">
         <a href="/pages/blog/" class="back-to-blog">Back to Blog List</a>

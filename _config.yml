@@ -29,15 +29,15 @@ busuanzi: true
 giscus:
   enabled: true
   repo: "zhengxuyu/zhengxuyu.github.io"
-  repo_id: ""           # 从 giscus.app 获取
-  category: "Blog Comments"
-  category_id: ""       # 从 giscus.app 获取
+  repo_id: "MDEwOlJlcG9zaXRvcnkyNTI2MTI3MjI="
+  category: "General"
+  category_id: "DIC_kwDODw6Qcs4C3Zbz"
   mapping: "pathname"
   reactions_enabled: "1"
   emit_metadata: "0"
-  theme_light: "light"
+  theme_light: "preferred_color_scheme"
   theme_dark: "dark"
-  lang: "zh-CN"
+  lang: "en"
 google_site_verification: # 添加Google Search Console验证码（如果需要）
 #  - "xxxxxxxxxxxxxxxxxxxxx"
 

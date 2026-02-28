@@ -21,23 +21,22 @@ umami:
 # 不蒜子访问计数器 (页面上显示访问次数)
 busuanzi: true
 
-# Giscus 评论系统 (基于 GitHub Discussions)
+# Waline 评论系统 (支持匿名留言 + 可选登录, 后端 Vercel + Neon PostgreSQL)
 # 设置步骤:
-#   1. 在 GitHub 仓库 Settings > Features 中开启 Discussions
-#   2. 访问 https://giscus.app 填入仓库名, 获取 repo_id 和 category_id
-#   3. 安装 giscus GitHub App: https://github.com/apps/giscus
-giscus:
+#   1. 注册 Neon (neon.tech, 用 GitHub 登录), 创建 Project, 拿到 Connection String:
+#      postgresql://USER:PASSWORD@HOST/DB?sslmode=require
+#   2. 一键部署 Waline 后端到 Vercel:
+#      https://vercel.com/new/clone?repository-url=https://github.com/walinejs/waline/tree/main/example
+#   3. 在 Vercel 项目 Settings > Environment Variables 中添加:
+#      PG_HOST = ep-solitary-art-airs72or-pooler.c-4.us-east-1.aws.neon.tech
+#      PG_PORT = 5432
+#      PG_DB   = neondb
+#      PG_USER = neondb_owner
+#      PG_PASSWORD = npg_dn7PArGqL9ly
+#   4. 在 Vercel 中 Redeploy, 部署完成后将域名填入下方 server_url
+waline:
   enabled: true
-  repo: "zhengxuyu/zhengxuyu.github.io"
-  repo_id: "MDEwOlJlcG9zaXRvcnkyNTI2MTI3MjI="
-  category: "General"
-  category_id: "DIC_kwDODw6Qcs4C3Zbz"
-  mapping: "pathname"
-  reactions_enabled: "1"
-  emit_metadata: "0"
-  theme_light: "preferred_color_scheme"
-  theme_dark: "dark"
-  lang: "en"
+  server_url: ""  # 填入 Vercel 部署后的 URL, 如 https://your-waline.vercel.app
 google_site_verification: # 添加Google Search Console验证码（如果需要）
 #  - "xxxxxxxxxxxxxxxxxxxxx"
 

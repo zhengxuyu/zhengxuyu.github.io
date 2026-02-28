@@ -3,11 +3,11 @@ author: Zhengxu Yu
 email: yuzxfred AT gmail.com
 url: "https://zhengxuyu.github.io" # 添加网站URL
 description: > # this means to ignore newlines until "show_exerpts:"
-  Personal website of Zhengxu Yu (余正旭), Research Scientist at Alibaba Cloud. Research on Machine Learning, Reinforcement Learning, and Large Language Models.
+  Personal website of Zhengxu Yu (余正旭), AI Researcher at Huawei London Research Centre. Research on Autonomous AI Agents, Agentic RL, and Large Language Models.
 show_excerpts: true # set to true to show excerpts on the homepage
 
 # SEO Configuration
-keywords: "Zhengxu Yu, 余正旭, Alibaba Cloud, Machine Learning, AI, Research, Computer Science, 机器学习, 人工智能, 计算机科学"
+keywords: "Zhengxu Yu, 余正旭, Huawei, AI Agents, Agentic RL, Large Language Models, Machine Learning, AI, Research, 机器学习, 人工智能"
 google_analytics: # 添加Google Analytics ID（如果需要）
   - "G-6CYR8K1ZK6"
 
@@ -46,10 +46,10 @@ waline:
 #   4. 你发布新文章后, 在 Buttondown 后台一键群发, 或开启 RSS 自动发送
 buttondown:
   enabled: true
-  username: ""  # 填入你的 Buttondown 用户名
+  username: "zhengxu"
 
-google_site_verification: # 添加Google Search Console验证码（如果需要）
-#  - "xxxxxxxxxxxxxxxxxxxxx"
+google_site_verification:
+  - "5_G9Ur3Oj5gPykXrJDkk-yIhoOHS4QCX2tzLjSV04ko"
 
 # Enhanced SEO Settings
 lang: zh-CN
@@ -95,8 +95,9 @@ exclude:
 plainwhite:
   name: Zhengxu Yu
   tagline: |
-    Alibaba Cloud,
-    Alibaba Group
+    AI Researcher,
+    Huawei London Research Centre
+    (ex-Alibaba)
   date_format: "%b %-d, %Y"
   sitemap: true # set to true to generate sitemap.xml content
   email_display: "yuzxfred AT gmail.com"
@@ -152,7 +153,7 @@ plugins:
   - jekyll-sitemap
   - jekyll-paginate
 #  - jekyll-remote-theme
-#  - jekyll-feed
+  - jekyll-feed
 
 # Blog configuration
 collections:

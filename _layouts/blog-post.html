@@ -491,10 +491,10 @@ layout: default
       <section class="article-comments">
         <h2>Comments</h2>
         <div id="waline"></div>
-        <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.css" />
         <script type="module">
-          import Waline from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
-          Waline.init({
+          import { init } from 'https://cdn.jsdelivr.net/npm/@waline/client@v3/dist/waline.js';
+          init({
             el: '#waline',
             serverURL: '{{ site.waline.server_url }}',
             login: 'enable',

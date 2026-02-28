@@ -1,2 +1,2 @@
-* I was an AI Researcher at the Apsara Lab (formerly City Brain Lab, DAMO Academy), Alibaba Cloud, Alibaba Group. Before joining Alibaba, I received my Ph.D. from Zhejiang University, under the supervision of Prof. Deng Cai and Prof. Xiaofei He.
-* My research interests mainly lie in Reinforcement Learning, Large Language Models, and In-Context Learning. Here is my [DBLP page](https://dblp.org/pid/246/3155). 
+* I am an AI Researcher at Huawei London Research Centre. Previously, I was at the Apsara Lab (formerly City Brain Lab, DAMO Academy), Alibaba Cloud, Alibaba Group. I received my Ph.D. from Zhejiang University, under the supervision of Prof. Deng Cai and Prof. Xiaofei He.
+* My research interests mainly lie in Autonomous AI Agents, Agentic RL, and Large Language Models. Here is my [DBLP page](https://dblp.org/pid/246/3155). 

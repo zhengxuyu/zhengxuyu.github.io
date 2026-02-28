@@ -301,6 +301,25 @@ layout: default
   gap: 0.4rem;
 }
 
+/* Comments Section */
+.article-comments {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+  transition: var(--transition-theme);
+}
+
+.article-comments h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.giscus {
+  max-width: 100%;
+}
+
 /* Article Navigation */
 .article-navigation {
   margin-top: 3rem;
@@ -466,6 +485,47 @@ layout: default
           <span id="busuanzi_value_page_pv">-</span> views
         </span>
       </div>
+      {%- endif -%}
+
+      {%- if site.giscus.enabled -%}
+      <section class="article-comments">
+        <h2>Comments</h2>
+        <script src="https://giscus.app/client.js"
+          data-repo="{{ site.giscus.repo }}"
+          data-repo-id="{{ site.giscus.repo_id }}"
+          data-category="{{ site.giscus.category }}"
+          data-category-id="{{ site.giscus.category_id }}"
+          data-mapping="{{ site.giscus.mapping }}"
+          data-strict="0"
+          data-reactions-enabled="{{ site.giscus.reactions_enabled }}"
+          data-emit-metadata="{{ site.giscus.emit_metadata }}"
+          data-input-position="top"
+          data-theme="{{ site.giscus.theme_light }}"
+          data-lang="{{ site.giscus.lang }}"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async>
+        </script>
+      </section>
+      <script>
+        // Sync giscus theme with site dark/light mode
+        function updateGiscusTheme() {
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+            || document.body.classList.contains('dark-mode');
+          const theme = isDark ? '{{ site.giscus.theme_dark }}' : '{{ site.giscus.theme_light }}';
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (iframe) {
+            iframe.contentWindow.postMessage(
+              { giscus: { setConfig: { theme: theme } } },
+              'https://giscus.app'
+            );
+          }
+        }
+        // Observe theme changes
+        const observer = new MutationObserver(updateGiscusTheme);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+      </script>
       {%- endif -%}
 
       <nav class="article-navigation">

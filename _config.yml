@@ -28,15 +28,26 @@ busuanzi: true
 #   2. 一键部署 Waline 后端到 Vercel:
 #      https://vercel.com/new/clone?repository-url=https://github.com/walinejs/waline/tree/main/example
 #   3. 在 Vercel 项目 Settings > Environment Variables 中添加:
-#      PG_HOST = ep-solitary-art-airs72or-pooler.c-4.us-east-1.aws.neon.tech
+#      PG_HOST = YOUR_NEON_HOST
 #      PG_PORT = 5432
-#      PG_DB   = neondb
-#      PG_USER = neondb_owner
-#      PG_PASSWORD = npg_dn7PArGqL9ly
+#      PG_DB   = YOUR_DATABASE_NAME
+#      PG_USER = YOUR_DATABASE_USER
+#      PG_PASSWORD = YOUR_PASSWORD_HERE
 #   4. 在 Vercel 中 Redeploy, 部署完成后将域名填入下方 server_url
 waline:
   enabled: true
-  server_url: ""  # 填入 Vercel 部署后的 URL, 如 https://your-waline.vercel.app
+  server_url: "https://my-waline-olive.vercel.app"
+
+# Buttondown 邮件订阅 (免费, 支持 100 订阅者)
+# 设置步骤:
+#   1. 注册 https://buttondown.com (免费)
+#   2. 将你的 username 填入下方
+#   3. 读者在博客页面输入邮箱即可订阅
+#   4. 你发布新文章后, 在 Buttondown 后台一键群发, 或开启 RSS 自动发送
+buttondown:
+  enabled: true
+  username: ""  # 填入你的 Buttondown 用户名
+
 google_site_verification: # 添加Google Search Console验证码（如果需要）
 #  - "xxxxxxxxxxxxxxxxxxxxx"
 

@@ -12,10 +12,11 @@ layout: default
 
 <style>
 .page-container {
-  background: rgba(255,255,255,0.85) !important;
-}
-[data-theme="dark"] .page-container {
-  background: rgba(30,30,30,0.85) !important;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 .page-footer {
   text-align: center;

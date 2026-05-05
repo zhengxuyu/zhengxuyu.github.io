@@ -115,12 +115,12 @@ plainwhite:
 
   # generate social links in footer
   social_links:
-    # twitter: thelehhman
+    twitter: yuzxfred
     github:  ZhengxuYu
+    linkedIn: in/yuzhengxu
     email: yuzxfred AT gmail.com
     dblp: Zhengxu_Yu
     orcid: 0000-0002-6059-0300
-    #linkedIn: in/thelehhman
     # rss: rss
     # dribbble: jekyll
     # facebook: jekyll

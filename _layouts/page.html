@@ -5,4 +5,18 @@ layout: default
     <div class="post">
         {{ content }}
     </div>
+    <footer class="page-footer">
+        &copy; {{ "now" | date: "%Y" }} {{ site.plainwhite.name | default: "Zhengxu Yu" }}
+    </footer>
 </div>
+
+<style>
+.page-footer {
+  text-align: center;
+  padding: 2rem 0 0.5rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.82rem;
+  color: var(--color-text-tertiary);
+}
+</style>

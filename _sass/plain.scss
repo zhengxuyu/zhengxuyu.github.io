@@ -218,23 +218,39 @@ main {
   padding: 0;
   margin-top: 12px;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 4px;
+  max-width: 120px;
 
   li {
-    i {
+    i, svg {
       font-size: 28px;
+      width: 28px;
+      height: 28px;
       color: var(--color-text-tertiary);
-      transition: color var(--transition-speed);
-      &:hover {
-        color: var(--color-accent);
-      }
+      fill: var(--color-text-tertiary);
+      transition: color var(--transition-speed), fill var(--transition-speed);
+    }
+    &:hover i, &:hover svg {
+      color: var(--color-accent);
+      fill: var(--color-accent);
+    }
+  }
+
+  a:hover {
+    li svg {
+      fill: var(--color-accent);
     }
   }
 
   @media screen and (max-width: $mobileW) {
     margin-top: 8px;
-    li i {
+    max-width: none;
+    li i, li svg {
       font-size: 24px;
+      width: 24px;
+      height: 24px;
     }
   }
 }

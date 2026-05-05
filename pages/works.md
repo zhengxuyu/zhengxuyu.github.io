@@ -49,7 +49,29 @@ keywords: "research projects, open source, transfer learning, traffic control, c
       <p class="section-subtitle">Open source contributions and code implementations that promote reproducibility of academic research and community development</p>
     </div>
     <div class="works-grid">
-      
+
+      <div class="work-card">
+        <div class="work-image">
+          OMC
+        </div>
+        <div class="work-content">
+          <h3 class="work-title">OneManCompany (OMC)</h3>
+          <p class="work-description">
+            An open-source agentic operating system that enables individuals to build and manage AI-powered companies. Users act as CEO while AI agents serve as autonomous employees, collaborating through hierarchical teams on complex projects.
+          </p>
+          <div class="work-tags">
+            <span class="work-tag">AI Agents</span>
+            <span class="work-tag">Agent Orchestration</span>
+            <span class="work-tag">Open Source</span>
+          </div>
+          <div class="work-links">
+            <a href="https://github.com/1mancompany/OneManCompany" class="work-link">
+              <i class="icon-github-circled"></i> GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div class="work-card">
         <div class="work-image">
           GitHub

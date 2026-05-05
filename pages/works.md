@@ -32,6 +32,9 @@ keywords: "research projects, open source, transfer learning, traffic control, c
             <a href="https://github.com/1mancompany/OneManCompany" class="work-link">
               <i class="icon-github-circled"></i> GitHub
             </a>
+            <a href="https://arxiv.org/abs/2604.22446" class="work-link secondary">
+              <i class="icon-doc-text"></i> Paper
+            </a>
           </div>
         </div>
       </div>

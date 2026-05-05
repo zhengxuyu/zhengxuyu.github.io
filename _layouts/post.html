@@ -7,7 +7,19 @@ layout: default
 .post-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem 0;
+  padding: 2.5rem 3rem;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--border-radius-lg);
+}
+
+@media (max-width: 768px) {
+  .post-container {
+    padding: 1.5rem 1.25rem;
+  }
 }
 
 .post-link {
@@ -267,10 +279,6 @@ layout: default
 }
 
 @media (max-width: 768px) {
-  .post-container {
-    padding: 1rem 0;
-  }
-
   .post-container > .post-title {
     font-size: 1.8rem;
   }

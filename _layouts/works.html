@@ -106,19 +106,22 @@ layout: default
 
 .work-image {
   width: 100%;
-  height: 180px;
+  aspect-ratio: 2 / 1;
   background: rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: 1.6em;
+  font-weight: 700;
 }
 
 .work-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 
@@ -248,7 +251,7 @@ layout: default
   }
 
   .work-image {
-    height: 140px;
+    aspect-ratio: 2 / 1;
   }
 
   .work-content {
@@ -301,8 +304,12 @@ layout: default
       img.alt = repo;
       img.onerror = function() {
         this.style.display = 'none';
-        var fallback = this.parentElement.querySelector('.work-image-fallback');
-        if (fallback) fallback.style.display = 'flex';
+        var title = card.querySelector('.work-title');
+        if (title) {
+          var span = document.createElement('span');
+          span.textContent = title.textContent;
+          this.parentElement.appendChild(span);
+        }
       };
     }
 

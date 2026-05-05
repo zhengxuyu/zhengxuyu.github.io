@@ -1,0 +1,476 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {%- include head.html -%}
+    {%- include structured-data.html -%}
+  </head>
+  <body>
+    <div class="page-bg"></div>
+
+    <style>
+/* Homepage Layout */
+.home-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 24px 60px;
+}
+
+/* Nav */
+.home-nav {
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.nav-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+.nav-logo:hover { color: var(--color-accent-gold); }
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.nav-links a {
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: #fff; }
+
+/* Hero */
+.home-hero {
+  padding: 48px 40px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.hero-text h1 {
+  font-size: 38px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+.hero-text p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.7;
+  max-width: 460px;
+  margin: 0;
+}
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+.btn-primary {
+  background: rgba(196,132,62,0.85);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: rgba(196,132,62,1); color: #fff; }
+.btn-secondary {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.85);
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.2); color: #fff; }
+.hero-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+.hero-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.social-icons {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.social-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 16px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.social-icon:hover { background: rgba(255,255,255,0.2); color: #fff; }
+.social-icon i { font-size: 16px; }
+
+/* Bento Grid */
+.home-bento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.bento-card {
+  padding: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+}
+.bento-wide {
+  grid-column: span 2;
+}
+.bento-label {
+  font-size: 11px;
+  color: var(--color-accent-gold, #E8B878);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.bento-item {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.bento-item:last-of-type {
+  border-bottom: none;
+}
+.bento-item-title {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+}
+.bento-item-title a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.bento-item-title a:hover { color: #E8B878; }
+.bento-item-meta {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
+  margin-left: 12px;
+}
+.bento-item-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 2px;
+  line-height: 1.5;
+}
+.bento-item-desc strong { color: #E8B878; }
+.bento-view-all {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12px;
+  color: #E8B878;
+  text-decoration: none;
+  font-weight: 500;
+}
+.bento-view-all:hover { text-decoration: underline; color: #E8B878; }
+
+/* Blog mini cards */
+.blog-cards {
+  display: flex;
+  gap: 12px;
+}
+.blog-mini {
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 14px;
+  transition: background 0.2s;
+}
+.blog-mini:hover { background: rgba(255,255,255,0.1); }
+.blog-mini-date {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 6px;
+}
+.blog-mini-title {
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+  line-height: 1.4;
+}
+.blog-mini-title a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+}
+.blog-mini-title a:hover { color: #E8B878; }
+
+/* Publication venue badge */
+.pub-venue {
+  font-size: 10px;
+  background: rgba(232,184,120,0.15);
+  color: #E8B878;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Footer */
+.home-footer {
+  text-align: center;
+  padding: 40px 0 20px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+}
+
+/* Theme toggle (same as default) */
+.home-nav .theme-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.2s;
+}
+.home-nav .theme-toggle:hover { background: rgba(255,255,255,0.2); }
+.home-nav .theme-toggle svg {
+  width: 16px;
+  height: 16px;
+  fill: rgba(255,255,255,0.6);
+}
+.home-nav .theme-toggle .icon-moon { display: none; }
+.home-nav .theme-toggle .icon-auto { display: none; }
+.home-nav .theme-toggle.theme-dark .icon-sun { display: none; }
+.home-nav .theme-toggle.theme-dark .icon-moon { display: block; }
+.home-nav .theme-toggle.theme-auto .icon-sun { display: none; }
+.home-nav .theme-toggle.theme-auto .icon-auto { display: block; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .home-wrapper { padding: 16px 16px 40px; }
+  .home-hero {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .hero-text p { max-width: 100%; }
+  .hero-actions { justify-content: center; }
+  .social-icons { justify-content: center; }
+  .home-bento { grid-template-columns: 1fr; }
+  .bento-wide { grid-column: span 1; }
+  .blog-cards { flex-direction: column; }
+  .nav-links { gap: 14px; }
+  .nav-links a { font-size: 12px; }
+  .hero-text h1 { font-size: 28px; }
+}
+
+@media (max-width: 480px) {
+  .home-nav { padding: 10px 14px; }
+  .nav-links { gap: 10px; }
+  .home-hero { padding: 24px 16px; }
+}
+</style>
+
+    <div class="home-wrapper">
+
+      <!-- Navigation -->
+      <nav class="home-nav glass-panel">
+        <a href="/" class="nav-logo">ZY</a>
+        <ul class="nav-links">
+          <li><a href="/pages/works">Works</a></li>
+          <li><a href="/pages/publication">Publications</a></li>
+          <li><a href="/pages/blog">Blog</a></li>
+          <li><a href="/pages/CV">CV</a></li>
+          <li><a href="/search">Search</a></li>
+        </ul>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></svg>
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.98 6.98 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/></svg>
+          <svg class="icon-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2V4a8 8 0 1 0 0 16z"/></svg>
+        </button>
+      </nav>
+
+      <!-- Hero -->
+      <section class="home-hero glass-panel">
+        <div class="hero-text">
+          <h1>Hi, I'm Zhengxu</h1>
+          <p>AI Researcher building autonomous agents at Huawei London Research Centre. Previously Alibaba DAMO Academy. ZJU PhD.</p>
+          <div class="hero-actions">
+            <a href="/pages/works" class="btn-primary">View My Work</a>
+            <a href="/pages/blog" class="btn-secondary">Read Blog</a>
+          </div>
+          <div class="social-icons">
+            <a href="https://github.com/ZhengxuYu" class="social-icon" title="GitHub"><i class="icon-github-circled"></i></a>
+            <a href="https://scholar.google.com/citations?user=qsLLazoAAAAJ&hl=zh-CN" class="social-icon" title="Google Scholar"><i class="icon-google"></i></a>
+            <a href="https://dblp.org/pid/246/3155" class="social-icon" title="DBLP"><i class="icon-book-open"></i></a>
+            <a href="https://orcid.org/0000-0002-6059-0300" class="social-icon" title="ORCID"><i class="icon-info-circled"></i></a>
+          </div>
+        </div>
+        <div class="hero-photo">
+          <img src="/assets/ZhengxuYu.jpeg" alt="Zhengxu Yu">
+        </div>
+      </section>
+
+      <!-- Bento Grid -->
+      <div class="home-bento">
+
+        <!-- News (half width) -->
+        <div class="bento-card glass-panel">
+          <div class="bento-label">Latest News</div>
+          {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
+          {%- assign published_posts = site.posts | where_exp: "post", "post.draft != true" -%}
+          {%- for post in published_posts limit:4 -%}
+          <div class="bento-item">
+            <span class="bento-item-title"><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></span>
+            <span class="bento-item-meta">{{ post.date | date: "%b %Y" }}</span>
+          </div>
+          {%- endfor -%}
+        </div>
+
+        <!-- Open Source (half width) -->
+        <div class="bento-card glass-panel">
+          <div class="bento-label">Open Source</div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title"><a href="https://github.com/1mancompany/OneManCompany">OneManCompany (OMC)</a></span>
+              <div class="bento-item-desc">Agentic OS for solo founders</div>
+            </div>
+          </div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title"><a href="https://github.com/ZJULearning/PTL">PTL</a></span>
+              <div class="bento-item-desc">Progressive Transfer Learning</div>
+            </div>
+          </div>
+          <a href="/pages/works" class="bento-view-all">View all &rarr;</a>
+        </div>
+
+        <!-- Blogs (full width) -->
+        <div class="bento-card glass-panel bento-wide">
+          <div class="bento-label">Recent Blogs</div>
+          <div class="blog-cards">
+            {%- assign published_blogs = site.blogs | where_exp: "blog", "blog.draft != true" | sort: "date" | reverse -%}
+            {%- for blog in published_blogs limit:3 -%}
+            <div class="blog-mini">
+              <div class="blog-mini-date">{{ blog.date | date: "%b %Y" }}</div>
+              <div class="blog-mini-title"><a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a></div>
+            </div>
+            {%- endfor -%}
+          </div>
+          <a href="/pages/blog" class="bento-view-all">View all posts &rarr;</a>
+        </div>
+
+        <!-- Publications (full width) -->
+        <div class="bento-card glass-panel bento-wide">
+          <div class="bento-label">Selected Publications</div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title">ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning</span>
+              <div class="bento-item-desc">W. Pan, <strong>Z. Yu</strong>, Y. Zhang, Z. Jin, B. Lin, X. He, J. Ye</div>
+            </div>
+            <span class="pub-venue">AAAI'26</span>
+          </div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title">TokenSqueeze: Performance-Preserving Compression for Reasoning LLMs</span>
+              <div class="bento-item-desc">W. Pan, <strong>Z. Yu</strong>, Y. Liu, Z. Jin, B. Lin, X. He, J. Ye</div>
+            </div>
+            <span class="pub-venue">NeurIPS'25</span>
+          </div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title">Progressive Transfer Learning</span>
+              <div class="bento-item-desc"><strong>Z. Yu</strong>, Z. Jin, L. Wei, J. Huang, D. Cai, X. He, X. Hua</div>
+            </div>
+            <span class="pub-venue">TIP'22</span>
+          </div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title">MaCAR: Urban Traffic Light Control via Active Multi-agent Communication</span>
+              <div class="bento-item-desc"><strong>Z. Yu</strong>, S. Liang, L. Wei, Z. Jin, J. Huang, D. Cai, X. He, X. Hua</div>
+            </div>
+            <span class="pub-venue">IJCAI'20</span>
+          </div>
+          <a href="/pages/publication" class="bento-view-all">View all publications &rarr;</a>
+        </div>
+
+      </div>
+
+      <footer class="home-footer">
+        &copy; {{ "now" | date: "%Y" }} Zhengxu Yu
+      </footer>
+
+    </div>
+
+    <!-- Theme Toggle Script -->
+    <script>
+      (function() {
+        var btn = document.getElementById('theme-toggle');
+        var states = ['auto', 'light', 'dark'];
+        var current = localStorage.getItem('theme') || 'auto';
+
+        function applyTheme(theme) {
+          current = theme;
+          localStorage.setItem('theme', theme);
+          if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            btn.className = 'theme-toggle theme-dark';
+          } else if (theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.className = 'theme-toggle';
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+            btn.className = 'theme-toggle theme-auto';
+          }
+        }
+
+        applyTheme(current);
+
+        btn.addEventListener('click', function() {
+          var idx = states.indexOf(current);
+          var next = states[(idx + 1) % states.length];
+          applyTheme(next);
+        });
+      })();
+    </script>
+  </body>
+</html>

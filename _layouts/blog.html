@@ -14,9 +14,12 @@ layout: default
   text-align: center;
   margin-bottom: 3rem;
   padding: 2.5rem 1.5rem;
-  background: var(--color-bg-secondary);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--border-radius-lg);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
   transition: var(--transition-theme);
 }
 
@@ -53,9 +56,9 @@ layout: default
 .subscribe-form input[type="email"] {
   flex: 1;
   padding: 0.6rem 1rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius);
-  background: var(--color-bg-card);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--color-text-primary);
   font-size: 0.9rem;
   outline: none;
@@ -63,12 +66,12 @@ layout: default
 }
 
 .subscribe-form input[type="email"]:focus {
-  border-color: var(--color-accent);
+  border-color: #E8B878;
 }
 
 .subscribe-form button {
   padding: 0.6rem 1.25rem;
-  background: var(--color-accent);
+  background: rgba(196, 132, 62, 0.85);
   color: white;
   border: none;
   border-radius: var(--border-radius);
@@ -80,7 +83,7 @@ layout: default
 }
 
 .subscribe-form button:hover {
-  background: var(--color-accent-hover);
+  background: rgba(196, 132, 62, 1);
 }
 
 .subscribe-hint {
@@ -94,7 +97,7 @@ layout: default
   position: absolute;
   top: -8px;
   right: 1rem;
-  background: #22c55e;
+  background: rgba(232, 184, 120, 0.85);
   color: white;
   padding: 0.2rem 0.65rem;
   border-radius: 12px;
@@ -108,36 +111,22 @@ layout: default
 }
 
 .blog-item {
-  background: var(--color-bg-card);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: var(--border-radius-lg);
   padding: 1.5rem 2rem;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   position: relative;
   overflow: hidden;
-}
-
-.blog-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--color-accent);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
 }
 
 .blog-item:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
   border-color: var(--color-accent);
-}
-
-.blog-item:hover::before {
-  transform: scaleX(1);
 }
 
 .blog-item .post-title {
@@ -181,14 +170,14 @@ layout: default
 }
 
 .category-tag {
-  background: var(--color-accent-light);
-  color: var(--color-accent);
+  background: rgba(232, 184, 120, 0.15);
+  color: #E8B878;
   padding: 0.2rem 0.65rem;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 500;
   text-decoration: none;
-  border: 1px solid var(--color-accent);
+  border: 1px solid rgba(232, 184, 120, 0.3);
   transition: var(--transition-theme);
 }
 
@@ -200,8 +189,8 @@ layout: default
 }
 
 .blog-item .post-tldr {
-  background: var(--color-bg-secondary);
-  border-left: 3px solid var(--color-accent);
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #E8B878;
   padding: 0.75rem 1.25rem;
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
   margin-bottom: 1rem;
@@ -221,7 +210,7 @@ layout: default
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--color-accent);
+  color: #E8B878;
   font-weight: 500;
   text-decoration: none;
   font-size: 0.85rem;
@@ -229,7 +218,7 @@ layout: default
 }
 
 .read-more:hover {
-  color: var(--color-accent-hover);
+  color: #F0C88E;
 }
 
 .read-more::after {
@@ -244,9 +233,9 @@ layout: default
 .empty-state {
   text-align: center;
   padding: 3rem 2rem;
-  background: var(--color-bg-secondary);
+  background: var(--glass-bg);
   border-radius: var(--border-radius-lg);
-  border: 2px dashed var(--color-border);
+  border: 2px dashed rgba(255, 255, 255, 0.15);
   transition: var(--transition-theme);
 }
 
@@ -281,19 +270,19 @@ layout: default
 
 .draft-item {
   opacity: 0.75;
-  border-color: #e5a819;
+  border-color: rgba(232, 184, 120, 0.4);
 }
 
 .draft-item:hover {
   opacity: 1;
-  border-color: #d4950e;
+  border-color: rgba(232, 184, 120, 0.6);
 }
 
 .draft-badge {
   position: absolute;
   top: -8px;
   right: 1rem;
-  background: #e5a819;
+  background: rgba(232, 184, 120, 0.8);
   color: white;
   padding: 0.2rem 0.65rem;
   border-radius: 12px;
@@ -302,21 +291,21 @@ layout: default
 }
 
 .draft-category {
-  background: rgba(229, 168, 25, 0.15);
-  color: #c68f14;
-  border-color: #c68f14;
+  background: rgba(232, 184, 120, 0.15);
+  color: #E8B878;
+  border-color: rgba(232, 184, 120, 0.3);
 }
 
 .draft-tldr {
-  border-left-color: #e5a819;
+  border-left-color: #E8B878;
 }
 
 .draft-read-more {
-  color: #c68f14;
+  color: #E8B878;
 }
 
 .draft-read-more:hover {
-  color: #a87a10;
+  color: #F0C88E;
 }
 
 @media (max-width: 768px) {

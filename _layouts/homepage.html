@@ -103,17 +103,18 @@ layout: null
 }
 .btn-secondary:hover { background: rgba(255,255,255,0.2); color: #fff; }
 .hero-photo {
-  width: 180px;
-  height: 180px;
-  border-radius: 16px;
-  flex-shrink: 0;
+  flex: 0 0 30%;
+  max-width: 30%;
+  align-self: stretch;
   overflow: hidden;
-  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 0 14px 14px 0;
+  margin: -48px -40px -48px 0;
 }
 .hero-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 .social-icons {
   display: flex;
@@ -291,6 +292,15 @@ layout: null
     flex-direction: column-reverse;
     text-align: center;
     padding: 32px 24px;
+  }
+  .hero-photo {
+    flex: 0 0 auto;
+    max-width: 100%;
+    align-self: center;
+    width: 160px;
+    height: 160px;
+    border-radius: 16px;
+    margin: 0 0 -16px 0;
   }
   .hero-text p { max-width: 100%; }
   .hero-actions { justify-content: center; }

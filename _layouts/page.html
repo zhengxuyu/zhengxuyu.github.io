@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-<div class="post-container">
+<div class="post-container page-container">
     <div class="post">
         {{ content }}
     </div>
@@ -11,6 +11,12 @@ layout: default
 </div>
 
 <style>
+.page-container {
+  background: var(--color-bg-card, rgba(255,255,255,0.95));
+}
+[data-theme="dark"] .page-container {
+  background: var(--color-bg-card, rgba(30,30,30,0.95));
+}
 .page-footer {
   text-align: center;
   padding: 2rem 0 0.5rem;

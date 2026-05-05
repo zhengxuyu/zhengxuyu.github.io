@@ -97,6 +97,9 @@ layout: default
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 1px solid var(--glass-border);
   position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 }
 
 .work-card:hover {
@@ -105,8 +108,9 @@ layout: default
 }
 
 .work-image {
-  width: 100%;
-  height: 180px;
+  width: 160px;
+  min-height: 160px;
+  flex-shrink: 0;
   background: rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
@@ -253,8 +257,14 @@ layout: default
     gap: 20px;
   }
 
+  .work-card {
+    flex-direction: column;
+  }
+
   .work-image {
+    width: 100%;
     height: 140px;
+    min-height: 140px;
     font-size: 1.5em;
   }
 

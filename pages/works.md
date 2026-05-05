@@ -16,7 +16,6 @@ keywords: "research projects, open source, transfer learning, traffic control, c
       <div class="work-card" data-repo="1mancompany/OneManCompany">
         <div class="work-image">
           <img src="" alt="OneManCompany">
-          <span class="work-image-fallback" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">OMC</span>
         </div>
         <div class="work-content">
           <h3 class="work-title">OneManCompany (OMC)</h3>
@@ -39,7 +38,6 @@ keywords: "research projects, open source, transfer learning, traffic control, c
 
       <div class="work-card">
         <div class="work-image">
-          GitHub
         </div>
         <div class="work-content">
           <h3 class="work-title">Research Code Repositories</h3>
@@ -75,7 +73,6 @@ keywords: "research projects, open source, transfer learning, traffic control, c
       <div class="work-card" data-repo="ZJULearning/PTL">
         <div class="work-image">
           <img src="" alt="PTL">
-          <span class="work-image-fallback" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">PTL</span>
         </div>
         <div class="work-content">
           <h3 class="work-title">Progressive Transfer Learning</h3>

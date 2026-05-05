@@ -97,9 +97,6 @@ layout: default
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 1px solid var(--glass-border);
   position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
 }
 
 .work-card:hover {
@@ -108,16 +105,12 @@ layout: default
 }
 
 .work-image {
-  width: 160px;
-  min-height: 160px;
-  flex-shrink: 0;
+  width: 100%;
+  height: 180px;
   background: rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 1.8em;
-  font-weight: 700;
   position: relative;
   overflow: hidden;
 }
@@ -128,9 +121,6 @@ layout: default
   object-fit: cover;
 }
 
-.work-image .work-image-fallback {
-  display: none;
-}
 
 .github-stats {
   display: flex;
@@ -257,15 +247,8 @@ layout: default
     gap: 20px;
   }
 
-  .work-card {
-    flex-direction: column;
-  }
-
   .work-image {
-    width: 100%;
     height: 140px;
-    min-height: 140px;
-    font-size: 1.5em;
   }
 
   .work-content {

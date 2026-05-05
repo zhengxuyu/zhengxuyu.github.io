@@ -1,8 +1,12 @@
 ---
-layout: post
-title:  "OneManCompany: Slayer of Dragons Becomes the Dragon"
-date:   2026-05-05 00:00:00 +0000
-categories: OpenSource
+layout: blog-post
+title: "OneManCompany: Slayer of Dragons Becomes the Dragon"
+date: 2026-05-05 00:00:00 +0000
+categories: Blog
+tags: [AI, Open Source, Agent Orchestration, One-Person Company]
+draft: false
+description: "Introducing OneManCompany (OMC), an open-source agentic OS that self-mockingly recreates corporate structures with AI agents — and asks whether organizational patterns can ever truly be escaped."
+tldr: "OMC wraps AI agents in the most corporate language possible — talent markets, PIPs, HR, org charts — as a deliberate self-mockery. The point: organizational structures outlast the technology underneath them. We built the dragon so someone can break out of it."
 ---
 
 [OneManCompany (OMC)](https://github.com/1mancompany/OneManCompany) is an open-source agentic operating system where you play CEO and AI agents are your employees. From the very beginning, it was intended as a self-mockery of real-world capitalist companies. We deliberately wrapped a bunch of heterogeneous AI agents in the most "corporate" and cringe enterprise language we could find: talent markets, employee lifecycles, HR, PIP reviews, KPIs, hierarchical reporting. The whole thing tells a "slayer of dragons becomes the dragon" story.

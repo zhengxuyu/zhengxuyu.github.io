@@ -13,12 +13,14 @@ keywords: "research projects, open source, transfer learning, traffic control, c
     </div>
     <div class="works-grid">
       
-      <div class="work-card">
+      <div class="work-card" data-repo="ZJULearning/PTL">
         <div class="work-image">
-          PTL
+          <img src="" alt="PTL">
+          <span class="work-image-fallback" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">PTL</span>
         </div>
         <div class="work-content">
           <h3 class="work-title">Progressive Transfer Learning</h3>
+          <div class="github-stats"></div>
           <p class="work-description">
             Proposed progressive transfer learning method that gradually adjusts the differences between source and target domains to achieve more effective knowledge transfer. Validated the effectiveness of the method on multiple datasets.
           </p>
@@ -50,12 +52,14 @@ keywords: "research projects, open source, transfer learning, traffic control, c
     </div>
     <div class="works-grid">
 
-      <div class="work-card">
+      <div class="work-card" data-repo="1mancompany/OneManCompany">
         <div class="work-image">
-          OMC
+          <img src="" alt="OneManCompany">
+          <span class="work-image-fallback" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">OMC</span>
         </div>
         <div class="work-content">
           <h3 class="work-title">OneManCompany (OMC)</h3>
+          <div class="github-stats"></div>
           <p class="work-description">
             An open-source agentic operating system that enables individuals to build and manage AI-powered companies. Users act as CEO while AI agents serve as autonomous employees, collaborating through hierarchical teams on complex projects.
           </p>

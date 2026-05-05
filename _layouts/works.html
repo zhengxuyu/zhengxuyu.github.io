@@ -106,7 +106,7 @@ layout: default
 
 .work-image {
   width: 100%;
-  aspect-ratio: 2 / 1;
+  min-height: 80px;
   background: rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
@@ -120,8 +120,8 @@ layout: default
 
 .work-image img {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
+  display: block;
 }
 
 
@@ -251,8 +251,7 @@ layout: default
   }
 
   .work-image {
-    aspect-ratio: 2 / 1;
-  }
+    }
 
   .work-content {
     padding: 20px;

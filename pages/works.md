@@ -2,8 +2,8 @@
 layout: works
 title: My Works
 date: 2024-12-19
-description: "Research projects and open source contributions by Zhengxu Yu, including progressive transfer learning, multi-agent traffic control, and more."
-keywords: "research projects, open source, transfer learning, traffic control, computer vision, Zhengxu Yu"
+description: "Research projects and open source contributions by Zhengxu Yu in AI agents, agentic engineering, reinforcement learning, and multi-agent systems."
+keywords: "research projects, open source, AI agents, agentic engineering, reinforcement learning, multi-agent systems, transfer learning, Zhengxu Yu"
 ---
 
   <div class="works-section">

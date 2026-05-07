@@ -2,8 +2,8 @@
 layout: page
 title: CV
 permalink: /pages/CV
-description: "Curriculum Vitae of Zhengxu Yu (余正旭)"
-keywords: "CV, curriculum vitae, resume, Zhengxu Yu"
+description: "Curriculum Vitae of Zhengxu Yu (余正旭), AI Researcher specializing in autonomous AI agents, agentic reinforcement learning, and large language models."
+keywords: "CV, curriculum vitae, resume, Zhengxu Yu, AI researcher, AI agents, reinforcement learning, agentic engineering"
 ---
 
 <style>

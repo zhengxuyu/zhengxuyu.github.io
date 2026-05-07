@@ -3,8 +3,9 @@ layout: blog-post
 title: "Why TypeScript Keeps Showing Up in AI Agent Apps"
 date: 2026-05-06 00:00:00 +0000
 categories: Blog
-tags: [TypeScript, Python, AI Agents, LLM, Open Source]
+tags: [TypeScript, Python, AI Agents, LLM, Open Source, Agentic Engineering]
 draft: false
+keywords: "TypeScript, Python, AI agents, LLM, agent harness, agentic engineering, AI SDK, open source, Zhengxu Yu"
 description: "Python still carries the model layer. But in the application layer around AI agents, TypeScript keeps appearing for practical reasons: typed schemas, browser-native interaction, and deployment."
 tldr: "Python remains central to training, fine-tuning, data science, evals, and research prototypes. In the application layer around agents, TypeScript keeps appearing because agent products inherit many constraints from web apps: schema validation, streaming UI, tool calls, user state, auth, and deployment. This is not a replacement story. It is a split between model work and product work."
 ---

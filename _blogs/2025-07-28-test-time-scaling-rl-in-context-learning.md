@@ -3,8 +3,9 @@ layout: blog-post
 title: "Test-Time Scaling via Reinforcement Learning Based In-Context Learning"
 date: 28/07/2025 14:30:00 +0000
 categories: PaperReading
-tags: [Reinforcement Learning, In-Context Learning, Test-Time Adaptation, Large Language Models]
+tags: [Reinforcement Learning, In-Context Learning, Test-Time Adaptation, Large Language Models, AI Agents]
 draft: true
+keywords: "reinforcement learning, in-context learning, test-time scaling, LLM, large language models, AI agents, Zhengxu Yu"
 description: "Paper reading summary exploring how reinforcement learning enables dynamic test-time scaling and in-context learning for large language models."
 tldr: "This blog is a paper reading summary on LLMs, Reinforcement Learning, and In-Context Learning."
 

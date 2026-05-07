@@ -39,6 +39,29 @@ keywords: "research projects, open source, transfer learning, traffic control, c
         </div>
       </div>
 
+      <div class="work-card" data-repo="zhengxuyu/zforge">
+        <div class="work-image">
+          <img src="" alt="zforge">
+        </div>
+        <div class="work-content">
+          <h3 class="work-title">zforge</h3>
+          <div class="github-stats"></div>
+          <p class="work-description">
+            My daily skill set for AI-assisted development. A curated collection of skills and workflows that define how I work with AI coding agents, from research paper writing to kaggle competitions.
+          </p>
+          <div class="work-tags">
+            <span class="work-tag">AI Workflow</span>
+            <span class="work-tag">Skills</span>
+            <span class="work-tag">Developer Tools</span>
+          </div>
+          <div class="work-links">
+            <a href="https://github.com/zhengxuyu/zforge" class="work-link">
+              <i class="icon-github-circled"></i> GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div class="work-card">
         <div class="work-image">
           <span>Research Code</span>

@@ -401,20 +401,20 @@ layout: null
           <div class="bento-label">Projects</div>
           <div class="bento-item">
             <div>
-              <span class="bento-item-title"><a href="https://github.com/1mancompany/OneManCompany">OneManCompany (OMC)</a></span>
+              <span class="bento-item-title"><a href="https://github.com/1mancompany/OneManCompany">OneManCompany (OMC)</a> <span style="font-size:0.7em;color:#E8B878;font-weight:600;">Pinned</span></span>
               <div class="bento-item-desc">Agentic OS for solo founders</div>
+            </div>
+          </div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title"><a href="https://github.com/zhengxuyu/zforge">zforge</a> <span style="font-size:0.7em;color:#E8B878;font-weight:600;">Pinned</span></span>
+              <div class="bento-item-desc">My AI workflow skill set — <a href="https://github.com/zhengxuyu/zforge" style="color:#E8B878;">give it a ⭐</a></div>
             </div>
           </div>
           <div class="bento-item">
             <div>
               <span class="bento-item-title"><a href="https://github.com/ZJULearning/PTL">PTL</a></span>
               <div class="bento-item-desc">Progressive Transfer Learning</div>
-            </div>
-          </div>
-          <div class="bento-item">
-            <div>
-              <span class="bento-item-title"><a href="https://github.com/zhengxuyu/zforge">zforge</a></span>
-              <div class="bento-item-desc">My AI workflow skill set — <a href="https://github.com/zhengxuyu/zforge" style="color:#E8B878;">give it a ⭐</a></div>
             </div>
           </div>
           <a href="/pages/works" class="bento-view-all">View all &rarr;</a>
@@ -425,7 +425,10 @@ layout: null
           <div class="bento-label">Recent Blogs</div>
           <div class="blog-cards">
             {%- assign published_blogs = site.blogs | where_exp: "blog", "blog.draft != true" | sort: "date" | reverse -%}
-            {%- for blog in published_blogs limit:3 -%}
+            {%- assign pinned_blogs = published_blogs | where: "pinned", true -%}
+            {%- assign unpinned_blogs = published_blogs | where_exp: "blog", "blog.pinned != true" -%}
+            {%- assign sorted_blogs = pinned_blogs | concat: unpinned_blogs -%}
+            {%- for blog in sorted_blogs limit:3 -%}
             <div class="blog-mini">
               <div class="blog-mini-date">{{ blog.date | date: "%b %Y" }}</div>
               <div class="blog-mini-title"><a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a></div>

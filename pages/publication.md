@@ -2,8 +2,8 @@
 layout: post
 title: Publications
 date: 2026-02-09
-description: "Publications by Zhengxu Yu in Machine Learning, Reinforcement Learning, Computer Vision, and AI. Published at NeurIPS, IJCAI, AAAI, IEEE TIP, and more."
-keywords: "publications, papers, machine learning, reinforcement learning, computer vision, NeurIPS, IJCAI, AAAI, Zhengxu Yu"
+description: "Publications by Zhengxu Yu on AI agents, agentic reinforcement learning, multi-agent systems, and machine learning. Published at NeurIPS, IJCAI, AAAI, IEEE TIP, and more."
+keywords: "publications, papers, AI agents, agentic reinforcement learning, multi-agent systems, machine learning, reinforcement learning, NeurIPS, IJCAI, AAAI, Zhengxu Yu"
 ---
 
 # 2025

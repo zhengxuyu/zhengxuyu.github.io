@@ -3,11 +3,11 @@ author: Zhengxu Yu
 email: yuzxfred AT gmail.com
 url: "https://zhengxuyu.github.io" # 添加网站URL
 description: > # this means to ignore newlines until "show_exerpts:"
-  Personal website of Zhengxu Yu (余正旭), AI Researcher at Huawei London Research Centre. Research on Autonomous AI Agents, Agentic RL, and Large Language Models.
+  Personal website of Zhengxu Yu (余正旭), AI Researcher at Huawei London Research Centre. Research on Autonomous AI Agents, Agentic Reinforcement Learning, and Large Language Models.
 show_excerpts: true # set to true to show excerpts on the homepage
 
 # SEO Configuration
-keywords: "Zhengxu Yu, 余正旭, Huawei, AI Agents, Agentic RL, Large Language Models, Machine Learning, AI, Research, 机器学习, 人工智能"
+keywords: "Zhengxu Yu, 余正旭, AI Agents, Autonomous AI Agents, Agentic Engineering, Agentic RL, Agentic Reinforcement Learning, Reinforcement Learning, Large Language Models, LLM, Multi-Agent Systems, Machine Learning, AI, Huawei, Research, 机器学习, 人工智能, 强化学习"
 google_analytics: # 添加Google Analytics ID（如果需要）
   - "G-6CYR8K1ZK6"
 

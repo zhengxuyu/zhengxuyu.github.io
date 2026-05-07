@@ -3,8 +3,9 @@ layout: blog-post
 title: "Why Creativity Might Not Exist"
 date: 2025-02-09 14:30:00 +0000
 categories: Blog
-tags: [Creativity, Philosophy, AI]
+tags: [Creativity, Philosophy, AI, Machine Learning]
 draft: false
+keywords: "creativity, AI, artificial intelligence, recombination, machine learning, philosophy of AI, Zhengxu Yu"
 description: "An essay arguing that creativity is recombination of experience perturbed by noise and filtered by selection, not a magical spark of originality."
 tldr: "What we call 'creativity' may be nothing more than the recombination of historical experience — individual and evolutionary — perturbed by noise and filtered by selection."
 ---

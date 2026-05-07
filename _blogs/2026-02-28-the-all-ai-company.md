@@ -3,8 +3,9 @@ layout: blog-post
 title: "What If Every Employee in Your Company Were AI?"
 date: 2026-02-28 10:00:00 +0800
 categories: Blog
-tags: [AI, One-Person Company, Agent, Future of Work]
+tags: [AI Agents, One-Person Company, Agent Orchestration, Future of Work, Agentic Engineering]
 draft: false
+keywords: "AI agents, one-person company, agent orchestration, agentic engineering, autonomous AI agents, future of work, Zhengxu Yu"
 description: "Exploring what happens when a company replaces its entire workforce with AI agents — and why this might redefine the one-person company movement."
 tldr: "An all-AI company is no longer science fiction. When AI agents can handle not just individual tasks but the full spectrum of organizational functions, a single founder might run a company that rivals a traditional team. This changes the economics, speed, and very definition of what a company is."
 ---

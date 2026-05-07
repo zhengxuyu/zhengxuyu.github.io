@@ -3,8 +3,9 @@ layout: blog-post
 title: "From Vibe Coding to Agentic Engineering"
 date: 2026-05-07 00:00:00 +0000
 categories: Blog
-tags: [Agentic Engineering, Vibe Coding, AI Agents, LLM, Software Engineering]
+tags: [Agentic Engineering, Vibe Coding, AI Agents, LLM, Software Engineering, Reinforcement Learning]
 draft: false
+keywords: "agentic engineering, vibe coding, AI agents, AI coding agents, Karpathy, reinforcement learning, LLM, software engineering, Zhengxu Yu"
 description: "Agentic engineering is replacing manual coding and static AI workflows. The data already shows the tipping point."
 tldr: "Software engineering is moving through three stages: manual coding, copilot-style autocomplete, and now agentic engineering where AI agents execute plans autonomously. 55% of developers already use AI agents regularly, 27% of production code is AI-authored, and agent session durations nearly doubled in three months. The transition is not coming -- it is underway."
 ---

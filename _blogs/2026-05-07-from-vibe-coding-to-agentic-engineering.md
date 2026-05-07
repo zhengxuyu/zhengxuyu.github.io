@@ -5,32 +5,110 @@ date: 2026-05-07 00:00:00 +0000
 categories: Blog
 tags: [Agentic Engineering, Vibe Coding, AI Agents, LLM, Software Engineering]
 draft: false
-description: "Karpathy frames vibe coding and agentic engineering as floor vs. ceiling. Here is how I see the split playing out."
-tldr: "Vibe coding raised the floor -- anyone can ship software. But production needs someone accountable. Agentic engineering is the discipline that emerged to fill that gap: coordinating fallible agents while keeping quality. The catch is that the boundary between the two keeps moving as agents improve."
+description: "Agentic engineering is replacing manual coding and static AI workflows. The data already shows the tipping point."
+tldr: "Software engineering is moving through three stages: manual coding, copilot-style autocomplete, and now agentic engineering where AI agents execute plans autonomously. 55% of developers already use AI agents regularly, 27% of production code is AI-authored, and agent session durations nearly doubled in three months. The transition is not coming -- it is underway."
 ---
 
-**TL;DR:** Vibe coding raised the floor -- anyone can ship software. But production needs someone accountable. Agentic engineering is the discipline that emerged to fill that gap: coordinating fallible agents while keeping quality. The catch is that the boundary between the two keeps moving as agents improve.
+**TL;DR:** Software engineering is moving through three stages: manual coding, copilot-style autocomplete, and now agentic engineering where AI agents execute plans autonomously. 55% of developers already use AI agents regularly, 27% of production code is AI-authored, and agent session durations nearly doubled in three months. The transition is not coming -- it is underway.
 
 ---
 
-In February 2025, Karpathy [described](https://x.com/karpathy/status/1886192184808149383) a new way of working: "fully give in to the vibes, embrace exponentials, and forget that the code even exists." He called it vibe coding. Collins Dictionary made it Word of the Year. Within months, people who had never written a for loop were deploying web apps.
+Karpathy [called it](https://x.com/karpathy/status/1886192184808149383) vibe coding in February 2025. Fifteen months later, at [Sequoia AI Ascent 2026](https://www.youtube.com/watch?v=96jN2OCIfLs), he proposed [agentic engineering](https://karpathy.bearblog.dev/sequoia-ascent-2026/) as its professional successor. But framing this as vibe coding versus agentic engineering misses the larger picture. What we are actually watching is the third phase of a longer transition in how software gets built.
 
-That was the promise: software creation with no barrier to entry. And for weekend projects and quick prototypes, the promise held. But then people started running production with it, and a gap opened up.
+## Three phases of human-AI coding
 
-The gap was accountability. Vibe coding works when you do not care why the code works, only that it does. The moment other people depend on your software, "it mostly works" is not a quality bar. Nobody was reviewing the output. Security holes went unnoticed. Bugs were unfixable because there was no mental model of what the code was doing. Vibe coding had democratized creation, but it had no answer for ownership.
+<div style="overflow-x:auto;margin:32px 0;">
+<table style="width:100%;border-collapse:collapse;font-size:0.88em;">
+<thead>
+<tr style="border-bottom:2px solid rgba(232,184,120,0.4);">
+<th style="text-align:left;padding:10px 14px;color:#E8B878;">Phase</th>
+<th style="text-align:left;padding:10px 14px;">Time</th>
+<th style="text-align:left;padding:10px 14px;">How it works</th>
+<th style="text-align:left;padding:10px 14px;">Human role</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+<td style="padding:10px 14px;font-weight:600;">Manual coding</td>
+<td style="padding:10px 14px;">Before 2021</td>
+<td style="padding:10px 14px;">Human writes every line</td>
+<td style="padding:10px 14px;">Writer</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
+<td style="padding:10px 14px;font-weight:600;">Copilot era</td>
+<td style="padding:10px 14px;">2021 -- 2024</td>
+<td style="padding:10px 14px;">AI autocompletes, human accepts or rejects</td>
+<td style="padding:10px 14px;">Editor</td>
+</tr>
+<tr>
+<td style="padding:10px 14px;font-weight:600;">Agentic engineering</td>
+<td style="padding:10px 14px;">2025 -- now</td>
+<td style="padding:10px 14px;">AI agents plan, write, test autonomously</td>
+<td style="padding:10px 14px;">Architect</td>
+</tr>
+</tbody>
+</table>
+</div>
 
-Something needed to fill that gap. Around December 2025, Karpathy [noted](https://karpathy.bearblog.dev/sequoia-ascent-2026/) that he could not remember the last time he corrected the model. Error rates had dropped enough that the work changed in kind, not just degree. Instead of fixing what the AI broke, you could direct what it built. The job shifted from typist to architect, from keyboard to spec.
+Each phase changed what the human does. In the copilot era, you still wrote code -- the AI just guessed your next line. In agentic engineering, you write the spec and the verification criteria. The agent handles the implementation. Karpathy's [definition](https://karpathy.bearblog.dev/sequoia-ascent-2026/) captures it: "the professional discipline of coordinating fallible agents while preserving correctness, security, taste, and maintainability."
 
-That shift gave the gap a name. At [Sequoia AI Ascent 2026](https://www.youtube.com/watch?v=96jN2OCIfLs), Karpathy called it agentic engineering: "the professional discipline of coordinating fallible agents while preserving correctness, security, taste, and maintainability." His framing was clean. Vibe coding raises the floor. Agentic engineering raises the ceiling. Two different disciplines solving two different problems.
+The shift from editor to architect is not incremental. It changes the skills that matter, the tools you reach for, and the failure modes you worry about.
 
-What makes it a discipline, not just a workflow, is that it puts accountability back in. You own the spec. You own the verification. You own the quality bar. The AI changes how code gets written, not who is responsible for it. And the "fallible" part matters. Current models have spiky capabilities -- they refactor massive codebases in one pass and then make baffling mistakes on trivial things. Knowing where the spikes and valleys are is the new core competence.
+## The data says we are already in phase three
 
-The [tooling](https://github.com/jordimas/awesome-agentic-engineering) has organized around this idea. CLI agents like [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [Gemini CLI](https://github.com/google-gemini/gemini-cli) operate directly on your codebase. IDE tools like [Cursor](https://www.cursor.com/) and [Zed](https://zed.dev/agentic-engineering) embed agents into the editor. They all share a model where the human sets direction and the agent executes. Karpathy's verifiability principle explains why coding is ahead of other domains: code has tests, type checkers, diffs. The more verifiable your workflow, the more you can delegate.
+This is not a prediction about the future. The transition is measurable right now.
 
-But here is the tension I keep coming back to. The boundary between vibe coding and agentic engineering is supposed to be clear -- one is casual, the other is professional. In practice, it is already blurring. Simon Willison [wrote yesterday](https://simonwillison.net/2026/May/6/vibe-coding-and-agentic-engineering/) that he is no longer reviewing every line of agent-generated code, even for production. He produces repos with a hundred commits in 30 minutes. At that speed, review is impractical. You trust the agent like you trust a library you did not write.
+**Adoption is past the tipping point.** The [Pragmatic Engineer survey](https://newsletter.pragmaticengineer.com/p/ai-tooling-2026) (February 2026) found that 95% of developers use AI tools at least weekly. More telling: 55% regularly use AI agents -- not autocomplete, but autonomous agents that plan and execute. The [Stack Overflow 2025 survey](https://survey.stackoverflow.co/2025/ai) (65,000+ respondents) put daily AI tool usage among professional developers at 51%.
 
-Each successful unreviewed deployment makes you more confident. But confidence is not verification. And when agents write their own test suites and set up their own CI, the question shifts from "did you review the code" to "did you review the verification." The accountability that agentic engineering was supposed to restore starts to feel like it is dissolving again, just one layer up.
+<div style="margin:32px 0;">
+<div style="font-size:0.82em;color:rgba(255,255,255,0.5);margin-bottom:12px;">Developer AI tool adoption (sources: Stack Overflow, Pragmatic Engineer, JetBrains)</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="display:flex;align-items:center;gap:12px;">
+<span style="width:200px;font-size:0.85em;text-align:right;">Use AI tools weekly</span>
+<div style="flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:24px;position:relative;">
+<div style="width:95%;background:rgba(232,184,120,0.7);height:100%;border-radius:4px;"></div>
+<span style="position:absolute;right:8px;top:3px;font-size:0.78em;font-weight:600;">95%</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;">
+<span style="width:200px;font-size:0.85em;text-align:right;">Use AI for 50%+ of work</span>
+<div style="flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:24px;position:relative;">
+<div style="width:75%;background:rgba(232,184,120,0.55);height:100%;border-radius:4px;"></div>
+<span style="position:absolute;right:8px;top:3px;font-size:0.78em;font-weight:600;">75%</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;">
+<span style="width:200px;font-size:0.85em;text-align:right;">Use AI agents regularly</span>
+<div style="flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:24px;position:relative;">
+<div style="width:55%;background:rgba(232,184,120,0.4);height:100%;border-radius:4px;"></div>
+<span style="position:absolute;right:8px;top:3px;font-size:0.78em;font-weight:600;">55%</span>
+</div>
+</div>
+</div>
+</div>
 
-I do not have a clean resolution for this. My working answer is that the gap between what agents can do and what they can be trusted to do will keep narrowing but never fully close. The human role keeps moving upward -- from writing code, to directing agents, to verifying verification -- but it does not disappear. Someone still has to own the outcome.
+**Production code is already substantially AI-authored.** The largest empirical study to date (4.2 million developers, November 2025 to February 2026) measured AI-authored production code at 26.9%. Microsoft reports 20-30% internally. Google says 25%+. Gartner projects 60% by end of 2026.
 
-Karpathy's floor-and-ceiling metaphor is the right starting point. The question that keeps me up is whether the ceiling eventually becomes the new floor.
+**The tools are shifting from autocomplete to autonomous.** Anthropic's [agentic coding trends report](https://resources.anthropic.com/2026-agentic-coding-trends-report) shows that between October 2025 and January 2026, the 99.9th percentile Claude Code session duration nearly doubled from under 25 minutes to over 45 minutes. Agents are running longer because they are doing more before handing back to the human. The era of "accept this line suggestion" is giving way to "here is the PR, ready for review."
+
+The revenue numbers tell the same story. Cursor went from $300M to $2B+ ARR in under a year. Claude Code hit $1B run rate faster than any AI coding tool in history. These are not niche tools. They are becoming the default way professional software gets written.
+
+## What actually changes
+
+Three things shift when you move from copilot-style coding to agentic engineering.
+
+First, the unit of work changes. You stop thinking in lines of code and start thinking in tasks. "Implement the auth middleware with these constraints" replaces "write a function that checks the JWT." The spec becomes the primary artifact, not the code.
+
+Second, verification replaces review. You cannot read every line an agent writes across a 30-minute session with a hundred commits. Instead, you invest in making output verifiable: comprehensive tests, type checking, CI pipelines, staging environments. Karpathy's principle from the Sequoia talk -- "LLMs automate what you can verify" -- is the reason coding agents are ahead of agents in other domains. Code has tests. Code has diffs. The more verifiable you make your workflow, the more you can delegate.
+
+Third, the failure mode changes. In manual coding, bugs come from typos and logic errors. In copilot coding, bugs come from accepting wrong suggestions. In agentic engineering, the risk is architectural: the agent builds something that works but is designed wrong, insecure, or unmaintainable. The [METR study](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) found that developers perceived themselves as 20-24% faster with AI tools while actually being 19% slower on familiar codebases -- because they over-trusted the output. The follow-up study with improved agentic tools showed an 18% speedup, suggesting the tooling is catching up, but the trust calibration problem remains.
+
+## What comes next
+
+The tools are converging on a common model. CLI agents ([Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Codex](https://github.com/openai/codex)), IDE agents ([Cursor](https://www.cursor.com/), [Zed](https://zed.dev/agentic-engineering)), and open-source options ([Aider](https://github.com/Aider-AI/aider), [OpenHands](https://github.com/All-Hands-AI/OpenHands)) all share the same basic interaction: human defines intent, agent executes, human verifies. Standards like [MCP](https://modelcontextprotocol.io/) and [agents.md](https://github.com/anthropics/agents-md) are making the ecosystem interoperable. The [awesome-agentic-engineering](https://github.com/jordimas/awesome-agentic-engineering) repo tracks the landscape.
+
+Gartner forecasts 90% of enterprise software engineers using AI coding assistants by 2028. Given that we are already at 85% regular usage in 2026, I think the more interesting threshold is when agent-style usage overtakes autocomplete-style usage. We are at 55% agent adoption now. My guess is we cross 75% within a year.
+
+Simon Willison [raised a fair concern](https://simonwillison.net/2026/May/6/vibe-coding-and-agentic-engineering/) about where this leads: as agents get reliable enough, the line between agentic engineering and vibe coding blurs. You stop reviewing every line even for production code. The accountability that agentic engineering is supposed to preserve starts dissolving. I think this is real, but it is a calibration problem, not a fundamental one. We already trust compilers, libraries, and frameworks we did not write. The question is building the verification infrastructure that justifies that trust for agents too.
+
+The transition from manual coding to copilot took about three years. The transition from copilot to agentic engineering is happening faster. Karpathy pointed to December 2025 as the inflection point -- the moment error rates dropped enough that human attention shifted from correction to direction. We are five months past that inflection. The phase change is not coming. It is here.

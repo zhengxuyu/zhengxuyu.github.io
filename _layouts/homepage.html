@@ -138,6 +138,23 @@ layout: null
 .social-icon:hover { background: rgba(255,255,255,0.2); color: #fff; }
 .social-icon i { font-size: 16px; }
 
+/* Hero about-me list rendered as paragraphs */
+.hero-about ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.hero-about li {
+  font-size: 15px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.7;
+  max-width: 460px;
+  margin-bottom: 8px;
+}
+.hero-about li:last-child { margin-bottom: 0; }
+.hero-about a { color: #E8B878; text-decoration: none; }
+.hero-about a:hover { text-decoration: underline; }
+
 /* Bento Grid */
 .home-bento {
   display: grid;
@@ -343,8 +360,10 @@ layout: null
       <section class="home-hero glass-panel">
         <div class="hero-text">
           <h1>Hi, I'm Zhengxu</h1>
-          <p>I am an AI Researcher at Huawei London Research Centre. Previously, I was at the Apsara Lab (formerly City Brain Lab, DAMO Academy), Alibaba Cloud, Alibaba Group. I received my Ph.D. from Zhejiang University, under the supervision of Prof. Deng Cai and Prof. Xiaofei He.</p>
-          <p>My research interests mainly lie in Autonomous AI Agents, Agentic RL, and Large Language Models.</p>
+          <div class="hero-about">
+            {% capture about_me %}{% include about-me.md %}{% endcapture %}
+            {{ about_me | markdownify }}
+          </div>
           <div class="hero-actions">
             <a href="/pages/works" class="btn-primary">View My Work</a>
             <a href="/pages/blog" class="btn-secondary">Read Blog</a>
@@ -390,6 +409,12 @@ layout: null
             <div>
               <span class="bento-item-title"><a href="https://github.com/ZJULearning/PTL">PTL</a></span>
               <div class="bento-item-desc">Progressive Transfer Learning</div>
+            </div>
+          </div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title"><a href="https://github.com/zhengxuyu/zforge">zforge</a></span>
+              <div class="bento-item-desc">My AI workflow skill set — <a href="https://github.com/zhengxuyu/zforge" style="color:#E8B878;">give it a ⭐</a></div>
             </div>
           </div>
           <a href="/pages/works" class="bento-view-all">View all &rarr;</a>

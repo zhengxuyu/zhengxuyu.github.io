@@ -6,69 +6,31 @@ categories: Blog
 tags: [Agentic Engineering, Vibe Coding, AI Agents, LLM, Software Engineering]
 draft: false
 description: "Karpathy frames vibe coding and agentic engineering as floor vs. ceiling. Here is how I see the split playing out."
-tldr: "Vibe coding raises the floor -- anyone can create software. Agentic engineering raises the ceiling -- professionals coordinate fallible agents while keeping quality. The two are different disciplines, but the line between them is blurring fast as agents get more reliable."
+tldr: "Vibe coding raised the floor -- anyone can ship software. But production needs someone accountable. Agentic engineering is the discipline that emerged to fill that gap: coordinating fallible agents while keeping quality. The catch is that the boundary between the two keeps moving as agents improve."
 ---
 
-**TL;DR:** Vibe coding raises the floor -- anyone can create software. Agentic engineering raises the ceiling -- professionals coordinate fallible agents while keeping quality. The two are different disciplines, but the line between them is blurring fast as agents get more reliable.
+**TL;DR:** Vibe coding raised the floor -- anyone can ship software. But production needs someone accountable. Agentic engineering is the discipline that emerged to fill that gap: coordinating fallible agents while keeping quality. The catch is that the boundary between the two keeps moving as agents improve.
 
 ---
 
-In February 2025, Karpathy [tweeted](https://x.com/karpathy/status/1886192184808149383):
+In February 2025, Karpathy [described](https://x.com/karpathy/status/1886192184808149383) a new way of working: "fully give in to the vibes, embrace exponentials, and forget that the code even exists." He called it vibe coding. Collins Dictionary made it Word of the Year. Within months, people who had never written a for loop were deploying web apps.
 
-> There's a new kind of coding I call "vibe coding", where you fully give in to the vibes, embrace exponentials, and forget that the code even exists.
+That was the promise: software creation with no barrier to entry. And for weekend projects and quick prototypes, the promise held. But then people started running production with it, and a gap opened up.
 
-A throwaway tweet, by his own admission. Collins Dictionary made it Word of the Year. Everyone started shipping software without reading it.
+The gap was accountability. Vibe coding works when you do not care why the code works, only that it does. The moment other people depend on your software, "it mostly works" is not a quality bar. Nobody was reviewing the output. Security holes went unnoticed. Bugs were unfixable because there was no mental model of what the code was doing. Vibe coding had democratized creation, but it had no answer for ownership.
 
-Fifteen months later, at [Sequoia AI Ascent 2026](https://www.youtube.com/watch?v=96jN2OCIfLs), he came back with a sharper framing: "Vibe coding raises the floor. Agentic engineering raises the ceiling. Two different goals. Two different disciplines."
+Something needed to fill that gap. Around December 2025, Karpathy [noted](https://karpathy.bearblog.dev/sequoia-ascent-2026/) that he could not remember the last time he corrected the model. Error rates had dropped enough that the work changed in kind, not just degree. Instead of fixing what the AI broke, you could direct what it built. The job shifted from typist to architect, from keyboard to spec.
 
-I have been living through this transition. Here is how I see it.
+That shift gave the gap a name. At [Sequoia AI Ascent 2026](https://www.youtube.com/watch?v=96jN2OCIfLs), Karpathy called it agentic engineering: "the professional discipline of coordinating fallible agents while preserving correctness, security, taste, and maintainability." His framing was clean. Vibe coding raises the floor. Agentic engineering raises the ceiling. Two different disciplines solving two different problems.
 
-## Vibe coding worked until it didn't
+What makes it a discipline, not just a workflow, is that it puts accountability back in. You own the spec. You own the verification. You own the quality bar. The AI changes how code gets written, not who is responsible for it. And the "fallible" part matters. Current models have spiky capabilities -- they refactor massive codebases in one pass and then make baffling mistakes on trivial things. Knowing where the spikes and valleys are is the new core competence.
 
-Vibe coding was great for throwaway projects. Describe what you want, accept the output, iterate. People who had never written a for loop were deploying web apps. The barrier to creating software dropped to near zero.
+The [tooling](https://github.com/jordimas/awesome-agentic-engineering) has organized around this idea. CLI agents like [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [Gemini CLI](https://github.com/google-gemini/gemini-cli) operate directly on your codebase. IDE tools like [Cursor](https://www.cursor.com/) and [Zed](https://zed.dev/agentic-engineering) embed agents into the editor. They all share a model where the human sets direction and the agent executes. Karpathy's verifiability principle explains why coding is ahead of other domains: code has tests, type checkers, diffs. The more verifiable your workflow, the more you can delegate.
 
-The trouble came when vibe-coded projects grew past the throwaway stage. No one was reviewing the output, so security holes went unnoticed. Debugging became guesswork because there was no mental model of what the code was doing. The vibes were great until something broke.
+But here is the tension I keep coming back to. The boundary between vibe coding and agentic engineering is supposed to be clear -- one is casual, the other is professional. In practice, it is already blurring. Simon Willison [wrote yesterday](https://simonwillison.net/2026/May/6/vibe-coding-and-agentic-engineering/) that he is no longer reviewing every line of agent-generated code, even for production. He produces repos with a hundred commits in 30 minutes. At that speed, review is impractical. You trust the agent like you trust a library you did not write.
 
-Karpathy meant it for weekend projects. People tried to run production with it.
+Each successful unreviewed deployment makes you more confident. But confidence is not verification. And when agents write their own test suites and set up their own CI, the question shifts from "did you review the code" to "did you review the verification." The accountability that agentic engineering was supposed to restore starts to feel like it is dissolving again, just one layer up.
 
-## December 2025 changed things
+I do not have a clean resolution for this. My working answer is that the gap between what agents can do and what they can be trusted to do will keep narrowing but never fully close. The human role keeps moving upward -- from writing code, to directing agents, to verifying verification -- but it does not disappear. Someone still has to own the outcome.
 
-Karpathy pointed to December 2025 as an inflection point. He said he could not remember the last time he corrected the model. The constant fix-what-the-AI-broke loop disappeared. Human attention shifted from catching mistakes to directing what gets built: architecture, security, taste.
-
-That shift is what makes agentic engineering a different discipline, not just better vibe coding.
-
-## What agentic engineering actually means
-
-From Karpathy's [Sequoia summary](https://karpathy.bearblog.dev/sequoia-ascent-2026/):
-
-> Agentic engineering is the professional discipline of coordinating fallible agents while preserving correctness, security, taste, and maintainability.
-
-Fallible -- because models have "spiky" capabilities. They refactor 100k-line codebases and then make baffling mistakes on trivial things. Coordinating -- because it is no longer a single prompt-response cycle; multiple agents work in parallel on shared code. Preserving -- because speed without quality is just technical debt generated faster.
-
-What remains human: you own the spec, the plan, and the quality bar. "You're still responsible for your software just as before."
-
-One idea from the talk that stuck with me: "LLMs automate what you can verify." Code is verifiable (tests, type checks, diffs), which is why coding agents are ahead. The more verifiable you make your workflow, the more you can safely delegate.
-
-## The tooling right now
-
-The [awesome-agentic-engineering](https://github.com/jordimas/awesome-agentic-engineering) repo gives a good snapshot. CLI agents ([Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Codex](https://github.com/openai/codex)) operate directly on your codebase -- they feel like junior engineers in your terminal. IDE tools ([Cursor](https://www.cursor.com/), [Zed](https://zed.dev/agentic-engineering)) embed agents into the editing environment. Zed frames it as working with stochastic tools being [a new engineering skill](https://zed.dev/agentic-engineering) in its own right.
-
-The common thread: "AI writes code for you" is becoming "AI executes plans under your direction."
-
-## The line is blurring
-
-Simon Willison [wrote yesterday](https://simonwillison.net/2026/May/6/vibe-coding-and-agentic-engineering/) about something that makes me uneasy too:
-
-> As the coding agents get more reliable, I'm not reviewing every line of code that they write anymore, even for my production level stuff.
-
-He produces repos with a hundred commits and comprehensive tests in 30 minutes. At that speed, line-by-line review is impractical. You start trusting the agent like a library you didn't write. Each successful unreviewed deployment raises your confidence -- but confidence is not verification.
-
-His rule: if a bug only hurts you, vibe code away. If others depend on it, you need agentic engineering discipline. Fair enough. But when agents write their own test suites and set up CI, the question shifts from "did you review the code" to "did you review the verification."
-
-## Where I think this goes
-
-Karpathy talked about the 10x engineer being "magnified a lot more." I think the magnification cuts both ways. A good engineer with agents produces what used to take a team. A careless one produces damage at the same scale.
-
-My bet: the gap between model capability and model reliability will narrow but never fully close. The human role keeps shifting toward judgment, taste, and accountability. Vibe coding brought millions of new people into software creation. Agentic engineering is figuring out how to keep the quality bar at speeds that seemed absurd two years ago.
-
-The interesting question is how long the distinction holds up as agents keep getting better.
+Karpathy's floor-and-ceiling metaphor is the right starting point. The question that keeps me up is whether the ceiling eventually becomes the new floor.

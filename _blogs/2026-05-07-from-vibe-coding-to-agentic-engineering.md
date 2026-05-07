@@ -10,10 +10,6 @@ description: "Agentic engineering is replacing manual coding and static AI workf
 tldr: "Software engineering is moving through three stages: manual coding, copilot-style autocomplete, and now agentic engineering where AI agents execute plans autonomously. 55% of developers already use AI agents regularly, 27% of production code is AI-authored, and agent session durations nearly doubled in three months. The transition is not coming -- it is underway."
 ---
 
-**TL;DR:** Software engineering is moving through three stages: manual coding, copilot-style autocomplete, and now agentic engineering where AI agents execute plans autonomously. 55% of developers already use AI agents regularly, 27% of production code is AI-authored, and agent session durations nearly doubled in three months. The transition is not coming -- it is underway.
-
----
-
 Karpathy [called it](https://x.com/karpathy/status/1886192184808149383) vibe coding in February 2025. Fifteen months later, at [Sequoia AI Ascent 2026](https://www.youtube.com/watch?v=96jN2OCIfLs), he proposed [agentic engineering](https://karpathy.bearblog.dev/sequoia-ascent-2026/) as its professional successor. But framing this as vibe coding versus agentic engineering misses the larger picture. What we are actually watching is the third phase of a longer transition in how software gets built.
 
 ## Three phases of human-AI coding

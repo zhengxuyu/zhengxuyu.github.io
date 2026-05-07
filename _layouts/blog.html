@@ -92,6 +92,23 @@ layout: default
   margin-top: 0.5rem;
 }
 
+/* Pinned Badge */
+.pinned-badge {
+  position: absolute;
+  top: -8px;
+  right: 1rem;
+  background: rgba(232, 184, 120, 0.85);
+  color: white;
+  padding: 0.2rem 0.65rem;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.pinned-item {
+  border-color: rgba(232, 184, 120, 0.3);
+}
+
 /* New Badge */
 .new-badge {
   position: absolute;
@@ -358,6 +375,8 @@ layout: default
     {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
     {%- assign all_blogs = site.blogs -%}
     {%- assign published_blogs = site.blogs | where_exp: "blog", "blog.draft != true" | sort: "date" | reverse -%}
+    {%- assign pinned_blogs = published_blogs | where: "pinned", true -%}
+    {%- assign unpinned_blogs = published_blogs | where_exp: "blog", "blog.pinned != true" -%}
     {%- assign draft_blogs = site.blogs | where_exp: "blog", "blog.draft == true" | sort: "date" | reverse -%}
 
     {%- if all_blogs.size == 0 -%}
@@ -367,9 +386,46 @@ layout: default
       </div>
     {%- else -%}
       {%- if published_blogs.size > 0 -%}
-        {%- for blog in published_blogs -%}
+        {%- for blog in pinned_blogs -%}
+          <article class="blog-item pinned-item">
+            <span class="pinned-badge">Pinned</span>
+            <header class="post-title">
+              <a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a>
+            </header>
+
+            <div class="post-meta">
+              <div class="post-date">
+                <i class="icon-calendar"></i>
+                {{ blog.date | date: date_format }}
+              </div>
+
+              {%- if blog.categories -%}
+                <div class="post-categories">
+                  {%- for category in blog.categories -%}
+                    <span class="category-tag">{{ category }}</span>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </div>
+
+            {%- if blog.tldr -%}
+              <div class="post-tldr">
+                <strong>TL;DR:</strong> <span>{{ blog.tldr }}</span>
+              </div>
+            {%- endif -%}
+
+            {%- if blog.excerpt -%}
+              <div class="post-excerpt">
+                {{ blog.excerpt | strip_html | truncatewords: 60 }}
+              </div>
+            {%- endif -%}
+
+            <a href="{{ blog.url | relative_url }}" class="read-more">Read more</a>
+          </article>
+        {%- endfor -%}
+        {%- for blog in unpinned_blogs -%}
           <article class="blog-item">
-            {%- if forloop.first -%}<span class="new-badge">New</span>{%- endif -%}
+            {%- if forloop.first and pinned_blogs.size == 0 -%}<span class="new-badge">New</span>{%- endif -%}
             <header class="post-title">
               <a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a>
             </header>

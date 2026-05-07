@@ -5,6 +5,7 @@ date: 2026-05-05 00:00:00 +0000
 categories: Blog
 tags: [AI Agents, Open Source, Agent Orchestration, One-Person Company, Agentic Engineering]
 draft: false
+pinned: true
 keywords: "OneManCompany, OMC, AI agents, agent orchestration, agentic OS, open source, one-person company, autonomous agents, Zhengxu Yu"
 description: "Introducing OneManCompany (OMC), an open-source agentic OS that self-mockingly recreates corporate structures with AI agents — and asks whether organizational patterns can ever truly be escaped."
 tldr: "OMC wraps AI agents in the most corporate language possible — talent markets, PIPs, HR, org charts — as a deliberate self-mockery. The point: organizational structures outlast the technology underneath them. We built the dragon so someone can break out of it."

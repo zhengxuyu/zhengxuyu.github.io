@@ -33,15 +33,8 @@
 <meta name="googlebot" content="index, follow">
 <meta name="bingbot" content="index, follow">
 
-<!-- OG Image: per-page og_image > blog banner (for blog posts) > profile photo -->
-{% assign og_image = page.og_image | default: nil %}
-{% unless og_image %}
-  {% if page.layout == 'post' or page.layout == 'blog-post' %}
-    {% assign og_image = '/assets/og-blog-banner.png' %}
-  {% else %}
-    {% assign og_image = '/assets/ZhengxuYu.jpeg' %}
-  {% endif %}
-{% endunless %}
+<!-- OG Image: per-page og_image > default banner -->
+{% assign og_image = page.og_image | default: '/assets/og-blog-banner.png' %}
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="{% if page.layout == 'post' or page.layout == 'blog-post' %}article{% else %}website{% endif %}">

@@ -95,13 +95,15 @@ The revenue numbers tell the same story. Cursor went from $300M to $2B+ ARR in u
 
 ## What actually changes
 
-Three things shift when you move from copilot-style coding to agentic engineering.
+Four things shift when you move from copilot-style coding to agentic engineering.
 
 First, the unit of work changes. You stop thinking in lines of code and start thinking in tasks. "Implement the auth middleware with these constraints" replaces "write a function that checks the JWT." The spec becomes the primary artifact, not the code.
 
 Second, verification replaces review. You cannot read every line an agent writes across a 30-minute session with a hundred commits. Instead, you invest in making output verifiable: comprehensive tests, type checking, CI pipelines, staging environments. Karpathy's principle from the Sequoia talk -- "LLMs automate what you can verify" -- is the reason coding agents are ahead of agents in other domains. Code has tests. Code has diffs. The more verifiable you make your workflow, the more you can delegate.
 
-Third, the failure mode changes. In manual coding, bugs come from typos and logic errors. In copilot coding, bugs come from accepting wrong suggestions. In agentic engineering, the risk is architectural: the agent builds something that works but is designed wrong, insecure, or unmaintainable. The [METR study](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) found that developers perceived themselves as 20-24% faster with AI tools while actually being 19% slower on familiar codebases -- because they over-trusted the output. The follow-up study with improved agentic tools showed an 18% speedup, suggesting the tooling is catching up, but the trust calibration problem remains.
+Third, and this is the one I feel most personally, the career profile of a programmer is changing. When the bottleneck was typing code, the profession rewarded speed and stamina -- young engineers with fresh syntax knowledge and the energy to grind out features had a natural edge. When the bottleneck shifts to architecture, system design, and knowing which tradeoffs will bite you in six months, experience becomes the scarce resource. Programming is starting to look less like a young person's game and more like medicine or law: a profession where accumulated project judgment compounds over a career. The people I see getting the most out of agentic tools are not the fastest coders. They are the ones who have seen enough systems fail to write a good spec.
+
+Fourth, the failure mode changes. In manual coding, bugs come from typos and logic errors. In copilot coding, bugs come from accepting wrong suggestions. In agentic engineering, the risk is architectural: the agent builds something that works but is designed wrong, insecure, or unmaintainable. The [METR study](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) found that developers perceived themselves as 20-24% faster with AI tools while actually being 19% slower on familiar codebases -- because they over-trusted the output. The follow-up study with improved agentic tools showed an 18% speedup, suggesting the tooling is catching up, but the trust calibration problem remains.
 
 ## What comes next
 

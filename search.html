@@ -1,22 +1,22 @@
 ---
 layout: default
-title: "搜索 - Zhengxu Yu"
-description: "搜索Zhengxu Yu网站内容"
-keywords: "搜索, Zhengxu Yu, 余正旭"
+title: "Search - Zhengxu Yu"
+description: "Search content on Zhengxu Yu's website"
+keywords: "search, Zhengxu Yu"
 ---
 
 {% include search-data.html %}
 
 <div class="search-container">
-  <h1>搜索网站内容</h1>
+  <h1>Search</h1>
   
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="输入关键词搜索..." onkeyup="searchContent()">
-    <button onclick="searchContent()">搜索</button>
+    <input type="text" id="searchInput" placeholder="Type to search..." onkeyup="searchContent()">
+    <button onclick="searchContent()">Search</button>
   </div>
   
   <div id="searchResults" class="search-results">
-    <!-- 搜索结果将在这里显示 -->
+    <!-- Search results will be displayed here -->
   </div>
 </div>
 
@@ -146,10 +146,10 @@ keywords: "搜索, Zhengxu Yu, 余正旭"
 </style>
 
 <script>
-// 获取搜索数据
+// Load search data
 const searchData = JSON.parse(document.getElementById('searchData').textContent);
 
-// 合并所有内容
+// Merge all content
 const allContent = [
   ...searchData.pages,
   ...searchData.blogs,
@@ -167,7 +167,7 @@ function searchContent() {
   const resultsContainer = document.getElementById('searchResults');
   
   if (searchTerm.length < 2) {
-    resultsContainer.innerHTML = '<div class="no-results">请输入至少2个字符开始搜索</div>';
+    resultsContainer.innerHTML = '<div class="no-results">Please enter at least 2 characters to search</div>';
     return;
   }
   
@@ -185,7 +185,7 @@ function searchContent() {
   });
   
   if (results.length === 0) {
-    resultsContainer.innerHTML = '<div class="no-results">未找到相关结果</div>';
+    resultsContainer.innerHTML = '<div class="no-results">No results found</div>';
     return;
   }
   
@@ -206,31 +206,31 @@ function searchContent() {
     } else if (item.type === 'works') {
       metaHTML = `
         <div class="meta">
-          <span>💼 项目作品</span>
+          <span>💼 Project</span>
         </div>
       `;
     } else if (item.type === 'cv') {
       metaHTML = `
         <div class="meta">
-          <span>📄 简历</span>
+          <span>📄 CV</span>
         </div>
       `;
     } else if (item.type === 'publications') {
       metaHTML = `
         <div class="meta">
-          <span>📚 学术论文</span>
+          <span>📚 Publication</span>
         </div>
       `;
     } else if (item.type === 'homepage') {
       metaHTML = `
         <div class="meta">
-          <span>🏠 主页</span>
+          <span>🏠 Homepage</span>
         </div>
       `;
     } else if (item.type === 'blog-list') {
       metaHTML = `
         <div class="meta">
-          <span>📝 博客列表</span>
+          <span>📝 Blog</span>
         </div>
       `;
     }
@@ -255,18 +255,18 @@ function searchContent() {
     `;
   }).join('');
   
-  const statsHTML = `<div class="search-stats">找到 ${results.length} 个结果</div>`;
+  const statsHTML = `<div class="search-stats">${results.length} result${results.length === 1 ? '' : 's'} found</div>`;
   resultsContainer.innerHTML = statsHTML + resultsHTML;
 }
 
-// 支持回车键搜索
+// Support Enter key to search
 document.getElementById('searchInput').addEventListener('keypress', function(e) {
   if (e.key === 'Enter') {
     searchContent();
   }
 });
 
-// 页面加载时聚焦搜索框
+// Focus search input on page load
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('searchInput').focus();
 });

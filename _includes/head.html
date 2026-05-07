@@ -34,7 +34,7 @@
 <meta name="bingbot" content="index, follow">
 
 <!-- OG Image: per-page og_image > default banner -->
-{% assign og_image = page.og_image | default: '/assets/og-blog-banner.png' %}
+{% assign og_image = page.og_image | default: '/assets/og-default.png' %}
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="{% if page.layout == 'post' or page.layout == 'blog-post' %}article{% else %}website{% endif %}">

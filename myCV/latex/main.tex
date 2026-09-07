@@ -20,6 +20,13 @@
 
 \definecolor{linkcolor}{RGB}{125,25,45}
 
+%------------------------------------------------- CV variant switch
+%   \researchtrue   research CV: research overview first, then education, employment,
+%                   full publication list
+%   \researchfalse  industry CV: no overview, employment first, then education, trimmed list
+\newif\ifresearch
+\researchtrue
+
 %------------------------------------------------- global look
 \pagestyle{plain}
 \setlength{\parindent}{0pt}
@@ -78,8 +85,7 @@
 
 %========================================================== header
 \begin{center}
-  {\Huge\bfseries Zhengxu Yu}\\[0.35em]
-  % {\sffamily\small\color{linkcolor}Research Scientist, Huawei Technologies R\&D UK}
+  {\Huge\bfseries Zhengxu Yu}
 \end{center}
 \vspace{0.8em}
 
@@ -95,24 +101,29 @@ London, United Kingdom
 \end{minipage}
 
 %========================================================== research overview
+\ifresearch
 \section{Research Overview}
 
-My research concerns the generalisation limits of learning systems, that is, the extent to which
-competence acquired from finite experience extends beyond the distribution that produced it.
-Existing theory characterises generalisation within a fixed distribution, but for regimes absent
-from training no comparable account exists, and in its absence the requirements on model
-architecture and the objectives of training remain underdetermined. Three questions follow, namely
-how this boundary should be characterised over a distribution of tasks, how it can be extended, and
-how it can be measured on held-out environments rather than asserted. My position is that what a
-policy achieves in environments outside the training distribution is determined by the form of the
-model it has learned of the environment dynamics, and not by the reward it was trained to maximise.
-I therefore study model-based formulations in which the learned dynamics are represented explicitly
-and revised during interaction, expressed as executable programs, corrected from the discrepancy
-between predicted and observed transitions, and assessed through the policy's own rollouts rather
-than through an externally supplied reward. Generative code world models and self-organising
-multi-agent systems are the environments in which these questions are currently examined.
+My research concerns the generalisation limits of learning systems: how far competence acquired
+from finite experience extends beyond the distribution that produced it. Existing accounts of
+distribution shift buy their guarantees with assumptions that cannot be checked at deployment, and
+the methods built on them have proved hard to separate from plain empirical risk minimisation. My
+interest is in the case they do not reach, where the new regime is not a perturbation of the
+training one and no amount of interpolation within what was seen will produce the right behaviour.
 
-%========================================================== education
+What is missing there is exploration that can leave the region the training data describes rather
+than search inside it, and I take that to depend on how the agent represents its environment.
+Dynamics learned as executable programs, written from the agent's own interaction and revised
+wherever prediction and observation disagree, form a hypothesis that can be rejected outright and
+replaced in a way a distributed representation does not allow. Whether this is what governs
+behaviour in an unfamiliar regime is a question about held-out environments and has to be settled
+by running there: currently on ARC-AGI-3, and in self-organising multi-agent populations.
+\fi
+
+%========================================================== education / employment
+% Defined here, emitted below in an order that depends on the variant: a research CV
+% leads with training, an industry CV leads with what was shipped.
+\newcommand{\educationsection}{%
 \section{Education}
 
 \begin{entries}{1.7in}
@@ -127,8 +138,9 @@ multi-agent systems are the environments in which these questions are currently 
 \gap\textbf{B.Eng.}\par Electrical Engineering\par 2011--2015 &
   \gap Jilin University \\
 \end{entries}
+}
 
-%========================================================== employment
+\newcommand{\employmentsection}{%
 \section{Employment}
 
 \begin{entries}{1.7in}
@@ -148,7 +160,7 @@ multi-agent systems are the environments in which these questions are currently 
   500+ GPUs. \\
 \gap\textbf{Algorithm Expert}\par 2024--2025 &
   \gap Apsara Lab (now Tongyi Lab), Alibaba Cloud\par
-  - Developed reinforcement-learning post-training methods for reasoning efficiency, alignment
+  - Developed RL-based post-training methods for LLM reasoning efficiency, alignment
   and agentic tool use, cutting reasoning-token usage by 50\% on Qwen-7B at no accuracy loss
   (NeurIPS 2025, AAAI 2026).\par
   - Delivered three bespoke LLM agent systems with dynamic reasoning and tool use for
@@ -161,19 +173,36 @@ multi-agent systems are the environments in which these questions are currently 
   research interns and junior engineers. \\
 \gap\textbf{Senior Algorithm Engineer}\par 2021--2024 &
   \gap Apsara Lab (now Tongyi Lab), Alibaba Cloud\par
+  \ifresearch
   - Developed multi-agent reinforcement learning for city-scale traffic signal control,
   reducing mean travel time by 2.8\% against the CoLight state of the art on real-city road
   networks of up to 196 intersections, and deployed it in production urban traffic signal
   control (IJCAI, IEEE TKDE, IJMLC).\par
   - Developed progressive transfer learning under distribution shift, raising Rank-1 accuracy
   by up to 4.5 points over the MGN backbone across four person re-identification benchmarks
-  (MSMT17, Market-1501, CUHK03, DukeMTMC-reID) (IEEE TIP). \\
+  (MSMT17, Market-1501, CUHK03, DukeMTMC-reID) (IEEE TIP).
+  \else
+  - Developed and deployed multi-agent reinforcement learning for city-scale traffic signal
+  control, cutting mean travel time against the prior state of the art on real road networks of
+  up to 196 intersections (IJCAI, IEEE TKDE, IJMLC).\par
+  - Developed progressive transfer learning under distribution shift for production vision
+  models (IEEE TIP).
+  \fi \\
 \gap\textbf{Research Intern}\par 2018--2021 &
   \gap DAMO Academy, Alibaba Group\par
   - Developed large-scale multi-agent reinforcement learning and deep representation learning
   methods for the traffic engine of Alibaba City Brain; 7 granted national invention
   patents. \\
 \end{entries}
+}
+
+\ifresearch
+  \educationsection
+  \employmentsection
+\else
+  \employmentsection
+  \educationsection
+\fi
 
 % %========================================================== awards
 % \section{Awards and Honours}
@@ -189,7 +218,7 @@ multi-agent systems are the environments in which these questions are currently 
 
 The $*$ symbol denotes equal contribution.
 
-\subsection{Peer-Reviewed Papers}
+\subsection{Conference Papers}
 
 \begin{publist}
 \pub{C4} Weihang Pan, \me, Yuxiang Zhang, Zhongming Jin, Binbin Lin, Xiaofei He, Jieping Ye.
@@ -210,10 +239,11 @@ The $*$ symbol denotes equal contribution.
   (IJCAI)}, 2020.
 \end{publist}
 
-\subsection{Journal}
+\subsection{Journal Articles}
 
 \begin{publist}
 
+\ifresearch
 \pub{J4} Weihang Pan, Binbin Lin, Yafei Wang, \me, Xinkui Zhao, Xiaofei He, Jieping Ye.
   ``Cooperative Driving at Multiple Unsignalized Intersections in Fully Autonomous Driving
   Scenarios'' \venue{IEEE Transactions on Intelligent Transportation Systems (T-ITS)},
@@ -223,6 +253,7 @@ The $*$ symbol denotes equal contribution.
   Xiaofei He. ``Optimizing Traffic Efficiency via a Reinforcement Learning Approach Based on Time
   Allocation'' \venue{International Journal of Machine Learning and Cybernetics (IJMLC)},
   vol.~14, no.~10, 2023.
+\fi
 
 \pub{J2} Xin Guo, \me, Pengfei Wang, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He,
   Xian-Sheng Hua. ``Urban Traffic Light Control via Active Multi-Agent Communication and

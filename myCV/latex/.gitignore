@@ -6,3 +6,7 @@
 *.fdb_latexmk
 *.synctex.gz
 *.toc
+
+# Per-variant exports: rebuild from main.tex by flipping \researchtrue / \researchfalse
+cv-research.pdf
+cv-industry.pdf

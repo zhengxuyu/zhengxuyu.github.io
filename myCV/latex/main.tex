@@ -1,0 +1,279 @@
+%=========================================================================
+% Curriculum Vitae -- Zhengxu Yu
+% Layout modelled on a classic LaTeX academic CV:
+%   centred small-caps name, two-column ruled entries, sans-serif headings.
+%=========================================================================
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{charter}           % Bitstream Charter body text
+\usepackage[scaled=0.9]{helvet}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[margin=1in,top=0.85in,bottom=0.8in]{geometry}
+\usepackage[colorlinks=true,urlcolor=linkcolor,linkcolor=linkcolor,
+            citecolor=linkcolor,breaklinks=true]{hyperref}
+
+\definecolor{linkcolor}{RGB}{125,25,45}
+
+%------------------------------------------------- global look
+\pagestyle{plain}
+\setlength{\parindent}{0pt}
+\setlength{\LTpre}{0pt}
+\setlength{\LTpost}{0pt}
+\renewcommand{\arraystretch}{1.05}
+
+%------------------------------------------------- section headings
+\makeatletter
+\renewcommand{\section}[1]{%
+  \vspace{1.05em}%
+  {\sffamily\bfseries\small\color{linkcolor}\MakeUppercase{#1}}\par
+  \vspace{-0.25em}{\color{linkcolor}\rule{\textwidth}{0.9pt}}\par
+  \vspace{0.55em}%
+  \@afterindentfalse\@afterheading}
+\renewcommand{\subsection}[1]{%
+  \vspace{0.7em}%
+  {\sffamily\bfseries\small #1}\par
+  \vspace{0.35em}%
+  \@afterindentfalse\@afterheading}
+\makeatother
+
+%------------------------------------------------- ruled two-column entries
+% \begin{entries}{<left column width>} ... \end{entries}
+\newenvironment{entries}[1]
+  {\begin{longtable}{@{}>{\raggedleft\arraybackslash}p{#1}@{\hspace{8pt}}|@{\hspace{8pt}}p{\dimexpr\textwidth-#1-18pt\relax}@{}}}
+  {\end{longtable}}
+
+% vertical strut that keeps the rule continuous between entries
+\newcommand{\gap}[1][14pt]{\rule{0pt}{#1}}
+
+% right-aligned date column (awards, talks, service)
+\newenvironment{datedentries}[1][3cm]
+  {\begin{longtable}{@{}p{\dimexpr\textwidth-#1-18pt\relax}@{\hspace{8pt}}|@{\hspace{8pt}}>{\raggedleft\arraybackslash}p{#1}@{}}}
+  {\end{longtable}}
+
+% simple unruled list -- use while an entry group has no dates yet
+\newenvironment{plainentries}
+  {\begin{list}{}{\setlength{\leftmargin}{0pt}\setlength{\itemsep}{2pt}%
+     \setlength{\parsep}{0pt}\setlength{\topsep}{0pt}}}
+  {\end{list}}
+
+%------------------------------------------------- publication list
+\newenvironment{publist}
+  {\begin{list}{}{%
+     \setlength{\labelwidth}{2.6em}\setlength{\labelsep}{0.5em}%
+     \setlength{\leftmargin}{3.1em}\setlength{\itemsep}{0.45em}%
+     \setlength{\parsep}{0pt}\setlength{\topsep}{0.4em}%
+     \renewcommand{\makelabel}[1]{\hfill\textbf{##1}}}}
+  {\end{list}}
+\newcommand{\pub}[1]{\item[#1]}
+\newcommand{\me}{\underline{Zhengxu Yu}}
+\newcommand{\venue}[1]{\textit{#1}}
+
+\begin{document}
+
+%========================================================== header
+\begin{center}
+  {\Huge\bfseries Zhengxu Yu}\\[0.35em]
+  % {\sffamily\small\color{linkcolor}Research Scientist, Huawei Technologies R\&D UK}
+\end{center}
+\vspace{0.8em}
+
+\begin{minipage}[t]{0.5\textwidth}
+Huawei Technologies R\&D UK\\
+London, United Kingdom
+\end{minipage}%
+\begin{minipage}[t]{0.5\textwidth}
+\raggedleft
+\texttt{\href{mailto:yuzxfred@gmail.com}{yuzxfred@gmail.com}}\\
+\texttt{\href{https://zhengxuyu.github.io/}{https://zhengxuyu.github.io/}}\\
+\texttt{\href{https://dblp.org/pid/246/3155}{https://dblp.org/pid/246/3155}}
+\end{minipage}
+
+%========================================================== research overview
+\section{Research Overview}
+
+My research concerns the generalisation limits of learning systems, that is, the extent to which
+competence acquired from finite experience extends beyond the distribution that produced it.
+Existing theory characterises generalisation within a fixed distribution, but for regimes absent
+from training no comparable account exists, and in its absence the requirements on model
+architecture and the objectives of training remain underdetermined. Three questions follow, namely
+how this boundary should be characterised over a distribution of tasks, how it can be extended, and
+how it can be measured on held-out environments rather than asserted. My position is that what a
+policy achieves in environments outside the training distribution is determined by the form of the
+model it has learned of the environment dynamics, and not by the reward it was trained to maximise.
+I therefore study model-based formulations in which the learned dynamics are represented explicitly
+and revised during interaction, expressed as executable programs, corrected from the discrepancy
+between predicted and observed transitions, and assessed through the policy's own rollouts rather
+than through an externally supplied reward. Generative code world models and self-organising
+multi-agent systems are the environments in which these questions are currently examined.
+
+%========================================================== education
+\section{Education}
+
+\begin{entries}{1.7in}
+\gap[4pt]\textbf{Ph.D.}\par Computer Science\par 2017--2021 &
+  \gap[4pt]Zhejiang University\par
+  Advisors: Prof.\ Deng Cai and Prof.\ Xiaofei He\par
+  Thesis: Stable Learning for Non-I.I.D Data\\
+\gap\textbf{M.Sc.}\par Computer Science\par 2015--2016 &
+  \gap University of Surrey\par
+  Advisor: Prof.\ H.\ Lilian Tang\par
+  Thesis: CNN-based Mycobacterium Cells Segmentation for Time-lapse Images \\
+\gap\textbf{B.Eng.}\par Electrical Engineering\par 2011--2015 &
+  \gap Jilin University \\
+\end{entries}
+
+%========================================================== employment
+\section{Employment}
+
+\begin{entries}{1.7in}
+\gap[4pt]\textbf{Research Scientist}\par Jan 2026--Present &
+  \gap[4pt]Huawei Technologies R\&D UK, London\par
+  - Built a generative code world model in which agents explore open-ended environments and
+  encode the rules they discover as executable, self-improving code, reaching 100\% Relative
+  Human Action Efficiency (RHAE) on the ARC-AGI-3 community leaderboard.\par
+  - Led research and system design for \textbf{OneManCompany (OMC)}, an open-source agentic AI
+  platform for self-organising multi-agent systems, leading a 5-person team; 400+ GitHub
+  stars, with the design published as arXiv:2604.22446.\par
+  \url{https://github.com/1mancompany/OneManCompany} \\
+\gap\textbf{Member of Technical Team}\par Aug 2025--Jan 2026 &
+  \gap Inephany Ltd., London\par
+  - Built the multi-agent reinforcement learning training infrastructure for large language
+  models and vision transformers, supporting distributed training runs on clusters of
+  500+ GPUs. \\
+\gap\textbf{Algorithm Expert}\par 2024--2025 &
+  \gap Apsara Lab (now Tongyi Lab), Alibaba Cloud\par
+  - Developed reinforcement-learning post-training methods for reasoning efficiency, alignment
+  and agentic tool use, cutting reasoning-token usage by 50\% on Qwen-7B at no accuracy loss
+  (NeurIPS 2025, AAAI 2026).\par
+  - Delivered three bespoke LLM agent systems with dynamic reasoning and tool use for
+  decision support and information retrieval, deployed for the International Olympic
+  Committee and several municipal government bureaus in China.\par
+  - Shipped those three systems and two further large-scale enterprise solutions as tech lead
+  and core algorithm owner, contributing to over RMB 25M in cumulative GAAP-recognised
+  revenue.\par
+  - Led a 13-engineer feature team and a 40-person data-annotation group, supervising 8
+  research interns and junior engineers. \\
+\gap\textbf{Senior Algorithm Engineer}\par 2021--2024 &
+  \gap Apsara Lab (now Tongyi Lab), Alibaba Cloud\par
+  - Developed multi-agent reinforcement learning for city-scale traffic signal control,
+  reducing mean travel time by 2.8\% against the CoLight state of the art on real-city road
+  networks of up to 196 intersections, and deployed it in production urban traffic signal
+  control (IJCAI, IEEE TKDE, IJMLC).\par
+  - Developed progressive transfer learning under distribution shift, raising Rank-1 accuracy
+  by up to 4.5 points over the MGN backbone across four person re-identification benchmarks
+  (MSMT17, Market-1501, CUHK03, DukeMTMC-reID) (IEEE TIP). \\
+\gap\textbf{Research Intern}\par 2018--2021 &
+  \gap DAMO Academy, Alibaba Group\par
+  - Developed large-scale multi-agent reinforcement learning and deep representation learning
+  methods for the traffic engine of Alibaba City Brain; 7 granted national invention
+  patents. \\
+\end{entries}
+
+% %========================================================== awards
+% \section{Awards and Honours}
+
+% \begin{datedentries}[3cm]
+% \gap[4pt]\textbf{Alibaba Cloud Best Employee Award} & \gap[4pt]2024, 2025 \\
+% \gap\textbf{Alibaba DAMO Academy Outstanding Intern Award} & \gap 2018, 2019, 2021 \\
+% \gap\textbf{Zhejiang University Outstanding Graduate Student Award} & \gap 2019, 2020 \\
+% \end{datedentries}
+
+%========================================================== publications
+\section{Selected Publications}
+
+The $*$ symbol denotes equal contribution.
+
+\subsection{Peer-Reviewed Papers}
+
+\begin{publist}
+\pub{C4} Weihang Pan, \me, Yuxiang Zhang, Zhongming Jin, Binbin Lin, Xiaofei He, Jieping Ye.
+  ``ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning''
+  \venue{ISWC}, 2026.
+
+\pub{C3} Weihang Pan, \me, Yong Wu, Xun Liang, Zhongming Jin, Qiang Fu, Penghui Shang, Binbin Lin,
+  Xiaofei He, Jieping Ye. ``FGD-Align: Pluralistic Alignment for Large Language Models via Fuzzy
+  Group Decision-Making'' \venue{AAAI Conference on Artificial Intelligence (AAAI)}, 2026.
+
+\pub{C2} Yuxiang Zhang*, \me*, Weihang Pan, Zhongming Jin, Qiang Fu, Deng Cai, Binbin Lin,
+  Jieping Ye. ``TokenSqueeze: Performance-Preserving Compression for Reasoning LLMs''
+  \venue{Neural Information Processing Systems (NeurIPS)}, 2025.
+
+\pub{C1} \me*, Shuxian Liang*, Long Wei, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He,
+  Xian-Sheng Hua. ``MaCAR: Urban Traffic Light Control via Active Multi-agent Communication and
+  Action Rectification'' \venue{International Joint Conference on Artificial Intelligence
+  (IJCAI)}, 2020.
+\end{publist}
+
+\subsection{Journal}
+
+\begin{publist}
+
+\pub{J4} Weihang Pan, Binbin Lin, Yafei Wang, \me, Xinkui Zhao, Xiaofei He, Jieping Ye.
+  ``Cooperative Driving at Multiple Unsignalized Intersections in Fully Autonomous Driving
+  Scenarios'' \venue{IEEE Transactions on Intelligent Transportation Systems (T-ITS)},
+  vol.~26, no.~12, 2025.
+
+\pub{J3} Chao Xiang, Zhongming Jin, \me, Xian-Sheng Hua, Yao Hu, Wei Qian, Kaili Zhu, Deng Cai,
+  Xiaofei He. ``Optimizing Traffic Efficiency via a Reinforcement Learning Approach Based on Time
+  Allocation'' \venue{International Journal of Machine Learning and Cybernetics (IJMLC)},
+  vol.~14, no.~10, 2023.
+
+\pub{J2} Xin Guo, \me, Pengfei Wang, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He,
+  Xian-Sheng Hua. ``Urban Traffic Light Control via Active Multi-Agent Communication and
+  Supply-Demand Modeling'' \venue{IEEE Transactions on Knowledge and Data Engineering (TKDE)},
+  vol.~35, no.~4, 2023. (Journal extension of C1.)
+
+\pub{J1} \me, Dong Shen, Zhongming Jin, Jianqiang Huang, Deng Cai, Xian-Sheng Hua.
+  ``Progressive Transfer Learning'' \venue{IEEE Transactions on Image Processing (TIP)},
+  vol.~31, 2022.
+\end{publist}
+
+\subsection{Technical Reports}
+
+\begin{publist}
+\pub{P1} \me, Yu Fu, Zhiyuan He, Yuxuan Huang, Ka Yiu Lee, Meng Fang, Weilin Luo, Jun Wang.
+  ``OneManCompany: An Open-Source Operating System for Self-Organizing Multi-Agent Systems''
+  \venue{arXiv preprint arXiv:2604.22446}, 2026.
+  \href{https://arxiv.org/abs/2604.22446}{Paper}.
+\end{publist}
+
+% \subsection{Theses}
+
+% \begin{publist}
+% \pub{T1} \me. ``Stable Learning for Non-I.I.D Data'' Ph.D.\ thesis, Zhejiang University, 2021.
+% \end{publist}
+
+%========================================================== talks
+% \section{Invited Talks}
+
+%========================================================== service
+% \section{Professional Service}
+
+% \subsection{Conference Area Chair}
+
+% \subsection{Conference Refereeing}
+
+% Add years and switch to \begin{datedentries} (as used above) once known, e.g.
+%   \gap Neural Information Processing Systems (NeurIPS) & \gap 2023--2026 \\
+% \begin{plainentries}
+% \item Neural Information Processing Systems (NeurIPS)
+% \item International Conference on Learning Representations (ICLR)
+% \item AAAI Conference on Artificial Intelligence (AAAI)
+% \item International Joint Conference on Artificial Intelligence (IJCAI)
+% \item European Conference on Computer Vision (ECCV)
+% \item IEEE Transactions on Image Processing (TIP)
+% \item IEEE Transactions on Multimedia (TMM)
+% \item IEEE Transactions on Cognitive and Developmental Systems (TCDS)
+% \end{plainentries}
+
+% \subsection{Workshop Organization}
+
+% \subsection{Seminar Organization}
+
+\end{document}

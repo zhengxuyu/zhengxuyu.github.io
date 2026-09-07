@@ -144,35 +144,44 @@ by running there: currently on ARC-AGI-3, and in self-organising multi-agent pop
 \section{Employment}
 
 \begin{entries}{1.7in}
-\gap[4pt]\textbf{Research Scientist}\par Jan 2026--Present &
+\gap[4pt]\textbf{Research Scientist}\par Project Leader (PL)\par Jan 2026--Present &
   \gap[4pt]Huawei Technologies R\&D UK, London\par
-  - Built a generative code world model in which agents explore open-ended environments and
-  encode the rules they discover as executable, self-improving code, reaching 100\% Relative
-  Human Action Efficiency (RHAE) on the ARC-AGI-3 community leaderboard.\par
-  - Led research and system design for \textbf{OneManCompany (OMC)}, an open-source agentic AI
-  platform for self-organising multi-agent systems, leading a 5-person team; 400+ GitHub
-  stars, with the design published as arXiv:2604.22446.\par
-  \url{https://github.com/1mancompany/OneManCompany} \\
+  \newcommand{\hwlead}{%
+  - Project Leader for two feature teams, code world models (10 researchers and engineers)
+  and OneManCompany (8), owning technical direction and delivery for each.\par
+  - Led research and system design for \textbf{OneManCompany}, an open-source agentic AI
+  platform for self-organising multi-agent systems; 400+ GitHub stars, with the design
+  published as arXiv:2604.22446.\par
+  \url{https://github.com/1mancompany/OneManCompany}\par}%
+  \newcommand{\hwtech}{%
+  - Led development of a generative code world model in which agents explore open-ended
+  environments and encode the rules they discover as executable, self-improving code,
+  reaching 100\% Relative
+  Human Action Efficiency (RHAE) on the ARC-AGI-3 community leaderboard.\par}%
+  \ifresearch \hwtech \hwlead \else \hwlead \hwtech \fi \\
 \gap\textbf{Member of Technical Team}\par Aug 2025--Jan 2026 &
   \gap Inephany Ltd., London\par
-  - Built the multi-agent reinforcement learning training infrastructure for large language
-  models and vision transformers, supporting distributed training runs on clusters of
-  500+ GPUs. \\
-\gap\textbf{Algorithm Expert}\par 2024--2025 &
+  - As the company's first hire, built the multi-agent reinforcement learning training
+  infrastructure for large language models and vision transformers, supporting distributed
+  training runs on clusters of 500+ GPUs. \\
+\gap\textbf{Algorithm Expert}\par 2024--2025\par
+  \gap\textbf{Senior Algorithm}\par \textbf{Engineer}\par 2021--2024 &
   \gap Apsara Lab (now Tongyi Lab), Alibaba Cloud\par
-  - Developed RL-based post-training methods for LLM reasoning efficiency, alignment
-  and agentic tool use, cutting reasoning-token usage by 50\% on Qwen-7B at no accuracy loss
-  (NeurIPS 2025, AAAI 2026).\par
+  \newcommand{\abteam}{%
+  - Led feature teams over four years, latterly 13 engineers and a 40-person data-annotation
+  group, and supervised 8 research interns and junior engineers; promoted to Algorithm Expert
+  in 2024.\par}%
+  \newcommand{\abship}{%
   - Delivered three bespoke LLM agent systems with dynamic reasoning and tool use for
   decision support and information retrieval, deployed for the International Olympic
   Committee and several municipal government bureaus in China.\par
   - Shipped those three systems and two further large-scale enterprise solutions as tech lead
   and core algorithm owner, contributing to over RMB 25M in cumulative GAAP-recognised
-  revenue.\par
-  - Led a 13-engineer feature team and a 40-person data-annotation group, supervising 8
-  research interns and junior engineers. \\
-\gap\textbf{Senior Algorithm Engineer}\par 2021--2024 &
-  \gap Apsara Lab (now Tongyi Lab), Alibaba Cloud\par
+  revenue.\par}%
+  \newcommand{\abresearch}{%
+  - Developed RL-based post-training methods for LLM reasoning efficiency, alignment
+  and agentic tool use, cutting reasoning-token usage by 50\% on Qwen-7B at no accuracy loss
+  (NeurIPS 2025, AAAI 2026).\par
   \ifresearch
   - Developed multi-agent reinforcement learning for city-scale traffic signal control,
   reducing mean travel time by 2.8\% against the CoLight state of the art on real-city road
@@ -180,14 +189,13 @@ by running there: currently on ARC-AGI-3, and in self-organising multi-agent pop
   control (IJCAI, IEEE TKDE, IJMLC).\par
   - Developed progressive transfer learning under distribution shift, raising Rank-1 accuracy
   by up to 4.5 points over the MGN backbone across four person re-identification benchmarks
-  (MSMT17, Market-1501, CUHK03, DukeMTMC-reID) (IEEE TIP).
+  (MSMT17, Market-1501, CUHK03, DukeMTMC-reID) (IEEE TIP).\par
   \else
   - Developed and deployed multi-agent reinforcement learning for city-scale traffic signal
   control, cutting mean travel time against the prior state of the art on real road networks of
   up to 196 intersections (IJCAI, IEEE TKDE, IJMLC).\par
-  - Developed progressive transfer learning under distribution shift for production vision
-  models (IEEE TIP).
-  \fi \\
+  \fi}%
+  \ifresearch \abresearch \abship \abteam \else \abteam \abship \abresearch \fi \\
 \gap\textbf{Research Intern}\par 2018--2021 &
   \gap DAMO Academy, Alibaba Group\par
   - Developed large-scale multi-agent reinforcement learning and deep representation learning
@@ -221,10 +229,6 @@ The $*$ symbol denotes equal contribution.
 \subsection{Conference Papers}
 
 \begin{publist}
-\pub{C4} Weihang Pan, \me, Yuxiang Zhang, Zhongming Jin, Binbin Lin, Xiaofei He, Jieping Ye.
-  ``ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning''
-  \venue{ISWC}, 2026.
-
 \pub{C3} Weihang Pan, \me, Yong Wu, Xun Liang, Zhongming Jin, Qiang Fu, Penghui Shang, Binbin Lin,
   Xiaofei He, Jieping Ye. ``FGD-Align: Pluralistic Alignment for Large Language Models via Fuzzy
   Group Decision-Making'' \venue{AAAI Conference on Artificial Intelligence (AAAI)}, 2026.
@@ -268,6 +272,11 @@ The $*$ symbol denotes equal contribution.
 \subsection{Technical Reports}
 
 \begin{publist}
+\pub{P2} Weihang Pan, \me, Yuxiang Zhang, Zhongming Jin, Binbin Lin, Xiaofei He, Jieping Ye.
+  ``ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning''
+  \venue{arXiv preprint arXiv:2608.21860}, 2026.
+  \href{https://arxiv.org/abs/2608.21860}{Paper}.
+
 \pub{P1} \me, Yu Fu, Zhiyuan He, Yuxuan Huang, Ka Yiu Lee, Meng Fang, Weilin Luo, Jun Wang.
   ``OneManCompany: An Open-Source Operating System for Self-Organizing Multi-Agent Systems''
   \venue{arXiv preprint arXiv:2604.22446}, 2026.

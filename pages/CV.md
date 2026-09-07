@@ -107,7 +107,6 @@ The \* symbol denotes equal contribution.
 
 ### Peer-Reviewed Papers
 
-- **C4.** Weihang Pan, **Zhengxu Yu**, Yuxiang Zhang, Zhongming Jin, Binbin Lin, Xiaofei He, Jieping Ye. "ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning." ***ISWC***, 2026.
 - **C3.** Weihang Pan, **Zhengxu Yu**, Yong Wu, Xun Liang, Zhongming Jin, Qiang Fu, Penghui Shang, Binbin Lin, Xiaofei He, Jieping Ye. "FGD-Align: Pluralistic Alignment for Large Language Models via Fuzzy Group Decision-Making." ***AAAI Conference on Artificial Intelligence (AAAI)***, 2026.
 - **C2.** Yuxiang Zhang\*, **Zhengxu Yu**\*, Weihang Pan, Zhongming Jin, Qiang Fu, Deng Cai, Binbin Lin, Jieping Ye. "TokenSqueeze: Performance-Preserving Compression for Reasoning LLMs." ***Neural Information Processing Systems (NeurIPS)***, 2025.
 - **C1.** **Zhengxu Yu**, Shuxian Liang, Long Wei, Zhongming Jin, Jianqiang Huang, Deng Cai, Xiaofei He, Xian-Sheng Hua. "MaCAR: Urban Traffic Light Control via Active Multi-Agent Communication and Action Rectification." ***International Joint Conference on Artificial Intelligence (IJCAI)***, 2020.
@@ -121,6 +120,7 @@ The \* symbol denotes equal contribution.
 
 ### Technical Reports
 
+- **P2.** Weihang Pan, **Zhengxu Yu**, Yuxiang Zhang, Zhongming Jin, Binbin Lin, Xiaofei He, Jieping Ye. "ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning." ***arXiv preprint arXiv:2608.21860***, 2026. [Paper](https://arxiv.org/abs/2608.21860).
 - **P1.** **Zhengxu Yu**, Yu Fu, Zhiyuan He, Yuxuan Huang, Ka Yiu Lee, Meng Fang, Weilin Luo, Jun Wang. "OneManCompany: An Open-Source Operating System for Self-Organizing Multi-Agent Systems." ***arXiv preprint arXiv:2604.22446***, 2026. [Paper](https://arxiv.org/abs/2604.22446).
 
 ## Other Publications

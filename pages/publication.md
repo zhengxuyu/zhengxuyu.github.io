@@ -11,9 +11,9 @@ keywords: "publications, papers, AI agents, agentic reinforcement learning, mult
 - ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning.
 
   Weihang Pan, **Zhengxu Yu**, Yuxiang Zhang, Zhongming Jin, Binbin Lin, Xiaofei He, Jieping Ye
-  _AAAI'26_
+  _arXiv preprint arXiv:2608.21860_
 
-  [[paper]](https://openreview.net/forum?id=kmX7p4Xa0Y)
+  [[paper]](https://arxiv.org/abs/2608.21860)
 
 - TokenSqueeze: Performance-Preserving Compression for Reasoning LLMs.
 

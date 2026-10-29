@@ -150,7 +150,7 @@ main:has(.mca) .content { max-width: 1240px; }
 </style>
 
 <div class="mca">
-<p class="lede">一个团队只拿到一个最终奖励，怎么知道是谁做得好、哪一步做得好？本文依次介绍 LLM RL 的训练流程、经典 MARL 的信用分配方法和 LLM 多智能体训练中的新做法，并按“拿谁和谁比”归纳为一条主线。</p>
+<p class="lede">用 RL 训练 LLM 多智能体系统时，常见的设置是：一个 orchestrator 拆解任务、派生多个 sub-agent 分头执行，再汇总作答；环境只对最终答案给出一个奖励。训练需要把这一个奖励转化为每个 agent、每一步的学习信号，也就是判断任务的成败中哪个 agent、哪一步起了作用，这就是多智能体信用分配问题。本文依次介绍 LLM RL 的训练流程、经典 MARL 的信用分配方法和 LLM 多智能体训练中的新做法，并按“拿谁和谁比”归纳为一条主线。</p>
 
     <section id="paradigm">
       <h2><span class="n">1</span>LLM RL 的训练流程</h2>

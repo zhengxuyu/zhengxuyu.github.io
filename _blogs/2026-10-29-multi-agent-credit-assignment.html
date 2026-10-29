@@ -7,7 +7,7 @@ tags: [Multi-Agent RL, Credit Assignment, Agentic RL, GRPO, LLM Agents]
 draft: false
 keywords: "multi-agent reinforcement learning, credit assignment, MARL, GRPO, LLM agents, orchestrator, sub-agent, COMA, QMIX, MARSHAL, C3, Zhengxu Yu"
 description: "从 LLM RL 的训练流程出发，梳理经典 MARL 和 LLM 多智能体训练中的信用分配做法，按“拿谁和谁比”归纳成一条主线。"
-tldr: "没有 critic 以后，信用分配就是构造比较组：拿谁和谁比。整局比较成本低但噪声大，按角色比较要求角色固定，反事实回放信号最干净但成本最高。orchestrator 动态创建的 sub-agent 让这三种都失效。"
+tldr: "在 LLM 多智能体系统的 RL 训练中，orchestrator 把任务拆给多个 sub-agent 执行，整条 rollout 最终只得到一个任务级奖励；GRPO 类算法据此为整条轨迹算出一个 advantage，所有 agent 的 token 共用这一个值。信用分配要回答的是：这个信号应如何分给各个 agent 和各个步骤。在没有 critic 的情况下，现有做法本质上都是构造比较组，区别在于拿谁和谁比：同一题的其他整局 rollout（成本低，但混入了队友的随机性），同一角色的其他样本（要求角色固定），或只替换一条消息、去掉一个 agent 后重跑的反事实结果（信号最干净，但成本最高）。当 sub-agent 由 orchestrator 动态创建、各自任务不同时，这三种比较都难以成立。"
 ---
 {% raw %}
 <style>

@@ -540,11 +540,117 @@ main:has(.mca) .content { max-width: 1240px; }
       </div>
 
       <div class="callout">
-        <p><strong>一篇值得读的综述：</strong><a class="pl" href="https://arxiv.org/abs/2605.02801" target="_blank" rel="noopener">Reinforcement Learning for LLM-based Multi-Agent Systems through Orchestration Traces</a>（Zhang，arXiv 2605.02801，2026.05）。它把一次多智能体 rollout 记成一张编排事件图：节点是六类事件，即 orchestrator 决策、派生 sub-agent、agent 间消息、工具调用、摘要返回和汇总；边是事件之间的时间或因果依赖（定义 3，见下图）。奖励和信用信号按从 token 到整个团队的 8 个单位归类。</p>
+        <p><strong>一篇值得读的综述：</strong><a class="pl" href="https://arxiv.org/abs/2605.02801" target="_blank" rel="noopener">Reinforcement Learning for LLM-based Multi-Agent Systems through Orchestration Traces</a>（Zhang，arXiv 2605.02801，2026.05）。它把一次多智能体 rollout 记成一张编排事件图：节点是六类事件，即 orchestrator 决策、派生 sub-agent、agent 间消息、工具调用、摘要返回和汇总；边是事件之间的时间或因果依赖（定义 3）。奖励和信用信号按从 token 到整个团队的 8 个单位归类。</p>
         <blockquote class="q"><a class="ql" href="https://arxiv.org/html/2605.02801#:~:text=sub%2Dagent%20spawns%2C%20inter%2Dagent%20messages%2C%20tool%20calls%2C%20summary%20returns%2C%20and%20aggregation%20steps" target="_blank" rel="noopener" title="在原文中打开这段">“a set of events—orchestrator decisions, sub-agent spawns, inter-agent messages, tool calls, summary returns, and aggregation steps”</a> <cite>§3.2 定义 3</cite></blockquote>
         <p>其中两个观察与本文直接相关：</p>
         <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/2605.02801#:~:text=explicit%20counterfactual%20message%2Dlevel%20credit%20remains%20especially%20sparse" target="_blank" rel="noopener" title="在原文中打开这段">“explicit counterfactual message-level credit remains especially sparse in our curated pool”</a> · <a class="ql" href="https://arxiv.org/abs/2605.02801#:~:text=no%20explicit%20RL%20training%20method%20for%20the%20stopping%20decision" target="_blank" rel="noopener" title="在原文中打开这段">“found no explicit RL training method for the stopping decision”</a> <cite>摘要</cite></blockquote>
-        <div class="pf"><figure><a href="https://arxiv.org/html/2605.02801#S8.F14" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/orch.jpg" alt="Figure 14：(a) 单智能体轨迹是线性的 (s, a) 序列，形状固定；(b) 编排轨迹 G = (V, E, ℓ) 是时间交互图：orchestrator 的决策（红）派生 sub-agent（蓝），sub-agent 调用工具（橙）并返回摘要，摘要汇总（绿色菱形）后进入下一次 orchestrator 决策。与 (a) 相比，(b) 有分叉、汇合，且每条 rollout 的形状不同，信用单位挂在图的不同子结构上，而不是按时间索引的状态上。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/2605.02801#S8.F14" target="_blank" rel="noopener">原文 Figure 14</a> (a) 单智能体轨迹是线性的 (s, a) 序列，形状固定；(b) 编排轨迹 G = (V, E, ℓ) 是时间交互图：orchestrator 的决策（红）派生 sub-agent（蓝），sub-agent 调用工具（橙）并返回摘要，摘要汇总（绿色菱形）后进入下一次 orchestrator 决策。与 (a) 相比，(b) 有分叉、汇合，且每条 rollout 的形状不同，信用单位挂在图的不同子结构上，而不是按时间索引的状态上。原图画出了其中五类事件，没有画 agent 间消息。</figcaption></figure></div>
+        <figure class="wide">
+          <div class="diagram">
+<svg viewBox="0 0 1000 425" role="img" aria-labelledby="fet"><title id="fet">编排事件图与其上的 8 个信用单位</title>
+<defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>
+<text x="330" y="22" text-anchor="middle" class="ptitle">一次 rollout 的编排事件图</text>
+<text x="825" y="22" text-anchor="middle" class="ptitle">信用可以挂在哪 · 综述列出的代表工作</text>
+<line x1="662" y1="36" x2="662" y2="330" class="dv"/>
+<rect x="14" y="40" width="636" height="282" rx="10" class="exb"/>
+<circle cx="30" cy="56" r="9" class="rb"/><text x="30" y="59.5" text-anchor="middle" class="pt">1</text>
+<rect x="34" y="163" width="78" height="34" rx="6" class="o"/><text x="73" y="184" text-anchor="middle" class="ol">orch 决策</text>
+<circle cx="73" cy="150" r="9" class="rb"/><text x="73" y="153.5" text-anchor="middle" class="pt">2</text>
+<path d="M112,180 C130,180 132,90 150,90" class="ed" marker-end="url(#ar3)"/>
+<rect x="152" y="74" width="92" height="32" rx="6" class="sl"/><text x="198" y="94" text-anchor="middle" class="ll">sub-agent A</text>
+<text x="198" y="120" text-anchor="middle" class="ns">角色：检索</text>
+<line x1="244" y1="90" x2="272" y2="90" class="ed" marker-end="url(#ar3)"/>
+<rect x="274" y="77" width="52" height="26" rx="4" class="env"/><text x="300" y="94" text-anchor="middle" class="envt">tool</text>
+<line x1="326" y1="90" x2="350" y2="90" class="ed" marker-end="url(#ar3)"/>
+<rect x="352" y="77" width="52" height="26" rx="4" class="sl"/><text x="378" y="94" text-anchor="middle" class="ll">turn 2</text>
+<line x1="404" y1="90" x2="428" y2="90" class="ed" marker-end="url(#ar3)"/>
+<rect x="430" y="77" width="58" height="26" rx="4" class="fb"/><text x="459" y="94" text-anchor="middle" class="ll">摘要返回</text>
+<path d="M488,90 C510,90 505,180 522,180" class="ed" marker-end="url(#ar3)"/>
+<path d="M112,180 C130,180 132,180 150,180" class="ed" marker-end="url(#ar3)"/>
+<rect x="152" y="164" width="92" height="32" rx="6" class="sl"/><text x="198" y="184" text-anchor="middle" class="ll">sub-agent B</text>
+<text x="198" y="210" text-anchor="middle" class="ns">角色：检索</text>
+<line x1="244" y1="180" x2="272" y2="180" class="ed" marker-end="url(#ar3)"/>
+<rect x="274" y="167" width="52" height="26" rx="4" class="env"/><text x="300" y="184" text-anchor="middle" class="envt">tool</text>
+<line x1="326" y1="180" x2="350" y2="180" class="ed" marker-end="url(#ar3)"/>
+<rect x="352" y="167" width="52" height="26" rx="4" class="sl"/><text x="378" y="184" text-anchor="middle" class="ll">turn 2</text>
+<line x1="404" y1="180" x2="428" y2="180" class="ed" marker-end="url(#ar3)"/>
+<rect x="430" y="167" width="58" height="26" rx="4" class="fb"/><text x="459" y="184" text-anchor="middle" class="ll">摘要返回</text>
+<path d="M488,180 C510,180 505,180 522,180" class="ed" marker-end="url(#ar3)"/>
+<path d="M112,180 C130,180 132,270 150,270" class="ed" marker-end="url(#ar3)"/>
+<rect x="152" y="254" width="92" height="32" rx="6" class="sl"/><text x="198" y="274" text-anchor="middle" class="ll">sub-agent C</text>
+<text x="198" y="300" text-anchor="middle" class="ns">角色：验算</text>
+<line x1="244" y1="270" x2="272" y2="270" class="ed" marker-end="url(#ar3)"/>
+<rect x="274" y="257" width="52" height="26" rx="4" class="env"/><text x="300" y="274" text-anchor="middle" class="envt">tool</text>
+<line x1="326" y1="270" x2="350" y2="270" class="ed" marker-end="url(#ar3)"/>
+<rect x="352" y="257" width="52" height="26" rx="4" class="sl"/><text x="378" y="274" text-anchor="middle" class="ll">turn 2</text>
+<line x1="404" y1="270" x2="428" y2="270" class="ed" marker-end="url(#ar3)"/>
+<rect x="430" y="257" width="58" height="26" rx="4" class="fb"/><text x="459" y="274" text-anchor="middle" class="ll">摘要返回</text>
+<path d="M488,270 C510,270 505,180 522,180" class="ed" marker-end="url(#ar3)"/>
+<path d="M248,66 L248,60 L408,60 L408,66" class="br"/>
+<circle cx="328" cy="56" r="9" class="rb"/><text x="328" y="59.5" text-anchor="middle" class="pt">5</text>
+<text x="342" y="60" class="ns"> </text>
+<path d="M228,106 C246,135 246,135 228,164" class="edw" marker-end="url(#ar3)"/><text x="252" y="139" class="ns">消息</text>
+<circle cx="214" cy="135" r="9" class="rb"/><text x="214" y="138.5" text-anchor="middle" class="pt">6</text>
+<circle cx="130" cy="226" r="9" class="rb"/><text x="130" y="229.5" text-anchor="middle" class="pt">3</text>
+<path d="M139,226 C160,226 165,213 172,212" class="ed2"/>
+<circle cx="152" cy="250" r="9" class="rb"/><text x="152" y="253.5" text-anchor="middle" class="pt">4</text>
+<circle cx="300" cy="250" r="9" class="rb"/><text x="300" y="253.5" text-anchor="middle" class="pt">7</text>
+<rect x="430" y="298" width="8" height="10" rx="1.5" class="sl"/>
+<rect x="440" y="298" width="8" height="10" rx="1.5" class="sl"/>
+<rect x="450" y="298" width="8" height="10" rx="1.5" class="sl"/>
+<rect x="460" y="298" width="8" height="10" rx="1.5" class="sl"/>
+<rect x="470" y="298" width="8" height="10" rx="1.5" class="sl"/>
+<rect x="480" y="298" width="8" height="10" rx="1.5" class="sl"/>
+<text x="494" y="307" class="ns">token</text>
+<circle cx="418" cy="303" r="9" class="rb"/><text x="418" y="306.5" text-anchor="middle" class="pt">8</text>
+<path d="M540,166 L554,180 L540,194 L526,180 Z" class="pp"/><text x="540" y="212" text-anchor="middle" class="ns">汇总</text>
+<line x1="554" y1="180" x2="566" y2="180" class="ed" marker-end="url(#ar3)"/>
+<rect x="568" y="163" width="74" height="34" rx="6" class="o"/><text x="605" y="178" text-anchor="middle" class="ol2">orch 决策</text><text x="605" y="191" text-anchor="middle" class="ol2">再派 / 停止</text>
+<circle cx="605" cy="150" r="9" class="rb"/><text x="605" y="153.5" text-anchor="middle" class="pt">2</text>
+<path d="M605,197 L605,236" class="ed" marker-end="url(#ar3)"/><circle cx="605" cy="250" r="13" class="rb"/><text x="605" y="254" text-anchor="middle" class="rt">R</text>
+<circle cx="684" cy="56" r="9" class="rb"/><text x="684" y="59.5" text-anchor="middle" class="pt">1</text>
+<text x="702" y="60" class="tb2">团队</text>
+<text x="702" y="77" class="ns">共享结果 baseline</text>
+<circle cx="684" cy="89" r="9" class="rb"/><text x="684" y="92.5" text-anchor="middle" class="pt">2</text>
+<text x="702" y="93" class="tb2w">orchestrator</text>
+<text x="702" y="110" class="ns">Puppeteer、Kimi PARL、WideSeek（稀少）</text>
+<circle cx="684" cy="122" r="9" class="rb"/><text x="684" y="125.5" text-anchor="middle" class="pt">3</text>
+<text x="702" y="126" class="tb2w">角色</text>
+<text x="702" y="143" class="ns">MALT、M-GRPO、MATPO、DEPART、LAMO</text>
+<circle cx="684" cy="155" r="9" class="rb"/><text x="684" y="158.5" text-anchor="middle" class="pt">4</text>
+<text x="702" y="159" class="tb2">agent</text>
+<text x="702" y="176" class="ns">MAGRPO、Dr. MAS、SHARP、MAPoRL、LangMARL</text>
+<circle cx="684" cy="188" r="9" class="rb"/><text x="684" y="191.5" text-anchor="middle" class="pt">5</text>
+<text x="702" y="192" class="tb2">turn</text>
+<text x="702" y="209" class="ns">MarsRL、Context-Folding、MARSHAL</text>
+<circle cx="684" cy="221" r="9" class="rb"/><text x="684" y="224.5" text-anchor="middle" class="pt">6</text>
+<text x="702" y="225" class="tb2w">消息</text>
+<text x="702" y="242" class="ns">C3（稀少）</text>
+<circle cx="684" cy="254" r="9" class="rb"/><text x="684" y="257.5" text-anchor="middle" class="pt">7</text>
+<text x="702" y="258" class="tb2">工具调用</text>
+<text x="702" y="275" class="ns">MATPO、SHARP、Agent Lightning</text>
+<circle cx="684" cy="287" r="9" class="rb"/><text x="684" y="290.5" text-anchor="middle" class="pt">8</text>
+<text x="702" y="291" class="tb2">token</text>
+<text x="702" y="308" class="ns">标准 GAE（单智能体继承）</text>
+<text x="684" y="322" class="ns">标黄的三层在经典 MARL 和单智能体 RL 里没有对应</text>
+<text x="20" y="362" class="nt">六类事件（定义 3）：</text>
+<rect x="150" y="351" width="22" height="14" rx="3" class="o"/>
+<text x="178" y="362" class="ns">orchestrator 决策</text>
+<rect x="302.6" y="351" width="22" height="14" rx="3" class="sl"/>
+<text x="330.6" y="362" class="ns">派生的 sub-agent</text>
+<line x1="447.6" y1="358" x2="469.6" y2="358" class="edw"/>
+<text x="475.6" y="362" class="ns">agent 间消息</text>
+<rect x="567.8000000000001" y="351" width="22" height="14" rx="3" class="env"/>
+<text x="595.8000000000001" y="362" class="ns">工具调用</text>
+<rect x="661.8000000000001" y="351" width="22" height="14" rx="3" class="fb"/>
+<text x="689.8000000000001" y="362" class="ns">摘要返回</text>
+<path d="M766.8000000000001,350 L774.8000000000001,358 L766.8000000000001,366 L758.8000000000001,358 Z" class="pp"/>
+<text x="783.8000000000001" y="362" class="ns">汇总</text>
+<text x="20" y="392" class="nt">边是事件之间的时间或因果依赖。单智能体轨迹是它的特例：没有派生、没有分叉，事件排成一条链。</text>
+<text x="20" y="414" class="nt">信用单位从粗到细：团队 → orchestrator → 角色 → agent → turn → 消息 → 工具调用 → token。</text>
+</svg>
+          </div>
+          <figcaption>左：一次 rollout 的编排事件图，含定义 3 的六类事件；右：综述 §7.1 的 8 个信用单位及其列出的代表工作（照录原文 Figure 12）。同一张图上，不同方法把信用挂在不同的子结构上：整张图（团队）、orchestrator 的决策、同角色的一组 agent、单个 agent、一个 turn、一条消息、一次工具调用或单个 token。综述指出 orchestrator 和消息两层的工作最少。据原文 <a class="fl" href="https://arxiv.org/html/2605.02801#S8.F14" target="_blank" rel="noopener">Figure 14</a><a class="fl" href="https://arxiv.org/html/2605.02801#S7.F12" target="_blank" rel="noopener">Figure 12</a> 重画。</figcaption>
+        </figure>
       </div>
     </section>
     <section id="map">

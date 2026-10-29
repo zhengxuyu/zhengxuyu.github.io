@@ -501,7 +501,7 @@ main:has(.mca) .content { max-width: 1240px; }
       <p>综合以上工作，可归纳为三点：</p>
       <ol class="points">
         <li><strong>没有 critic 以后，信用分配就是构造比较组。</strong>经典方法靠学出来的 \(Q\) 或 \(V\) 提供 baseline；GRPO 系只能靠样本之间的比较。比较组里的样本在“别的因素”上越一致，算出来的信号越干净。</li>
-        <li><strong>每种构造方式都有代价。</strong>整局比较不花钱但混入了队友的随机性；按角色比较要求角色固定；反事实回放最干净，但成本随 agent 数和消息数增长。</li>
+        <li><strong>每种构造方式都有代价。</strong>整局比较无额外成本，但混入了队友的随机性；按角色比较要求角色固定；反事实回放信号最干净，但成本随 agent 数和消息数增长。</li>
         <li><strong>动态创建的 sub-agent 让前三种都失效。</strong>每个 sub-agent 的任务都不一样，没有可比的“同角色”样本；整局比较把 orchestrator 的拆分质量混进来；逐个反事实回放太贵。怎么给这类 sub-agent 构造干净的比较组，目前还是开放问题。</li>
       </ol>
     </section>

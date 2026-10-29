@@ -1,0 +1,534 @@
+---
+layout: blog-post
+title: "多智能体 RL 的信用分配"
+date: 2026-10-29 00:00:00 +0000
+categories: PaperReading
+tags: [Multi-Agent RL, Credit Assignment, Agentic RL, GRPO, LLM Agents]
+draft: false
+keywords: "multi-agent reinforcement learning, credit assignment, MARL, GRPO, LLM agents, orchestrator, sub-agent, COMA, QMIX, MARSHAL, C3, Zhengxu Yu"
+description: "从 LLM RL 的训练流程出发，梳理经典 MARL 和 LLM 多智能体训练中的信用分配做法，按“拿谁和谁比”归纳成一条主线。"
+tldr: "没有 critic 以后，信用分配就是构造比较组：拿谁和谁比。整局比较不花钱但噪声大，按角色比较要求角色固定，反事实回放最干净但贵。orchestrator 动态创建的 sub-agent 让这三种都失效。"
+---
+{% raw %}
+<style>
+/* Scoped styles for this post only. Colors derive from the site's glass theme (light text on a dark landscape in both modes). */
+/* This post only: let the article use the full content width instead of the theme's 800px column. */
+main:has(.mca) { max-width: calc(var(--sidebar-width) + 1240px + 80px); }
+main:has(.mca) .content { max-width: 1240px; }
+.article-container:has(.mca) { max-width: none; }
+.mca {
+  --fg: var(--color-text-primary);
+  --muted: var(--color-text-secondary);
+  --faint: var(--color-text-tertiary);
+  --line: var(--color-border);
+  --surface: rgba(255, 255, 255, 0.07);
+  --bg: rgba(0, 0, 0, 0.18);
+  --link: var(--color-accent-gold, #E8B878);
+  --accent: #86d4b4;
+  --accent-soft: rgba(134, 212, 180, 0.16);
+  --bad: #f29d82;
+  --bad-soft: rgba(242, 157, 130, 0.16);
+  --idle: rgba(255, 255, 255, 0.45);
+  --orch: #a9c4f0;
+  --orch-soft: rgba(169, 196, 240, 0.18);
+  --sub: #eec47c;
+  --sub-soft: rgba(238, 196, 124, 0.18);
+  --env: rgba(255, 255, 255, 0.5);
+  --env-soft: rgba(255, 255, 255, 0.08);
+}
+.mca p, .mca li { max-width: none; }
+.mca .lede { font-size: 1.08rem; color: var(--fg); }
+.mca h2 { display: flex; gap: 0.75rem; align-items: baseline; }
+.mca h2 .n { font-family: var(--font-mono); font-size: 0.95rem; color: var(--link); font-weight: 600; }
+.mca h3 { font-size: 1.12rem !important; }
+.mca section { margin-top: 2.25rem; }
+.mca .math { overflow-x: auto; padding: 0.75rem 1rem; margin: 0.75rem 0 1.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; color: var(--fg); }
+.mca .math.sm { margin: 0; padding: 0.35rem 0.7rem; background: var(--bg); font-size: 0.85rem; }
+.mca .table { overflow-x: auto; margin: 0.75rem 0 1.5rem; }
+.mca .table table { margin: 0; font-size: 0.9rem; line-height: 1.6; }
+.mca .table th { background: rgba(0, 0, 0, 0.25); color: var(--fg); white-space: nowrap; font-size: 0.82rem; }
+.mca .table td { color: var(--muted); vertical-align: top; }
+.mca .table td:first-child { color: var(--fg); white-space: nowrap; font-weight: 500; }
+.mca .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.75rem; margin: 0.75rem 0 1.25rem; }
+.mca .part { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.85rem 1rem; min-width: 0; }
+.mca .part .k { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; color: var(--link); }
+.mca .part h4 { margin: 0.15rem 0 0.35rem !important; font-size: 1rem !important; }
+.mca .part p { font-size: 0.9rem; margin: 0; }
+.mca .callout { border-left: 3px solid var(--link); padding: 0.75rem 1rem; background: var(--surface); border-radius: 0 8px 8px 0; margin: 1rem 0; }
+.mca .callout p:last-child { margin-bottom: 0; }
+.mca .papers { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.75rem; margin: 0.6rem 0 1.25rem; }
+.mca .papers.one { grid-template-columns: 1fr; }
+.mca .paper { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1rem; min-width: 0; display: grid; gap: 0.55rem; align-content: start; }
+.mca .paper .ph { display: grid; gap: 0.1rem; }
+.mca .paper h4 { margin: 0 !important; font-size: 1rem !important; }
+.mca .venue { font-family: var(--font-mono); font-size: 0.75rem; color: var(--faint); }
+.mca .paper p { font-size: 0.9rem; margin: 0; }
+.mca a.pl { color: var(--fg); border-bottom: 1.5px solid var(--link); }
+.mca a.pl:hover { color: var(--link); }
+.mca blockquote.q { margin: 0; padding: 0.15rem 0 0.15rem 0.7rem; border-left: 2px solid var(--line); border-radius: 0; background: none; font-size: 0.8rem; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
+.mca .callout blockquote.q { margin-top: 0.5rem; }
+.mca blockquote.q cite { font-style: normal; font-family: var(--font-mono); font-size: 0.7rem; margin-left: 0.4rem; color: var(--link); }
+.mca a.ql { color: inherit; border-bottom: 1px dotted var(--faint); }
+.mca a.ql:hover { color: var(--link); border-bottom-color: var(--link); }
+.mca a.ql::after { content: " ↗"; font-style: normal; color: var(--link); }
+.mca .pf { display: grid; gap: 0.6rem; }
+.mca .pf.multi { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: start; }
+.mca .pf figure { margin: 0; display: grid; gap: 0.35rem; min-width: 0; }
+.mca .pf img { display: block; width: 100%; height: auto; max-height: 340px; object-fit: contain; background: #ffffff; border-radius: 6px; padding: 6px; box-sizing: border-box; margin: 0; box-shadow: none; }
+.mca .pf a { border-bottom: 0; }
+.mca .pf figcaption { font-size: 0.75rem; line-height: 1.55; color: var(--muted); }
+.mca a.fl { font-family: var(--font-mono); font-size: 0.7rem; color: var(--link); margin-right: 0.3rem; white-space: nowrap; }
+.mca figure.wide { margin: 1rem 0 1.5rem; }
+.mca .diagram { overflow-x: auto; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem; }
+.mca .diagram svg { display: block; min-width: 860px; width: 100%; height: auto; }
+.mca figure.wide figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.65; }
+.mca ol.points li, .mca ol.qs li { margin-bottom: 0.6rem; }
+.mca .aside { font-size: 0.88rem; color: var(--faint); }
+.mca .refs { font-size: 0.85rem; }
+.mca .refs a { color: var(--muted); border-bottom: 1px solid var(--line); }
+.mca .refs a:hover { color: var(--link); }
+
+/* SVG figure classes */
+.mca svg .o { fill: var(--orch-soft); stroke: var(--orch); stroke-width: 1.3; }
+.mca svg .ol { fill: var(--orch); font-family: var(--font-mono); font-size: 11px; font-weight: 600; }
+.mca svg .ol2 { fill: var(--orch); font-family: var(--font-mono); font-size: 9.5px; }
+.mca svg .env { fill: var(--env-soft); stroke: var(--env); stroke-width: 1; }
+.mca svg .envt { fill: var(--muted); font-family: var(--font-mono); font-size: 9.5px; }
+.mca svg .sl { fill: var(--sub-soft); stroke: var(--sub); stroke-width: 1.3; }
+.mca svg .ss { fill: var(--bg); stroke: var(--sub); stroke-width: 1.1; stroke-dasharray: 3 2.5; }
+.mca svg .ll { fill: var(--fg); font-family: var(--font-family); font-size: 10px; }
+.mca svg .exb { fill: none; stroke: var(--line); stroke-width: 1.2; }
+.mca svg .exl { fill: var(--muted); font-family: var(--font-mono); font-size: 10px; }
+.mca svg .rb { fill: var(--surface); stroke: var(--fg); stroke-width: 1.2; }
+.mca svg .rt { fill: var(--fg); font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.mca svg .bn { fill: var(--bad); opacity: 0.32; }
+.mca svg .bp { fill: var(--accent); opacity: 0.32; }
+.mca svg .bn2 { fill: var(--bad); opacity: 0.55; }
+.mca svg .bp2 { fill: var(--accent); opacity: 0.55; }
+.mca svg .zl { stroke: var(--fg); stroke-width: 1; stroke-dasharray: 3 3; }
+.mca svg .an { fill: var(--bad); font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.mca svg .ap { fill: var(--accent); font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.mca svg .an2 { fill: var(--bad); font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; }
+.mca svg .pn { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 1; }
+.mca svg .pp { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1; }
+.mca svg .pt { fill: var(--fg); font-family: var(--font-mono); font-size: 10px; font-weight: 600; }
+.mca svg .ck { fill: var(--surface); stroke: var(--fg); stroke-width: 1.1; }
+.mca svg .ckt { fill: var(--fg); font-family: var(--font-family); font-size: 10px; font-style: italic; }
+.mca svg .sv { fill: var(--fg); font-family: var(--font-mono); font-size: 10.5px; }
+.mca svg .gl { fill: var(--muted); font-family: var(--font-family); font-size: 11px; }
+.mca svg .ed { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.mca svg .edw { stroke: var(--link); stroke-width: 1.3; fill: none; stroke-dasharray: 4 3; }
+.mca svg .ed2 { stroke: var(--line); stroke-width: 1; fill: none; stroke-dasharray: 2 2; }
+.mca svg .ah { fill: var(--muted); }
+.mca svg .br { stroke: var(--muted); stroke-width: 1; fill: none; }
+.mca svg .br2 { stroke: var(--accent); stroke-width: 1.4; fill: none; }
+.mca svg .dv { stroke: var(--line); stroke-width: 1; stroke-dasharray: 5 4; }
+.mca svg .ptitle { fill: var(--fg); font-family: var(--font-family); font-size: 14px; font-weight: 700; }
+.mca svg .psub { fill: var(--muted); font-family: var(--font-family); font-size: 12px; }
+.mca svg .tau { fill: var(--fg); font-family: var(--font-mono); font-size: 13px; font-weight: 600; }
+.mca svg .nt { fill: var(--muted); font-family: var(--font-family); font-size: 11.5px; }
+.mca svg .nf { fill: var(--fg); font-family: var(--font-mono); font-size: 11px; }
+.mca svg .ns { fill: var(--muted); font-family: var(--font-family); font-size: 11px; }
+.mca svg .fb { fill: var(--surface); stroke: var(--line); stroke-width: 1.1; }
+.mca svg .fbw { fill: var(--surface); stroke: var(--link); stroke-width: 1.2; }
+.mca svg .tb2 { fill: var(--fg); font-family: var(--font-family); font-size: 12.5px; font-weight: 700; }
+.mca svg .tb2w { fill: var(--link); font-family: var(--font-family); font-size: 12.5px; font-weight: 700; }
+.mca svg .tagold { fill: var(--muted); font-family: var(--font-family); font-size: 11px; }
+.mca svg .tagnew { fill: var(--accent); font-family: var(--font-family); font-size: 11.5px; font-weight: 700; }
+.mca svg .lg { fill: var(--fg); font-family: var(--font-family); font-size: 11px; }
+.mca svg .t { fill: var(--fg); font-family: var(--font-family); font-size: 13px; }
+.mca svg .tb { fill: var(--fg); font-family: var(--font-family); font-size: 13px; font-weight: 700; }
+.mca svg .ts { fill: var(--muted); font-family: var(--font-family); font-size: 11.5px; }
+.mca svg .tm { fill: var(--fg); font-family: var(--font-mono); font-size: 12px; }
+.mca svg .pos { fill: var(--accent); font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.mca svg .neg { fill: var(--bad); font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.mca svg text tspan.sb { font-size: 0.75em; }
+@media (max-width: 768px) {
+  .mca .table td:first-child { white-space: normal; }
+  .mca .papers { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="mca">
+<p class="lede">一个团队只拿到一个最终奖励，怎么知道是谁做得好、哪一步做得好？这篇先从现在 LLM RL 的训练流程讲起，再梳理经典 MARL 的几种答案，再看 LLM 多智能体训练里的新做法，最后按“拿谁和谁比”把它们串成一条主线。</p>
+
+    <section id="paradigm">
+      <h2><span class="n">1</span>先看现在 LLM RL 的训练流程</h2>
+      <p>以 GRPO 为代表的 LLM RL，一个训练步大致是下面六步。对一道题 q 采样 G 条轨迹作为一个组；每条轨迹由模型输出 a 和环境或工具的返回 o 交替组成；verifier、judge 或环境给出奖励 r；把奖励累加成回报 R；用组内均值和标准差做 baseline 得到 advantage A；最后把 A 广播给这条轨迹的每个 token，做 clipped policy gradient 更新。</p>
+      <figure class="wide">
+        <div class="diagram">
+<svg viewBox="0 0 1000 410" role="img" aria-labelledby="f0t"><title id="f0t">当前 LLM RL 的训练流程：rollout、分组、reward、return、advantage、更新</title>
+<defs><marker id="ar0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>
+<text x="66.0" y="24" text-anchor="middle" class="ptitle">① Prompt</text>
+<text x="286.0" y="24" text-anchor="middle" class="ptitle">② Rollout 与分组</text>
+<text x="495.0" y="24" text-anchor="middle" class="ptitle">③ Reward</text>
+<text x="603.0" y="24" text-anchor="middle" class="ptitle">④ Return</text>
+<text x="761.0" y="24" text-anchor="middle" class="ptitle">⑤ Advantage</text>
+<text x="927.5" y="24" text-anchor="middle" class="ptitle">⑥ 更新</text>
+<line x1="126" y1="38" x2="126" y2="262" class="dv"/>
+<line x1="445" y1="38" x2="445" y2="262" class="dv"/>
+<line x1="544" y1="38" x2="544" y2="262" class="dv"/>
+<line x1="663" y1="38" x2="663" y2="262" class="dv"/>
+<line x1="858" y1="38" x2="858" y2="262" class="dv"/>
+<rect x="20" y="113" width="92" height="56" rx="6" class="o"/><text x="66" y="137" text-anchor="middle" class="ol">q</text><text x="66" y="155" text-anchor="middle" class="ns">一道题 / 任务</text>
+<path d="M112,141 C126,141 128,77.0 140,77.0" class="ed" marker-end="url(#ar0)"/>
+<text x="150" y="81.0" class="tau">τ₁</text>
+<rect x="176" y="67" width="34" height="20" rx="3" class="o"/>
+<text x="193.0" y="81" text-anchor="middle" class="ol2">a1</text>
+<rect x="214" y="67" width="34" height="20" rx="3" class="env"/>
+<text x="231.0" y="81" text-anchor="middle" class="envt">o1</text>
+<rect x="252" y="67" width="34" height="20" rx="3" class="o"/>
+<text x="269.0" y="81" text-anchor="middle" class="ol2">a2</text>
+<rect x="290" y="67" width="34" height="20" rx="3" class="env"/>
+<text x="307.0" y="81" text-anchor="middle" class="envt">o2</text>
+<rect x="328" y="67" width="34" height="20" rx="3" class="o"/>
+<text x="345.0" y="81" text-anchor="middle" class="ol2">a3</text>
+<rect x="366" y="67" width="34" height="20" rx="3" class="env"/>
+<text x="383.0" y="81" text-anchor="middle" class="envt">o3</text>
+<rect x="404" y="67" width="34" height="20" rx="3" class="o"/>
+<text x="421.0" y="81" text-anchor="middle" class="ol2">a4</text>
+<line x1="440" y1="77.0" x2="478" y2="77.0" class="ed" marker-end="url(#ar0)"/>
+<circle cx="495" cy="77.0" r="14" class="rb"/><text x="495" y="81.0" text-anchor="middle" class="rt">1</text>
+<text x="603" y="81.0" text-anchor="middle" class="nf">R = 1</text>
+<rect x="761" y="70" width="48" height="14" class="bp2"/><text x="815" y="81.0" class="ap">+1</text>
+<rect x="876" y="70" width="12" height="14" rx="2" class="pp"/>
+<rect x="891" y="70" width="12" height="14" rx="2" class="pp"/>
+<rect x="906" y="70" width="12" height="14" rx="2" class="pp"/>
+<rect x="921" y="70" width="12" height="14" rx="2" class="pp"/>
+<rect x="936" y="70" width="12" height="14" rx="2" class="pp"/>
+<rect x="951" y="70" width="12" height="14" rx="2" class="pp"/>
+<rect x="966" y="70" width="12" height="14" rx="2" class="pp"/>
+<path d="M112,141 C126,141 128,123.0 140,123.0" class="ed" marker-end="url(#ar0)"/>
+<text x="150" y="127.0" class="tau">τ₂</text>
+<rect x="176" y="113" width="34" height="20" rx="3" class="o"/>
+<text x="193.0" y="127" text-anchor="middle" class="ol2">a1</text>
+<rect x="214" y="113" width="34" height="20" rx="3" class="env"/>
+<text x="231.0" y="127" text-anchor="middle" class="envt">o1</text>
+<rect x="252" y="113" width="34" height="20" rx="3" class="o"/>
+<text x="269.0" y="127" text-anchor="middle" class="ol2">a2</text>
+<rect x="290" y="113" width="34" height="20" rx="3" class="env"/>
+<text x="307.0" y="127" text-anchor="middle" class="envt">o2</text>
+<rect x="328" y="113" width="34" height="20" rx="3" class="o"/>
+<text x="345.0" y="127" text-anchor="middle" class="ol2">a3</text>
+<rect x="366" y="113" width="34" height="20" rx="3" class="env"/>
+<text x="383.0" y="127" text-anchor="middle" class="envt">o3</text>
+<rect x="404" y="113" width="34" height="20" rx="3" class="o"/>
+<text x="421.0" y="127" text-anchor="middle" class="ol2">a4</text>
+<line x1="440" y1="123.0" x2="478" y2="123.0" class="ed" marker-end="url(#ar0)"/>
+<circle cx="495" cy="123.0" r="14" class="rb"/><text x="495" y="127.0" text-anchor="middle" class="rt">0</text>
+<text x="603" y="127.0" text-anchor="middle" class="nf">R = 0</text>
+<rect x="713" y="116" width="48" height="14" class="bn2"/><text x="707" y="127.0" text-anchor="end" class="an">−1</text>
+<rect x="876" y="116" width="12" height="14" rx="2" class="pn"/>
+<rect x="891" y="116" width="12" height="14" rx="2" class="pn"/>
+<rect x="906" y="116" width="12" height="14" rx="2" class="pn"/>
+<rect x="921" y="116" width="12" height="14" rx="2" class="pn"/>
+<rect x="936" y="116" width="12" height="14" rx="2" class="pn"/>
+<rect x="951" y="116" width="12" height="14" rx="2" class="pn"/>
+<rect x="966" y="116" width="12" height="14" rx="2" class="pn"/>
+<path d="M112,141 C126,141 128,169.0 140,169.0" class="ed" marker-end="url(#ar0)"/>
+<text x="150" y="173.0" class="tau">τ₃</text>
+<rect x="176" y="159" width="34" height="20" rx="3" class="o"/>
+<text x="193.0" y="173" text-anchor="middle" class="ol2">a1</text>
+<rect x="214" y="159" width="34" height="20" rx="3" class="env"/>
+<text x="231.0" y="173" text-anchor="middle" class="envt">o1</text>
+<rect x="252" y="159" width="34" height="20" rx="3" class="o"/>
+<text x="269.0" y="173" text-anchor="middle" class="ol2">a2</text>
+<rect x="290" y="159" width="34" height="20" rx="3" class="env"/>
+<text x="307.0" y="173" text-anchor="middle" class="envt">o2</text>
+<rect x="328" y="159" width="34" height="20" rx="3" class="o"/>
+<text x="345.0" y="173" text-anchor="middle" class="ol2">a3</text>
+<rect x="366" y="159" width="34" height="20" rx="3" class="env"/>
+<text x="383.0" y="173" text-anchor="middle" class="envt">o3</text>
+<rect x="404" y="159" width="34" height="20" rx="3" class="o"/>
+<text x="421.0" y="173" text-anchor="middle" class="ol2">a4</text>
+<line x1="440" y1="169.0" x2="478" y2="169.0" class="ed" marker-end="url(#ar0)"/>
+<circle cx="495" cy="169.0" r="14" class="rb"/><text x="495" y="173.0" text-anchor="middle" class="rt">0</text>
+<text x="603" y="173.0" text-anchor="middle" class="nf">R = 0</text>
+<rect x="713" y="162" width="48" height="14" class="bn2"/><text x="707" y="173.0" text-anchor="end" class="an">−1</text>
+<rect x="876" y="162" width="12" height="14" rx="2" class="pn"/>
+<rect x="891" y="162" width="12" height="14" rx="2" class="pn"/>
+<rect x="906" y="162" width="12" height="14" rx="2" class="pn"/>
+<rect x="921" y="162" width="12" height="14" rx="2" class="pn"/>
+<rect x="936" y="162" width="12" height="14" rx="2" class="pn"/>
+<rect x="951" y="162" width="12" height="14" rx="2" class="pn"/>
+<rect x="966" y="162" width="12" height="14" rx="2" class="pn"/>
+<path d="M112,141 C126,141 128,215.0 140,215.0" class="ed" marker-end="url(#ar0)"/>
+<text x="150" y="219.0" class="tau">τ₄</text>
+<rect x="176" y="205" width="34" height="20" rx="3" class="o"/>
+<text x="193.0" y="219" text-anchor="middle" class="ol2">a1</text>
+<rect x="214" y="205" width="34" height="20" rx="3" class="env"/>
+<text x="231.0" y="219" text-anchor="middle" class="envt">o1</text>
+<rect x="252" y="205" width="34" height="20" rx="3" class="o"/>
+<text x="269.0" y="219" text-anchor="middle" class="ol2">a2</text>
+<rect x="290" y="205" width="34" height="20" rx="3" class="env"/>
+<text x="307.0" y="219" text-anchor="middle" class="envt">o2</text>
+<rect x="328" y="205" width="34" height="20" rx="3" class="o"/>
+<text x="345.0" y="219" text-anchor="middle" class="ol2">a3</text>
+<rect x="366" y="205" width="34" height="20" rx="3" class="env"/>
+<text x="383.0" y="219" text-anchor="middle" class="envt">o3</text>
+<rect x="404" y="205" width="34" height="20" rx="3" class="o"/>
+<text x="421.0" y="219" text-anchor="middle" class="ol2">a4</text>
+<line x1="440" y1="215.0" x2="478" y2="215.0" class="ed" marker-end="url(#ar0)"/>
+<circle cx="495" cy="215.0" r="14" class="rb"/><text x="495" y="219.0" text-anchor="middle" class="rt">1</text>
+<text x="603" y="219.0" text-anchor="middle" class="nf">R = 1</text>
+<rect x="761" y="208" width="48" height="14" class="bp2"/><text x="815" y="219.0" class="ap">+1</text>
+<rect x="876" y="208" width="12" height="14" rx="2" class="pp"/>
+<rect x="891" y="208" width="12" height="14" rx="2" class="pp"/>
+<rect x="906" y="208" width="12" height="14" rx="2" class="pp"/>
+<rect x="921" y="208" width="12" height="14" rx="2" class="pp"/>
+<rect x="936" y="208" width="12" height="14" rx="2" class="pp"/>
+<rect x="951" y="208" width="12" height="14" rx="2" class="pp"/>
+<rect x="966" y="208" width="12" height="14" rx="2" class="pp"/>
+<line x1="761" y1="56" x2="761" y2="236" class="zl"/>
+<text x="761" y="50" text-anchor="middle" class="ns">组均值 0.5 · std 0.5</text>
+<path d="M140,246 L140,252 L432,252 L432,246" class="br"/>
+<text x="286" y="270" text-anchor="middle" class="nt">同一个 q 采样 G 条轨迹 = 一个组（a 是模型输出，o 是环境或工具返回）</text>
+<text x="495" y="288" text-anchor="middle" class="nf">r = verifier /</text><text x="495" y="303" text-anchor="middle" class="nf">judge / 环境</text>
+<text x="603" y="288" text-anchor="middle" class="nf">R<tspan class="sb" baseline-shift="sub">t</tspan> = Σ<tspan class="sb" baseline-shift="sub">j≥t</tspan> r<tspan class="sb" baseline-shift="sub">j</tspan></text><text x="603" y="303" text-anchor="middle" class="ns">只有终局奖励时 R = r</text>
+<text x="761" y="288" text-anchor="middle" class="nf">A<tspan class="sb" baseline-shift="sub">i</tspan> = (R<tspan class="sb" baseline-shift="sub">i</tspan> − mean<tspan class="sb" baseline-shift="sub">组</tspan>) / std<tspan class="sb" baseline-shift="sub">组</tspan></text><text x="761" y="303" text-anchor="middle" class="ns">baseline 来自组内其他样本</text>
+<text x="927" y="288" text-anchor="middle" class="nf">A<tspan class="sb" baseline-shift="sub">i</tspan> 广播给 τ<tspan class="sb" baseline-shift="sub">i</tspan></text><text x="927" y="303" text-anchor="middle" class="ns">的每个 token，做 clipped PG</text>
+<rect x="20" y="322" width="470" height="76" rx="6" class="fb"/>
+<text x="34" y="344" class="tb2">baseline 从哪来，决定了“和谁比”</text>
+<text x="34" y="364" class="nt">PPO：学一个 critic V(s<tspan class="sb" baseline-shift="sub">t</tspan>)，baseline 是同一状态的期望回报。</text>
+<text x="34" y="383" class="nt">GRPO：不要 critic，baseline 是同组样本的均值，组内样本必须可比。</text>
+<rect x="510" y="322" width="475" height="76" rx="6" class="fbw"/>
+<text x="524" y="344" class="tb2w">换成多智能体，问题就出在第 ⑤ 步</text>
+<text x="524" y="364" class="nt">一条 rollout 里混着 orchestrator 和多个 sub-agent 的 token，</text>
+<text x="524" y="383" class="nt">但第 ⑤ 步只算出一个 A<tspan class="sb" baseline-shift="sub">i</tspan>。它该分给谁、分多少？这就是信用分配。</text>
+</svg>
+        </div>
+        <figcaption><strong>图 1.</strong> LLM RL 的一个训练步。例子里 G = 4，四条轨迹的终局奖励是 [1, 0, 0, 1]，组均值 0.5、标准差 0.5，于是 advantage 为 [+1, −1, −1, +1]，每条轨迹的所有 token 共用同一个值。PPO 和 GRPO 的区别在第 ⑤ 步的 baseline：PPO 用学出来的 critic，GRPO 用同组其他样本的均值。单智能体时这一步没有歧义；多智能体时，一条轨迹里有多个 agent 的 token，一个 A 该怎么分就成了问题。</figcaption>
+      </figure>
+    </section>
+
+<section id="problem">
+      <h2><span class="n">2</span>问题是什么</h2>
+      <p>合作型多智能体任务里，环境通常只给整个团队一个回报 \(R\)。每个 agent 要用这个标量更新自己的策略，需要回答两个问题：</p>
+      <div class="parts">
+        <div class="part"><div class="k">AGENT 之间</div><h4>谁的功劳</h4><p>任务成功了，是哪个 agent 的贡献？失败了，是谁的错？</p></div>
+        <div class="part"><div class="k">AGENT 内部</div><h4>哪一步的功劳</h4><p>一个 agent 走了很多步，哪些动作是好的？这是单智能体里就有的时间信用问题。</p></div>
+      </div>
+      <p>如果把 \(R\) 原样发给每个 agent，会出现两个经典症状：</p>
+      <ul>
+        <li><strong>噪声大</strong>：agent i 的梯度里混进了其他所有 agent 的随机性，团队越大，信噪比越低。</li>
+        <li><strong>搭便车（lazy agent）</strong>：有的 agent 学会了，其他 agent 就不再学，因为团队奖励已经够高。<a class="pl" href="https://arxiv.org/abs/1706.05296" target="_blank" rel="noopener">VDN</a> 把它称为 “lazy agent” 问题，并指出它源于部分可观测。</li>
+      </ul>
+      <div class="callout">
+        <p><strong>LLM 多智能体让问题更难。</strong> agent 常常是动态创建的，没有固定角色；轨迹很长，团队奖励被摊薄到大量 token 上；主流算法是不带 critic 的 GRPO，baseline 只能来自样本之间的比较；每条 rollout 都很贵，反事实重跑的成本很高。</p>
+      </div>
+    </section>
+
+    <section id="classic">
+      <h2><span class="n">3</span>经典 MARL 的五种答案</h2>
+      <p>这些方法都建立在 actor-critic 或 Q-learning 上，靠集中式的价值函数做信用分配。训练时集中、执行时分散（CTDE）是共同框架。点工作名打开原文。</p>
+
+      <div class="papers">
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf" target="_blank" rel="noopener">Wonderful Life Utility（difference reward）</a></h4><span class="venue">Wolpert &amp; Tumer · Advances in Complex Systems 4(2–3), 2001</span></div>
+          <div class="math sm">\[ \mathrm{WLU}_\eta \equiv G(\zeta) - G(\zeta^{\,\hat{}\,\mathrm{CL}_\eta}) \]</div>
+          <p>agent η 的奖励等于团队实际得分，减去把 η 的分量“钳位”成固定值 CL 之后的得分。钳位成 0 等于把这个 agent 从系统里拿掉。后来文献通称 difference reward。</p>
+          <blockquote class="q"><a class="ql" href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf#page=2" target="_blank" rel="noopener" title="在原文中打开这段">“WLU overcomes much of the signal-to-noise problem of team game utilities.”</a> <cite>p.2 §1；定义见式 (7)</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf#page=7" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/wlu.jpg" alt="Figure 2 · p.7：钳位操作示例：把玩家 η₂ 的动作钳位成 “null”（等于把它移出系统），或钳位成“平均”动作向量。" loading="lazy"></a><figcaption><a class="fl" href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf#page=7" target="_blank" rel="noopener">原文 Figure 2 · p.7</a> 钳位操作示例：把玩家 η₂ 的动作钳位成 “null”（等于把它移出系统），或钳位成“平均”动作向量。</figcaption></figure>
+          </div>
+        </article>
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener">COMA</a></h4><span class="venue">Foerster et al. · AAAI 2018</span></div>
+          <div class="math sm">\[ A^i = Q(s,\mathbf u) - \textstyle\sum_{u'} \pi^i(u' \mid \tau^i)\, Q\big(s,(\mathbf u^{-i}, u')\big) \]</div>
+          <p>用集中式 critic 代替重跑环境：固定其他 agent 的动作，只把 i 的动作边缘化掉，得到反事实 baseline。可以看作 difference reward 的可学习版本。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/1705.08926#:~:text=it%20uses%20a%20counterfactual%20baseline%20that%20marginalises%20out" target="_blank" rel="noopener" title="在原文中打开这段">“it uses a counterfactual baseline that marginalises out a single agent's action”</a> <cite>摘要</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/coma.jpg" alt="Figure 1：(a) 分散的 actor、环境和集中式 critic 之间的信息流，红色部分只在集中训练时需要；(b)(c) actor 和 critic 的网络结构。" loading="lazy"></a><figcaption><a class="fl" href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener">原文 Figure 1</a> (a) 分散的 actor、环境和集中式 critic 之间的信息流，红色部分只在集中训练时需要；(b)(c) actor 和 critic 的网络结构。</figcaption></figure>
+          </div>
+        </article>
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/1706.05296" target="_blank" rel="noopener">VDN</a> / <a class="pl" href="https://arxiv.org/abs/1803.11485" target="_blank" rel="noopener">QMIX</a> / <a class="pl" href="https://arxiv.org/abs/1905.05408" target="_blank" rel="noopener">QTRAN</a></h4><span class="venue">Sunehag et al. AAMAS 2018 · Rashid et al. ICML 2018 · Son et al. ICML 2019</span></div>
+          <div class="math sm">\[ Q_{tot} = \textstyle\sum_i Q_i \quad\text{或}\quad \partial Q_{tot} / \partial Q_i \ge 0 \]</div>
+          <p>价值分解：把团队 Q 拆成每个 agent 的 Q，分解结构本身就隐含了信用分配。VDN 用求和，QMIX 用单调的 mixing 网络，QTRAN 去掉了这两种结构约束。</p>
+          <blockquote class="q">VDN：<a class="ql" href="https://arxiv.org/abs/1706.05296#:~:text=learns%20to%20decompose%20the%20team%20value%20function%20into%20agent%2Dwise%20value%20functions" target="_blank" rel="noopener" title="在原文中打开这段">“learns to decompose the team value function into agent-wise value functions”</a> · QMIX：<a class="ql" href="https://arxiv.org/abs/1803.11485#:~:text=structurally%20enforce%20that%20the%20joint%2Daction%20value%20is%20monotonic%20in%20the%20per%2Dagent%20values" target="_blank" rel="noopener" title="在原文中打开这段">“structurally enforce that the joint-action value is monotonic in the per-agent values”</a> · QTRAN：<a class="ql" href="https://arxiv.org/abs/1905.05408#:~:text=free%20from%20such%20structural%20constraints" target="_blank" rel="noopener" title="在原文中打开这段">“free from such structural constraints”</a> <cite>均为摘要</cite></blockquote>
+          <div class="pf multi">
+            <figure><a href="https://arxiv.org/html/1706.05296#:~:text=Value%2Ddecomposition%20individual%20architecture" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/vdn.jpg" alt="VDN Figure 2：价值分解架构：各 agent 的局部 Q 相加得到团队 Q。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/1706.05296#:~:text=Value%2Ddecomposition%20individual%20architecture" target="_blank" rel="noopener">原文 VDN Figure 2</a> 价值分解架构：各 agent 的局部 Q 相加得到团队 Q。</figcaption></figure>
+            <figure><a href="https://arxiv.org/html/1803.11485#:~:text=Mixing%20network%20structure" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/qmix.jpg" alt="QMIX Figure 2：(a) mixing 网络，红色是生成其权重和偏置的 hypernetwork；(b) QMIX 整体结构；(c) agent 网络。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/1803.11485#:~:text=Mixing%20network%20structure" target="_blank" rel="noopener">原文 QMIX Figure 2</a> (a) mixing 网络，红色是生成其权重和偏置的 hypernetwork；(b) QMIX 整体结构；(c) agent 网络。</figcaption></figure>
+            <figure><a href="https://arxiv.org/html/1905.05408#:~:text=QTRAN%2Dbase%20and%20QTRAN%2Dalt%20Architecture" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/qtran.jpg" alt="QTRAN Figure 1：QTRAN-base 与 QTRAN-alt 的架构。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/1905.05408#:~:text=QTRAN%2Dbase%20and%20QTRAN%2Dalt%20Architecture" target="_blank" rel="noopener">原文 QTRAN Figure 1</a> QTRAN-base 与 QTRAN-alt 的架构。</figcaption></figure>
+          </div>
+        </article>
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/1907.05707" target="_blank" rel="noopener">Shapley Q-value（SQDDPG）</a></h4><span class="venue">Wang, Zhang, Kim, Gu · AAAI 2020</span></div>
+          <div class="math sm">\[ \phi_i = \mathbb E_{C \subseteq N\setminus i}\big[v(C\cup i) - v(C)\big] \]</div>
+          <p>用 Shapley 值把全局奖励分给每个 agent：对所有联盟取边际贡献的平均，满足公平性公理。精确计算要枚举指数多个联盟。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/1907.05707#:~:text=is%20able%20to%20distribute%20the%20global%20reward" target="_blank" rel="noopener" title="在原文中打开这段">“Shapley Q-value is able to distribute the global reward, reflecting each agent's own contribution”</a> <cite>摘要</cite></blockquote>
+        </article>
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/2103.01955" target="_blank" rel="noopener">MAPPO：不显式分配</a></h4><span class="venue">Yu et al. · NeurIPS 2022 Datasets &amp; Benchmarks</span></div>
+          <p>团队奖励加集中式 \(V(s)\)，不做显式的信用分解，在 SMAC、Google Research Football、Hanabi 等基准上和 off-policy 的价值分解方法相当甚至更好。说明 agent 同质、能共享参数时，显式分配并不总是必要的。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/2103.01955#:~:text=often%20achieves%20competitive%20or%20superior%20results,sample%20efficiency" target="_blank" rel="noopener" title="在原文中打开这段">“PPO often achieves competitive or superior results in both final returns and sample efficiency.”</a> <cite>摘要</cite></blockquote>
+        </article>
+      </div>
+    </section>
+
+    <section id="llm">
+      <h2><span class="n">4</span>LLM 多智能体训练里的六类做法</h2>
+      <p>LLM 时代的变化是：critic 基本没了。GRPO 系方法的 baseline 来自一组样本的均值，所以信用分配的问题变成了<strong>拿谁和谁比</strong>。下面按这个角度分类。</p>
+
+      <h3>A. 不分配：只训 orchestrator</h3>
+      <div class="papers one">
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/2602.02276" target="_blank" rel="noopener">Kimi K2.5 Agent Swarm（PARL）</a></h4><span class="venue">Kimi Team · arXiv 2602.02276, 2026</span></div>
+          <p>可训练的 orchestrator 加冻结的子 agent，子 agent 的轨迹不进入优化目标，被当作环境观测。奖励由三项加权：实例化奖励 \(r_{\text{parallel}}\) 防止退化成串行执行（serial collapse），子任务完成率 \(r_{\text{finish}}\) 防止只创建不完成的“虚假并行”，任务结果 \(r_{\text{perf}}\)；前两项的权重在训练中退火到 0。子 agent 这一层的信用问题被直接绕开。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/html/2602.02276#:~:text=sub%2Dagents%20are%20frozen%20and%20their%20execution%20trajectories%20are%20excluded%20from%20the%20optimization%20objective" target="_blank" rel="noopener" title="在原文中打开这段">“sub-agents are frozen and their execution trajectories are excluded from the optimization objective”</a> <cite>§1</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://arxiv.org/html/2602.02276#:~:text=An%20agent%20swarm%20has%20a%20trainable%20orchestrator" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/kimi.jpg" alt="Figure 3：可训练的 orchestrator 动态创建专门化的冻结子 agent，把复杂任务拆成可并行的子任务。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/2602.02276#:~:text=An%20agent%20swarm%20has%20a%20trainable%20orchestrator" target="_blank" rel="noopener">原文 Figure 3</a> 可训练的 orchestrator 动态创建专门化的冻结子 agent，把复杂任务拆成可并行的子任务。</figcaption></figure>
+          </div>
+        </article>
+      </div>
+
+      <h3>B. 广播团队奖励，组内比较整局</h3>
+      <div class="papers">
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://ojs.aaai.org/index.php/AAAI/article/view/40487" target="_blank" rel="noopener">MAGRPO</a></h4><span class="venue">Liu, Chen, Liang, Lyu, Amato · AAAI 2026 · <a href="https://arxiv.org/abs/2508.04652" target="_blank" rel="noopener">arXiv</a></span></div>
+          <p>把 LLM 协作建模为 Dec-POMDP。所有 agent 共享一个联合奖励；每个 agent 每轮采样一组回答，baseline 是这组联合回报的均值；训练时集中，执行时各自独立。相当于 MAPPO 的 GRPO 版。写作和编程协作任务。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/html/2508.04652#:~:text=Using%20a%20joint%20reward%20allows%20agents%20to%20specialize%20as%20needed,reward%20engineering" target="_blank" rel="noopener" title="在原文中打开这段">“Using a joint reward allows agents to specialize as needed to complete the task without complex prompt or reward engineering.”</a> <cite>§3.1</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://arxiv.org/html/2508.04652#:~:text=Illustration%20of%20Dec%2DPOMDP%20and%20our%20MAGRPO%20algorithm" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/magrpo.jpg" alt="Figure 1：Dec-POMDP 与 MAGRPO 算法示意。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/2508.04652#:~:text=Illustration%20of%20Dec%2DPOMDP%20and%20our%20MAGRPO%20algorithm" target="_blank" rel="noopener">原文 Figure 1</a> Dec-POMDP 与 MAGRPO 算法示意。</figcaption></figure>
+          </div>
+        </article>
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://aclanthology.org/2025.acl-long.1459" target="_blank" rel="noopener">MAPoRL</a></h4><span class="venue">Park, Han, Guo, Ozdaglar, Zhang, Kim · ACL 2025</span></div>
+          <p>多个 LLM 先各自作答，再多轮讨论修正，联合训练。verifier 同时评价答案和讨论过程，并额外奖励纠错和有说服力的发言，这个分数就是联合训练的奖励。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/2502.18439#:~:text=verifier%20evaluates%20both%20the%20answer%20and%20the%20discussion,serves%20as%20the%20co%2Dtraining%20reward" target="_blank" rel="noopener" title="在原文中打开这段">“a MAPoRL verifier evaluates both the answer and the discussion … The score serves as the co-training reward”</a> <cite>摘要</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://arxiv.org/html/2502.18439#:~:text=can%20be%20applied%20to%20any%20multi%2DLLM%20system%20with%20a%20scorer" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/maporl.jpg" alt="Figure 1：MAPoRL 可接入任何带打分器或 verifier 的多 LLM 系统，图中接入的是协作辩论系统。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/2502.18439#:~:text=can%20be%20applied%20to%20any%20multi%2DLLM%20system%20with%20a%20scorer" target="_blank" rel="noopener">原文 Figure 1</a> MAPoRL 可接入任何带打分器或 verifier 的多 LLM 系统，图中接入的是协作辩论系统。</figcaption></figure>
+          </div>
+        </article>
+      </div>
+
+      <h3>C. 按角色设 baseline</h3>
+      <div class="papers">
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/2506.24119" target="_blank" rel="noopener">SPIRAL</a></h4><span class="venue">Liu, Guertler, Yu, … Jaques · arXiv 2506.24119, 2025</span></div>
+          <div class="math sm">\[ A_{G,p}(\tau) = R_p(\tau) - b_{G,p} \]</div>
+          <p>同一个模型在零和游戏里自博弈。RAE 为每个“游戏 × 角色”维护一个 baseline，用 EMA 更新（衰减率 0.95），因为先手和后手的期望回报本来就不同。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/html/2506.24119#:~:text=RAE%20maintains%20separate%20baselines" target="_blank" rel="noopener" title="在原文中打开这段">“RAE maintains separate baselines b<sub>G,p</sub> for each game G∈𝒢 and role p∈{0,1}.”</a> <cite>§3</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://arxiv.org/html/2506.24119#:~:text=SPIRAL%20employs%20an%20actor%2Dlearner%20architecture" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/spiral.jpg" alt="Figure 3：SPIRAL 框架：并行的 actor 在多种游戏里采样轨迹，同一个策略扮演两个角色；集中式 learner 用 RAE 为两个角色分别计算 advantage。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/2506.24119#:~:text=SPIRAL%20employs%20an%20actor%2Dlearner%20architecture" target="_blank" rel="noopener">原文 Figure 3</a> SPIRAL 框架：并行的 actor 在多种游戏里采样轨迹，同一个策略扮演两个角色；集中式 learner 用 RAE 为两个角色分别计算 advantage。</figcaption></figure>
+          </div>
+        </article>
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://proceedings.iclr.cc/paper_files/paper/2026/file/0b1b52b624ce69e0241eac91f8df0bce-Paper-Conference.pdf" target="_blank" rel="noopener">MARSHAL</a></h4><span class="venue">Yuan, Xu, … Yu, Wang · ICLR 2026</span></div>
+          <div class="math sm">\[ A_{k} = \textstyle\sum_{j\ge k} r_j \;-\; \mathrm{mean}\big(R^{\,p}\big) \]</div>
+          <p>合作和竞争游戏都做。先把每轮之后的奖励求和，再减同角色子组 \(p\) 的均值（sum-then-normalize）。消融里把它换成 RAE，Mini Hanabi 从 54.33% 掉到 24.93%，合作游戏受影响最大。前提是角色固定、每个角色在 batch 里样本够多。</p>
+          <blockquote class="q"><a class="ql" href="https://proceedings.iclr.cc/paper_files/paper/2026/file/0b1b52b624ce69e0241eac91f8df0bce-Paper-Conference.pdf#page=4" target="_blank" rel="noopener" title="在原文中打开这段">“We partition the batch of trajectories into sub-groups based on player role and apply the turn-level advantage estimator described above independently within each sub-group”</a> <cite>p.4 §3.2</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://proceedings.iclr.cc/paper_files/paper/2026/file/0b1b52b624ce69e0241eac91f8df0bce-Paper-Conference.pdf#page=3" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/marshal.jpg" alt="Figure 2 · p.3：左：自博弈生成每个玩家的轨迹；中：GRPO 的 advantage 估计，整条轨迹一个值；右：MARSHAL 先按轮累加回报，再按角色子组归一化。" loading="lazy"></a><figcaption><a class="fl" href="https://proceedings.iclr.cc/paper_files/paper/2026/file/0b1b52b624ce69e0241eac91f8df0bce-Paper-Conference.pdf#page=3" target="_blank" rel="noopener">原文 Figure 2 · p.3</a> 左：自博弈生成每个玩家的轨迹；中：GRPO 的 advantage 估计，整条轨迹一个值；右：MARSHAL 先按轮累加回报，再按角色子组归一化。</figcaption></figure>
+          </div>
+        </article>
+      </div>
+
+      <h3>D. 反事实：换掉一个再跑</h3>
+      <div class="papers">
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/2603.06859" target="_blank" rel="noopener">C3</a></h4><span class="venue">Chen et al. · arXiv 2603.06859, 2026</span></div>
+          <p>消息级信用。在某个决策点把一条消息换成另一条，把后续流程一直跑到终局奖励，得到这条消息的无偏信用；只需重新生成决策点下游的消息。前提是下游 agent 读到的一切都写在记录里，这样记录本身就是状态，反事实可以真的执行。当前版本标题为 <em>The Trace Is the State: Exact Credit Assignment for LLM Agent Teams</em>。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/2603.06859#:~:text=substitutes%20one%20message%20at%20a%20decision%20point,exact%20up%20to%20Monte%20Carlo%20error" target="_blank" rel="noopener" title="在原文中打开这段">“substitutes one message at a decision point and continues the run to the terminal reward, so its credit is unbiased, exact up to Monte Carlo error”</a> <cite>摘要</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://arxiv.org/pdf/2603.06859#page=2" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/c3.jpg" alt="Figure 1 · p.2：两种评估候选消息的方式：(a) 沿用 MARL 的做法，critic 预测每个候选的价值；(b) C3 回到前缀、换上候选、把下游跑到终局奖励，再和其他候选的加权均值比较。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/pdf/2603.06859#page=2" target="_blank" rel="noopener">原文 Figure 1 · p.2</a> 两种评估候选消息的方式：(a) 沿用 MARL 的做法，critic 预测每个候选的价值；(b) C3 回到前缀、换上候选、把下游跑到终局奖励，再和其他候选的加权均值比较。</figcaption></figure>
+          </div>
+        </article>
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/2603.21563" target="_blank" rel="noopener">CCPO</a></h4><span class="venue">Li, Tian, Chen, Zhang, Liu, Ban, Zhuang · arXiv 2603.21563, 2026</span></div>
+          <p>agent 级信用。比较实际联合结果和去掉某个 agent 后的结果，得到每个角色的奖励，再交给 GRPO、GSPO 或 REINFORCE++。在 Think–Solve 双 agent 的数学推理上实验：去掉 Thinker 就是让 Solver 直接答题，额外采样 solver-only 的 rollout 并用 verifier 打分；Solver 没有对应的反事实，因为去掉它就没有答案了。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/2603.21563#:~:text=marginal%20contribution%20by%20comparing%20the%20realized%20joint%20outcome%20with%20a%20counterfactual%20outcome" target="_blank" rel="noopener" title="在原文中打开这段">“estimates an agent's marginal contribution by comparing the realized joint outcome with a counterfactual outcome”</a> <cite>摘要</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://arxiv.org/html/2603.21563#:~:text=Overview%20of%20the%20reward%2Dconstruction%20layer" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/ccpo.jpg" alt="Figure 1：奖励构造层：共享奖励、CCPO、SEPO 产出信用信号，再交给独立的策略优化器。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/2603.21563#:~:text=Overview%20of%20the%20reward%2Dconstruction%20layer" target="_blank" rel="noopener">原文 Figure 1</a> 奖励构造层：共享奖励、CCPO、SEPO 产出信用信号，再交给独立的策略优化器。</figcaption></figure>
+          </div>
+        </article>
+      </div>
+
+      <h3>E. 在语言空间里分配</h3>
+      <div class="papers one">
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://aclanthology.org/2026.emnlp-main.1837/" target="_blank" rel="noopener">LangMARL</a></h4><span class="venue">Yao, Da, Liu, Fleming, Chen, Wei · EMNLP 2026</span></div>
+          <p>把合作 MARL 的信用分配搬到语言空间：从回放的轨迹里抽取和任务相关的因果关系，给每个 agent 稠密的文字反馈，用来改进各自的策略。适合奖励稀疏的场景。</p>
+          <blockquote class="q"><a class="ql" href="https://aclanthology.org/2026.emnlp-main.1837/#:~:text=agent%2Dlevel%20language%20credit%20assignment" target="_blank" rel="noopener" title="在原文中打开这段">“agent-level language credit assignment”</a> <cite>摘要</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://aclanthology.org/2026.emnlp-main.1837.pdf#page=4" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/lang.jpg" alt="Figure 3 · p.4：系统流程（CTDE）：语言策略 actor 分散执行，集中式语言 critic 给出轨迹级因果信用，语言策略优化器用自然语言更新策略。" loading="lazy"></a><figcaption><a class="fl" href="https://aclanthology.org/2026.emnlp-main.1837.pdf#page=4" target="_blank" rel="noopener">原文 Figure 3 · p.4</a> 系统流程（CTDE）：语言策略 actor 分散执行，集中式语言 critic 给出轨迹级因果信用，语言策略优化器用自然语言更新策略。</figcaption></figure>
+          </div>
+        </article>
+      </div>
+
+      <h3>F. agent 内部的时间信用（单智能体工作，供参照）</h3>
+      <div class="papers">
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/2505.11821" target="_blank" rel="noopener">MT-GRPO</a></h4><span class="venue">Wei, Zeng, Li, … Hong · arXiv 2505.11821, 2025</span></div>
+          <p>多轮 agent 里利用逐轮的稠密奖励做信用分配，分别推导了 GRPO 和 PPO 的版本，比较终局、延迟、逐轮三种奖励粒度。原题 <em>Reinforcing Multi-Turn Reasoning in LLM Agents via Fine-Grained Reward Structure and Credit Assignment</em>。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/2505.11821#:~:text=dense%20per%2Dturn%20reward%20structures%20consistently%20outperform%20sparse%20terminal%20and%20delayed%20reward%20structures" target="_blank" rel="noopener" title="在原文中打开这段">“dense per-turn reward structures consistently outperform sparse terminal and delayed reward structures”</a> <cite>摘要</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://arxiv.org/html/2505.11821#:~:text=Comparison%20of%20three%20turn%2Dlevel%20reward%20assignment%20strategies" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/mtgrpo.jpg" alt="Figure 1：多轮任务中三种 turn 级奖励分配方式的比较；方块代表 token，颜色表示分到的奖励。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/2505.11821#:~:text=Comparison%20of%20three%20turn%2Dlevel%20reward%20assignment%20strategies" target="_blank" rel="noopener">原文 Figure 1</a> 多轮任务中三种 turn 级奖励分配方式的比较；方块代表 token，颜色表示分到的奖励。</figcaption></figure>
+          </div>
+        </article>
+        <article class="paper">
+          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/2505.10978" target="_blank" rel="noopener">GiGPO</a></h4><span class="venue">Feng, Xue, Liu, An · NeurIPS 2025</span></div>
+          <p>在同一任务的多条轨迹里找到相同的状态作为锚点，在锚点上做 step 级组内比较。不需要辅助模型，也不需要额外 rollout。</p>
+          <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/2505.10978#:~:text=Actions%20stemming%20from%20the%20same%20state%20are%20grouped%20together,micro%20relative%20advantage%20estimation" target="_blank" rel="noopener" title="在原文中打开这段">“Actions stemming from the same state are grouped together, enabling micro relative advantage estimation.”</a> <cite>摘要</cite></blockquote>
+          <div class="pf">
+            <figure><a href="https://arxiv.org/html/2505.10978#:~:text=Overview%20of%20GiGPO" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/gigpo.jpg" alt="Figure 2：GiGPO 概览：agent 在一组初始状态相同的环境里生成多条轨迹，颜色相同的是同一个环境状态；在 episode 级和 step 级两个维度分组，得到分层的相对 advantage。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/2505.10978#:~:text=Overview%20of%20GiGPO" target="_blank" rel="noopener">原文 Figure 2</a> GiGPO 概览：agent 在一组初始状态相同的环境里生成多条轨迹，颜色相同的是同一个环境状态；在 episode 级和 step 级两个维度分组，得到分层的相对 advantage。</figcaption></figure>
+          </div>
+        </article>
+      </div>
+
+      <div class="callout">
+        <p><strong>一篇值得读的综述：</strong><a class="pl" href="https://arxiv.org/abs/2605.02801" target="_blank" rel="noopener">Reinforcement Learning for LLM-based Multi-Agent Systems through Orchestration Traces</a>（Zhang，arXiv 2605.02801，2026.05）。它把多智能体系统的运行看成一张编排事件图（spawn、委派、通信、工具调用、汇总、停止），把奖励和信用信号归到从 token 到整个团队的 8 个单位上。两个和我们相关的观察：</p>
+        <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/2605.02801#:~:text=explicit%20counterfactual%20message%2Dlevel%20credit%20remains%20especially%20sparse" target="_blank" rel="noopener" title="在原文中打开这段">“explicit counterfactual message-level credit remains especially sparse in our curated pool”</a> · <a class="ql" href="https://arxiv.org/abs/2605.02801#:~:text=no%20explicit%20RL%20training%20method%20for%20the%20stopping%20decision" target="_blank" rel="noopener" title="在原文中打开这段">“found no explicit RL training method for the stopping decision”</a> <cite>摘要</cite></blockquote>
+      </div>
+    </section>
+    <section id="map">
+      <h2><span class="n">5</span>对照：每种做法拿谁和谁比</h2>
+      <div class="table"><table>
+        <thead><tr><th>做法</th><th>比较对象（baseline 来源）</th><th>经典对应</th><th>额外成本</th><th>前提</th></tr></thead>
+        <tbody>
+          <tr><td>只训 orchestrator</td><td>同一 prompt 的其他整局</td><td>—</td><td>无</td><td>子 agent 能力够用</td></tr>
+          <tr><td>广播团队奖励</td><td>同一 prompt 的其他整局</td><td>MAPPO</td><td>无</td><td>agent 同质，或不在乎区分</td></tr>
+          <tr><td>按角色设 baseline</td><td>batch 里同角色的其他轨迹</td><td>按角色的 critic</td><td>无</td><td>角色固定，每类样本够多</td></tr>
+          <tr><td>反事实回放</td><td>同一上下文下换掉这个 agent 或这条消息</td><td>COMA、difference reward</td><td>每个 agent 或消息都要重跑</td><td>环境可以 fork 和重放</td></tr>
+          <tr><td>语言信用</td><td>不做数值比较，LLM 读轨迹归因</td><td>—</td><td>每局一次归因调用</td><td>归因模型可靠</td></tr>
+          <tr><td>状态锚点</td><td>其他轨迹里的相同状态</td><td>状态价值 \(V(s)\)</td><td>无</td><td>状态会重复出现</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="takeaway">
+      <h2><span class="n">6</span>一条主线</h2>
+      <p>把上面的工作放在一起看，我的理解是：</p>
+      <ol class="points">
+        <li><strong>没有 critic 以后，信用分配就是构造比较组。</strong>经典方法靠学出来的 \(Q\) 或 \(V\) 提供 baseline；GRPO 系只能靠样本之间的比较。比较组里的样本在“别的因素”上越一致，算出来的信号越干净。</li>
+        <li><strong>每种构造方式都有代价。</strong>整局比较不花钱但混入了队友的随机性；按角色比较要求角色固定；反事实回放最干净，但成本随 agent 数和消息数增长。</li>
+        <li><strong>动态创建的 sub-agent 让前三种都失效。</strong>每个 sub-agent 的任务都不一样，没有可比的“同角色”样本；整局比较把 orchestrator 的拆分质量混进来；逐个反事实回放太贵。怎么给这类 sub-agent 构造干净的比较组，目前还是开放问题。</li>
+      </ol>
+    </section>
+
+    <section id="refs">
+      <h2><span class="n">7</span>参考</h2>
+      <ul class="refs">
+        <li><a href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf" target="_blank" rel="noopener">Wolpert &amp; Tumer. Optimal payoff functions for members of collectives. Advances in Complex Systems 4(2–3), 2001.</a></li>
+        <li><a href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener">Foerster et al. Counterfactual Multi-Agent Policy Gradients. AAAI 2018.</a></li>
+        <li><a href="https://arxiv.org/abs/1706.05296" target="_blank" rel="noopener">Sunehag et al. Value-Decomposition Networks For Cooperative Multi-Agent Learning. AAMAS 2018 (extended abstract).</a></li>
+        <li><a href="https://arxiv.org/abs/1803.11485" target="_blank" rel="noopener">Rashid et al. QMIX: Monotonic Value Function Factorisation for Deep MARL. ICML 2018.</a></li>
+        <li><a href="https://arxiv.org/abs/1905.05408" target="_blank" rel="noopener">Son et al. QTRAN: Learning to Factorize with Transformation for Cooperative MARL. ICML 2019.</a></li>
+        <li><a href="https://arxiv.org/abs/1907.05707" target="_blank" rel="noopener">Wang et al. Shapley Q-value: A Local Reward Approach to Solve Global Reward Games. AAAI 2020.</a></li>
+        <li><a href="https://arxiv.org/abs/2103.01955" target="_blank" rel="noopener">Yu et al. The Surprising Effectiveness of PPO in Cooperative, Multi-Agent Games. NeurIPS 2022 D&amp;B.</a></li>
+        <li><a href="https://arxiv.org/abs/2602.02276" target="_blank" rel="noopener">Kimi Team. Kimi K2.5: Visual Agentic Intelligence. arXiv 2602.02276, 2026.</a></li>
+        <li><a href="https://ojs.aaai.org/index.php/AAAI/article/view/40487" target="_blank" rel="noopener">Liu et al. LLM Collaboration with Multi-Agent Reinforcement Learning (MAGRPO). AAAI 2026.</a></li>
+        <li><a href="https://aclanthology.org/2025.acl-long.1459" target="_blank" rel="noopener">Park et al. MAPoRL: Multi-Agent Post-Co-Training for Collaborative LLMs with RL. ACL 2025.</a></li>
+        <li><a href="https://arxiv.org/abs/2506.24119" target="_blank" rel="noopener">Liu et al. SPIRAL: Self-Play on Zero-Sum Games Incentivizes Reasoning via Multi-Agent Multi-Turn RL. arXiv 2506.24119, 2025.</a></li>
+        <li><a href="https://proceedings.iclr.cc/paper_files/paper/2026/file/0b1b52b624ce69e0241eac91f8df0bce-Paper-Conference.pdf" target="_blank" rel="noopener">Yuan, Xu et al. MARSHAL: Incentivizing Multi-Agent Reasoning via Self-Play with Strategic LLMs. ICLR 2026.</a></li>
+        <li><a href="https://arxiv.org/abs/2603.06859" target="_blank" rel="noopener">Chen et al. The Trace Is the State: Exact Credit Assignment for LLM Agent Teams (C3). arXiv 2603.06859, 2026.</a></li>
+        <li><a href="https://arxiv.org/abs/2603.21563" target="_blank" rel="noopener">Li et al. Counterfactual Credit Policy Optimization for Multi-Agent Collaboration (CCPO). arXiv 2603.21563, 2026.</a></li>
+        <li><a href="https://aclanthology.org/2026.emnlp-main.1837/" target="_blank" rel="noopener">Yao et al. LangMARL: Natural Language Multi-Agent Reinforcement Learning via Semantic Credit Assignment. EMNLP 2026.</a></li>
+        <li><a href="https://arxiv.org/abs/2505.11821" target="_blank" rel="noopener">Wei, Zeng et al. Reinforcing Multi-Turn Reasoning in LLM Agents via Fine-Grained Reward Structure and Credit Assignment. arXiv 2505.11821, 2025.</a></li>
+        <li><a href="https://arxiv.org/abs/2505.10978" target="_blank" rel="noopener">Feng et al. Group-in-Group Policy Optimization for LLM Agent Training (GiGPO). NeurIPS 2025.</a></li>
+        <li><a href="https://arxiv.org/abs/2605.02801" target="_blank" rel="noopener">Zhang. Reinforcement Learning for LLM-based Multi-Agent Systems through Orchestration Traces. arXiv 2605.02801, 2026.</a></li>
+      </ul>
+      <p class="aside">每条描述和引文都已对照原文（摘要或正文）核对，引文后标注出处位置。点击引文会在原文中定位并高亮这段话；两篇 PDF（Wolpert &amp; Tumer、MARSHAL）只能跳到所在页。MARSHAL 读过正文和附录；Wolpert &amp; Tumer 的式 (7) 来自原文 PDF。</p>
+    </section>
+</div>
+{% endraw %}

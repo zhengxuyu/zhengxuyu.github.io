@@ -5,7 +5,6 @@ date: 2026-05-21 00:00:00 +0000
 categories: Blog
 tags: [AI Agents, Autonomous Companies, Agent Orchestration, One-Person Company, Agentic Engineering, AI Infrastructure]
 draft: false
-pinned: true
 keywords: "autonomous AI companies, AI agents, agent infrastructure, agent orchestration, one-person company, agentic engineering, AI organization, Zhengxu Yu"
 description: "A short note on autonomous AI companies: the interesting shift is not agents doing tasks, but tasks routing themselves through agents, tools, budgets, permissions, evals, and human approvals."
 tldr: "There is a new kind of company shape emerging. It does not feel like a robot CEO. It feels like a ticket queue that learned to hire temporary workers. In human companies, scaling means hiring. In AI companies, scaling means routing: sending each task through the right agents, tools, permissions, budgets, evals, and human approvals without losing the plot."

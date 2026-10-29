@@ -5,7 +5,6 @@ date: 2026-05-07 00:00:00 +0000
 categories: Blog
 tags: [Agentic Engineering, Vibe Coding, AI Agents, LLM, Software Engineering, Reinforcement Learning]
 draft: false
-pinned: true
 og_image: /assets/og-agentic-engineering.png
 keywords: "agentic engineering, vibe coding, AI agents, AI coding agents, Karpathy, reinforcement learning, LLM, software engineering, Zhengxu Yu"
 description: "Agentic engineering is replacing manual coding and static AI workflows. The data already shows the tipping point."

@@ -544,8 +544,11 @@ main:has(.mca) .content { max-width: 1240px; }
         <blockquote class="q"><a class="ql" href="https://arxiv.org/html/2605.02801#:~:text=sub%2Dagent%20spawns%2C%20inter%2Dagent%20messages%2C%20tool%20calls%2C%20summary%20returns%2C%20and%20aggregation%20steps" target="_blank" rel="noopener" title="在原文中打开这段">“a set of events—orchestrator decisions, sub-agent spawns, inter-agent messages, tool calls, summary returns, and aggregation steps”</a> <cite>§3.2 定义 3</cite></blockquote>
         <p>其中两个观察与本文直接相关：</p>
         <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/2605.02801#:~:text=explicit%20counterfactual%20message%2Dlevel%20credit%20remains%20especially%20sparse" target="_blank" rel="noopener" title="在原文中打开这段">“explicit counterfactual message-level credit remains especially sparse in our curated pool”</a> · <a class="ql" href="https://arxiv.org/abs/2605.02801#:~:text=no%20explicit%20RL%20training%20method%20for%20the%20stopping%20decision" target="_blank" rel="noopener" title="在原文中打开这段">“found no explicit RL training method for the stopping decision”</a> <cite>摘要</cite></blockquote>
-        <figure class="wide">
-          <div class="diagram">
+      </div>
+      <h3>编排事件图上的信用单位</h3>
+      <p>将以上工作置于同一张编排事件图上，它们的差别在于信用挂在图的哪个子结构上。</p>
+      <figure class="wide">
+        <div class="diagram">
 <svg viewBox="0 0 1000 425" role="img" aria-labelledby="fet"><title id="fet">编排事件图与其上的 8 个信用单位</title>
 <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>
 <text x="330" y="22" text-anchor="middle" class="ptitle">一次 rollout 的编排事件图</text>
@@ -648,10 +651,9 @@ main:has(.mca) .content { max-width: 1240px; }
 <text x="20" y="392" class="nt">边是事件之间的时间或因果依赖。单智能体轨迹是它的特例：没有派生、没有分叉，事件排成一条链。</text>
 <text x="20" y="414" class="nt">信用单位从粗到细：团队 → orchestrator → 角色 → agent → turn → 消息 → 工具调用 → token。</text>
 </svg>
-          </div>
-          <figcaption>左：一次 rollout 的编排事件图，含定义 3 的六类事件；右：综述 §7.1 的 8 个信用单位及其列出的代表工作（照录原文 Figure 12）。同一张图上，不同方法把信用挂在不同的子结构上：整张图（团队）、orchestrator 的决策、同角色的一组 agent、单个 agent、一个 turn、一条消息、一次工具调用或单个 token。综述指出 orchestrator 和消息两层的工作最少。据原文 <a class="fl" href="https://arxiv.org/html/2605.02801#S8.F14" target="_blank" rel="noopener">Figure 14</a><a class="fl" href="https://arxiv.org/html/2605.02801#S7.F12" target="_blank" rel="noopener">Figure 12</a> 重画。</figcaption>
-        </figure>
-      </div>
+        </div>
+        <figcaption><strong>图 3. 编排事件图上的 8 个信用单位。</strong>左：一次 rollout 的编排事件图；右：每个信用单位及综述列出的代表工作。六类事件来自综述定义 3，8 个信用单位、代表工作以及“稀少”“无经典对应”的标注照录原文 <a class="fl" href="https://arxiv.org/html/2605.02801#S7.F12" target="_blank" rel="noopener">Figure 12</a>；示例 rollout 的结构和 ①–⑧ 在图上的标注位置为本文所画，原文 <a class="fl" href="https://arxiv.org/html/2605.02801#S8.F14" target="_blank" rel="noopener">Figure 14</a> 只画了事件图本身。</figcaption>
+      </figure>
     </section>
     <section id="map">
       <h2><span class="n">5</span>对照：每种做法拿谁和谁比</h2>

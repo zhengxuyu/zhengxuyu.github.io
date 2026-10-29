@@ -6,8 +6,8 @@ categories: PaperReading
 tags: [Multi-Agent RL, Credit Assignment, Agentic RL, GRPO, LLM Agents]
 draft: false
 keywords: "multi-agent reinforcement learning, credit assignment, MARL, GRPO, LLM agents, orchestrator, sub-agent, COMA, QMIX, MARSHAL, C3, Zhengxu Yu"
-description: "从 LLM RL 的训练流程出发，梳理经典 MARL 和 LLM 多智能体训练中的信用分配做法，按“拿谁和谁比”归纳成一条主线。"
-tldr: "在 LLM 多智能体系统的 RL 训练中，orchestrator 把任务拆给多个 sub-agent 执行，整条 rollout 最终只得到一个任务级奖励；GRPO 类算法据此为整条轨迹算出一个 advantage，所有 agent 的 token 共用这一个值。信用分配要回答的是：这个信号应如何分给各个 agent 和各个步骤。在没有 critic 的情况下，现有做法本质上都是构造比较组，区别在于拿谁和谁比：同一题的其他整局 rollout（成本低，但混入了队友的随机性），同一角色的其他样本（要求角色固定），或只替换一条消息、去掉一个 agent 后重跑的反事实结果（信号最干净，但成本最高）。当 sub-agent 由 orchestrator 动态创建、各自任务不同时，这三种比较都难以成立。"
+description: "从 LLM RL 的训练流程出发，梳理经典 MARL 和 LLM 多智能体训练中的信用分配做法，并讨论编排式系统中尚未解决的问题。"
+tldr: "在 LLM 多智能体系统的 RL 训练中，orchestrator 把任务拆给多个 sub-agent 执行，整条 rollout 最终只得到一个任务级奖励；GRPO 类算法据此为整条轨迹算出一个 advantage，所有 agent 的 token 共用这一个值。信用分配要回答的是：这个信号应如何分给各个 agent 和各个步骤。GRPO 类方法不训练 critic，baseline 来自同组样本的均值，各种做法的区别在于比较组的构造：同一题的其他整局 rollout（成本低，但混入了队友的随机性），同一角色的其他样本（要求角色固定），或只替换一条消息、去掉一个 agent 后重跑的反事实结果（信号最干净，但成本最高）。当 sub-agent 由 orchestrator 动态创建、各自任务不同时，这三种比较都难以成立。"
 ---
 {% raw %}
 <style>
@@ -58,6 +58,8 @@ main:has(.mca) .content { max-width: 1240px; }
 .mca .callout p:last-child { margin-bottom: 0; }
 .mca .papers { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.75rem; margin: 0.6rem 0 1.25rem; }
 .mca .papers.one { grid-template-columns: 1fr; }
+.mca .papers.two { grid-template-columns: 1fr 1fr; }
+.mca .papers .col { display: grid; gap: 0.75rem; align-content: start; min-width: 0; }
 .mca .paper { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.9rem 1rem; min-width: 0; display: grid; gap: 0.55rem; align-content: start; }
 .mca .paper .ph { display: grid; gap: 0.1rem; }
 .mca .paper h4 { margin: 0 !important; font-size: 1rem !important; }
@@ -150,7 +152,7 @@ main:has(.mca) .content { max-width: 1240px; }
 </style>
 
 <div class="mca">
-<p class="lede">用 RL 训练 LLM 多智能体系统时，常见的设置是：一个 orchestrator 拆解任务、派生多个 sub-agent 分头执行，再汇总作答；环境只对最终答案给出一个奖励。训练需要把这一个奖励转化为每个 agent、每一步的学习信号，也就是判断任务的成败中哪个 agent、哪一步起了作用，这就是多智能体信用分配问题。本文依次介绍背景、LLM RL 的训练流程、经典 MARL 的信用分配方法和 LLM 多智能体训练中的新做法，并按“拿谁和谁比”归纳为一条主线。</p>
+<p class="lede">用 RL 训练 LLM 多智能体系统时，常见的设置是：一个 orchestrator 拆解任务、派生多个 sub-agent 分头执行，再汇总作答；环境只对最终答案给出一个奖励。训练需要把这一个奖励转化为每个 agent、每一步的学习信号，也就是判断任务的成败中哪个 agent、哪一步起了作用，这就是多智能体信用分配问题。本文依次介绍背景、LLM RL 的训练流程、经典 MARL 的信用分配方法和 LLM 多智能体训练中的新做法，最后讨论未来方向。</p>
 
     <section id="background">
       <h2><span class="n">1</span>背景：LLM 多智能体系统的 RL 训练</h2>
@@ -397,36 +399,42 @@ main:has(.mca) .content { max-width: 1240px; }
       <h2><span class="n">4</span>经典 MARL 的五种答案</h2>
       <p>这些方法都建立在 actor-critic 或 Q-learning 上，靠集中式的价值函数做信用分配。训练时集中、执行时分散（CTDE）是共同框架。点工作名打开原文。</p>
 
-      <div class="papers">
-        <article class="paper">
-          <div class="ph"><h4><a class="pl" href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf" target="_blank" rel="noopener">Wonderful Life Utility（difference reward）</a></h4><span class="venue">Wolpert &amp; Tumer · Advances in Complex Systems 4(2–3), 2001</span></div>
-          <div class="math sm">\[ \mathrm{WLU}_\eta \equiv G(\zeta) - G(\zeta^{\,\hat{}\,\mathrm{CL}_\eta}) \]</div>
-          <p>agent η 的奖励等于团队实际得分，减去把 η 的分量“钳位”成固定值 CL 之后的得分。钳位成 0 等于把这个 agent 从系统里拿掉。后来文献通称 difference reward。</p>
-          <blockquote class="q"><a class="ql" href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf#page=2" target="_blank" rel="noopener" title="在原文中打开这段">“WLU overcomes much of the signal-to-noise problem of team game utilities.”</a> <cite>p.2 §1；定义见式 (7)</cite></blockquote>
-          <div class="pf">
-            <figure><a href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf#page=7" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/wlu.jpg" alt="Figure 2 · p.7：钳位操作示例：把玩家 η₂ 的动作钳位成 “null”（等于把它移出系统），或钳位成“平均”动作向量。" loading="lazy"></a><figcaption><a class="fl" href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf#page=7" target="_blank" rel="noopener">原文 Figure 2 · p.7</a> 钳位操作示例：把玩家 η₂ 的动作钳位成 “null”（等于把它移出系统），或钳位成“平均”动作向量。</figcaption></figure>
-          </div>
-        </article>
-        <article class="paper">
-          <div class="ph"><h4><a class="pl" href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener">COMA</a></h4><span class="venue">Foerster et al. · AAAI 2018</span></div>
-          <div class="math sm">\[ A^i = Q(s,\mathbf u) - \textstyle\sum_{u'} \pi^i(u' \mid \tau^i)\, Q\big(s,(\mathbf u^{-i}, u')\big) \]</div>
-          <p>用集中式 critic 代替重跑环境：固定其他 agent 的动作，只把 i 的动作边缘化掉，得到反事实 baseline。可以看作 difference reward 的可学习版本。</p>
-          <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/1705.08926#:~:text=it%20uses%20a%20counterfactual%20baseline%20that%20marginalises%20out" target="_blank" rel="noopener" title="在原文中打开这段">“it uses a counterfactual baseline that marginalises out a single agent's action”</a> <cite>摘要</cite></blockquote>
-          <div class="pf">
-            <figure><a href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/coma.jpg" alt="Figure 1：(a) 分散的 actor、环境和集中式 critic 之间的信息流，红色部分只在集中训练时需要；(b)(c) actor 和 critic 的网络结构。" loading="lazy"></a><figcaption><a class="fl" href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener">原文 Figure 1</a> (a) 分散的 actor、环境和集中式 critic 之间的信息流，红色部分只在集中训练时需要；(b)(c) actor 和 critic 的网络结构。</figcaption></figure>
-          </div>
-        </article>
-        <article class="paper">
-          <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/1706.05296" target="_blank" rel="noopener">VDN</a> / <a class="pl" href="https://arxiv.org/abs/1803.11485" target="_blank" rel="noopener">QMIX</a> / <a class="pl" href="https://arxiv.org/abs/1905.05408" target="_blank" rel="noopener">QTRAN</a></h4><span class="venue">Sunehag et al. AAMAS 2018 · Rashid et al. ICML 2018 · Son et al. ICML 2019</span></div>
-          <div class="math sm">\[ Q_{tot} = \textstyle\sum_i Q_i \quad\text{或}\quad \partial Q_{tot} / \partial Q_i \ge 0 \]</div>
-          <p>价值分解：把团队 Q 拆成每个 agent 的 Q，分解结构本身就隐含了信用分配。VDN 用求和，QMIX 用单调的 mixing 网络，QTRAN 去掉了这两种结构约束。</p>
-          <blockquote class="q">VDN：<a class="ql" href="https://arxiv.org/abs/1706.05296#:~:text=learns%20to%20decompose%20the%20team%20value%20function%20into%20agent%2Dwise%20value%20functions" target="_blank" rel="noopener" title="在原文中打开这段">“learns to decompose the team value function into agent-wise value functions”</a> · QMIX：<a class="ql" href="https://arxiv.org/abs/1803.11485#:~:text=structurally%20enforce%20that%20the%20joint%2Daction%20value%20is%20monotonic%20in%20the%20per%2Dagent%20values" target="_blank" rel="noopener" title="在原文中打开这段">“structurally enforce that the joint-action value is monotonic in the per-agent values”</a> · QTRAN：<a class="ql" href="https://arxiv.org/abs/1905.05408#:~:text=free%20from%20such%20structural%20constraints" target="_blank" rel="noopener" title="在原文中打开这段">“free from such structural constraints”</a> <cite>均为摘要</cite></blockquote>
-          <div class="pf multi">
-            <figure><a href="https://arxiv.org/html/1706.05296#:~:text=Value%2Ddecomposition%20individual%20architecture" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/vdn.jpg" alt="VDN Figure 2：价值分解架构：各 agent 的局部 Q 相加得到团队 Q。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/1706.05296#:~:text=Value%2Ddecomposition%20individual%20architecture" target="_blank" rel="noopener">原文 VDN Figure 2</a> 价值分解架构：各 agent 的局部 Q 相加得到团队 Q。</figcaption></figure>
-            <figure><a href="https://arxiv.org/html/1803.11485#:~:text=Mixing%20network%20structure" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/qmix.jpg" alt="QMIX Figure 2：(a) mixing 网络，红色是生成其权重和偏置的 hypernetwork；(b) QMIX 整体结构；(c) agent 网络。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/1803.11485#:~:text=Mixing%20network%20structure" target="_blank" rel="noopener">原文 QMIX Figure 2</a> (a) mixing 网络，红色是生成其权重和偏置的 hypernetwork；(b) QMIX 整体结构；(c) agent 网络。</figcaption></figure>
-            <figure><a href="https://arxiv.org/html/1905.05408#:~:text=QTRAN%2Dbase%20and%20QTRAN%2Dalt%20Architecture" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/qtran.jpg" alt="QTRAN Figure 1：QTRAN-base 与 QTRAN-alt 的架构。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/1905.05408#:~:text=QTRAN%2Dbase%20and%20QTRAN%2Dalt%20Architecture" target="_blank" rel="noopener">原文 QTRAN Figure 1</a> QTRAN-base 与 QTRAN-alt 的架构。</figcaption></figure>
-          </div>
-        </article>
+      <div class="papers two">
+        <div class="col">
+          <article class="paper">
+            <div class="ph"><h4><a class="pl" href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf" target="_blank" rel="noopener">Wonderful Life Utility（difference reward）</a></h4><span class="venue">Wolpert &amp; Tumer · Advances in Complex Systems 4(2–3), 2001</span></div>
+            <div class="math sm">\[ \mathrm{WLU}_\eta \equiv G(\zeta) - G(\zeta^{\,\hat{}\,\mathrm{CL}_\eta}) \]</div>
+            <p>agent η 的奖励等于团队实际得分，减去把 η 的分量“钳位”成固定值 CL 之后的得分。钳位成 0 等于把这个 agent 从系统里拿掉。后来文献通称 difference reward。</p>
+            <blockquote class="q"><a class="ql" href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf#page=2" target="_blank" rel="noopener" title="在原文中打开这段">“WLU overcomes much of the signal-to-noise problem of team game utilities.”</a> <cite>p.2 §1；定义见式 (7)</cite></blockquote>
+            <div class="pf">
+              <figure><a href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf#page=7" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/wlu.jpg" alt="Figure 2 · p.7：钳位操作示例：把玩家 η₂ 的动作钳位成 “null”（等于把它移出系统），或钳位成“平均”动作向量。" loading="lazy"></a><figcaption><a class="fl" href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf#page=7" target="_blank" rel="noopener">原文 Figure 2 · p.7</a> 钳位操作示例：把玩家 η₂ 的动作钳位成 “null”（等于把它移出系统），或钳位成“平均”动作向量。</figcaption></figure>
+            </div>
+          </article>
+          <article class="paper">
+            <div class="ph"><h4><a class="pl" href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener">COMA</a></h4><span class="venue">Foerster et al. · AAAI 2018</span></div>
+            <div class="math sm">\[ A^i = Q(s,\mathbf u) - \textstyle\sum_{u'} \pi^i(u' \mid \tau^i)\, Q\big(s,(\mathbf u^{-i}, u')\big) \]</div>
+            <p>用集中式 critic 代替重跑环境：固定其他 agent 的动作，只把 i 的动作边缘化掉，得到反事实 baseline。可以看作 difference reward 的可学习版本。</p>
+            <blockquote class="q"><a class="ql" href="https://arxiv.org/abs/1705.08926#:~:text=it%20uses%20a%20counterfactual%20baseline%20that%20marginalises%20out" target="_blank" rel="noopener" title="在原文中打开这段">“it uses a counterfactual baseline that marginalises out a single agent's action”</a> <cite>摘要</cite></blockquote>
+            <div class="pf">
+              <figure><a href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/coma.jpg" alt="Figure 1：(a) 分散的 actor、环境和集中式 critic 之间的信息流，红色部分只在集中训练时需要；(b)(c) actor 和 critic 的网络结构。" loading="lazy"></a><figcaption><a class="fl" href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener">原文 Figure 1</a> (a) 分散的 actor、环境和集中式 critic 之间的信息流，红色部分只在集中训练时需要；(b)(c) actor 和 critic 的网络结构。</figcaption></figure>
+            </div>
+          </article>
+        </div>
+        <div class="col">
+          <article class="paper">
+            <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/1706.05296" target="_blank" rel="noopener">VDN</a> / <a class="pl" href="https://arxiv.org/abs/1803.11485" target="_blank" rel="noopener">QMIX</a> / <a class="pl" href="https://arxiv.org/abs/1905.05408" target="_blank" rel="noopener">QTRAN</a></h4><span class="venue">Sunehag et al. AAMAS 2018 · Rashid et al. ICML 2018 · Son et al. ICML 2019</span></div>
+            <div class="math sm">\[ Q_{tot} = \textstyle\sum_i Q_i \quad\text{或}\quad \partial Q_{tot} / \partial Q_i \ge 0 \]</div>
+            <p>价值分解：把团队 Q 拆成每个 agent 的 Q，分解结构本身就隐含了信用分配。VDN 用求和，QMIX 用单调的 mixing 网络，QTRAN 去掉了这两种结构约束。</p>
+            <blockquote class="q">VDN：<a class="ql" href="https://arxiv.org/abs/1706.05296#:~:text=learns%20to%20decompose%20the%20team%20value%20function%20into%20agent%2Dwise%20value%20functions" target="_blank" rel="noopener" title="在原文中打开这段">“learns to decompose the team value function into agent-wise value functions”</a> · QMIX：<a class="ql" href="https://arxiv.org/abs/1803.11485#:~:text=structurally%20enforce%20that%20the%20joint%2Daction%20value%20is%20monotonic%20in%20the%20per%2Dagent%20values" target="_blank" rel="noopener" title="在原文中打开这段">“structurally enforce that the joint-action value is monotonic in the per-agent values”</a> · QTRAN：<a class="ql" href="https://arxiv.org/abs/1905.05408#:~:text=free%20from%20such%20structural%20constraints" target="_blank" rel="noopener" title="在原文中打开这段">“free from such structural constraints”</a> <cite>均为摘要</cite></blockquote>
+            <div class="pf multi">
+              <figure><a href="https://arxiv.org/html/1706.05296#:~:text=Value%2Ddecomposition%20individual%20architecture" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/vdn.jpg" alt="VDN Figure 2：价值分解架构：各 agent 的局部 Q 相加得到团队 Q。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/1706.05296#:~:text=Value%2Ddecomposition%20individual%20architecture" target="_blank" rel="noopener">原文 VDN Figure 2</a> 价值分解架构：各 agent 的局部 Q 相加得到团队 Q。</figcaption></figure>
+              <figure><a href="https://arxiv.org/html/1803.11485#:~:text=Mixing%20network%20structure" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/qmix.jpg" alt="QMIX Figure 2：(a) mixing 网络，红色是生成其权重和偏置的 hypernetwork；(b) QMIX 整体结构；(c) agent 网络。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/1803.11485#:~:text=Mixing%20network%20structure" target="_blank" rel="noopener">原文 QMIX Figure 2</a> (a) mixing 网络，红色是生成其权重和偏置的 hypernetwork；(b) QMIX 整体结构；(c) agent 网络。</figcaption></figure>
+              <figure><a href="https://arxiv.org/html/1905.05408#:~:text=QTRAN%2Dbase%20and%20QTRAN%2Dalt%20Architecture" target="_blank" rel="noopener" title="在原文中查看这张图"><img src="/images/marl-credit/qtran.jpg" alt="QTRAN Figure 1：QTRAN-base 与 QTRAN-alt 的架构。" loading="lazy"></a><figcaption><a class="fl" href="https://arxiv.org/html/1905.05408#:~:text=QTRAN%2Dbase%20and%20QTRAN%2Dalt%20Architecture" target="_blank" rel="noopener">原文 QTRAN Figure 1</a> QTRAN-base 与 QTRAN-alt 的架构。</figcaption></figure>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="papers two">
         <article class="paper">
           <div class="ph"><h4><a class="pl" href="https://arxiv.org/abs/1907.05707" target="_blank" rel="noopener">Shapley Q-value（SQDDPG）</a></h4><span class="venue">Wang, Zhang, Kim, Gu · AAAI 2020</span></div>
           <div class="math sm">\[ \phi_i = \mathbb E_{C \subseteq N\setminus i}\big[v(C\cup i) - v(C)\big] \]</div>
@@ -683,12 +691,12 @@ main:has(.mca) .content { max-width: 1240px; }
     </section>
 
     <section id="takeaway">
-      <h2><span class="n">7</span>一条主线</h2>
-      <p>综合以上工作，可归纳为三点：</p>
+      <h2><span class="n">7</span>未来方向</h2>
+      <p>现有方法的 baseline 有两种来源：经典 MARL 用学到的 \(Q\) 或 \(V\)；GRPO 类方法用同组样本的均值，信用分配的质量取决于比较组的构造方式，各种构造方式的成本和前提见第 6 节的表格。对编排式系统，以下问题尚未解决。</p>
       <ol class="points">
-        <li><strong>没有 critic 以后，信用分配就是构造比较组。</strong>经典方法靠学出来的 \(Q\) 或 \(V\) 提供 baseline；GRPO 系只能靠样本之间的比较。比较组里的样本在“别的因素”上越一致，算出来的信号越干净。</li>
-        <li><strong>每种构造方式都有代价。</strong>整局比较无额外成本，但混入了队友的随机性；按角色比较要求角色固定；反事实回放信号最干净，但成本随 agent 数和消息数增长。</li>
-        <li><strong>动态创建的 sub-agent 让前三种都失效。</strong>每个 sub-agent 的任务都不一样，没有可比的“同角色”样本；整局比较把 orchestrator 的拆分质量混进来；逐个反事实回放太贵。怎么给这类 sub-agent 构造干净的比较组，目前还是开放问题。</li>
+        <li><strong>动态派生的 sub-agent 缺少可比样本。</strong>每个 sub-agent 的任务由 orchestrator 临时生成，不存在同角色的可比样本；整局比较会把 orchestrator 的拆分质量混入 sub-agent 的信号；逐个做反事实回放的成本过高。</li>
+        <li><strong>orchestrator 的决策缺少直接的训练信号。</strong>综述统计到的以 orchestrator 为信用单位的工作很少，也没有找到专门训练停止决策的 RL 方法。Kimi K2.5 依靠人工设计的并行与完成度辅助奖励，并在训练中把它们逐步退火到零。</li>
+        <li><strong>消息级信用的成本。</strong>C3 的反事实回放能给出无偏的消息级信用，但每个候选消息都要重跑后续流程。能否用学到的价值模型或局部检查代替重跑，仍有待研究。</li>
       </ol>
     </section>
 

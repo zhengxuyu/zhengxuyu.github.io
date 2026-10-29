@@ -150,10 +150,22 @@ main:has(.mca) .content { max-width: 1240px; }
 </style>
 
 <div class="mca">
-<p class="lede">用 RL 训练 LLM 多智能体系统时，常见的设置是：一个 orchestrator 拆解任务、派生多个 sub-agent 分头执行，再汇总作答；环境只对最终答案给出一个奖励。训练需要把这一个奖励转化为每个 agent、每一步的学习信号，也就是判断任务的成败中哪个 agent、哪一步起了作用，这就是多智能体信用分配问题。本文依次介绍 LLM RL 的训练流程、经典 MARL 的信用分配方法和 LLM 多智能体训练中的新做法，并按“拿谁和谁比”归纳为一条主线。</p>
+<p class="lede">用 RL 训练 LLM 多智能体系统时，常见的设置是：一个 orchestrator 拆解任务、派生多个 sub-agent 分头执行，再汇总作答；环境只对最终答案给出一个奖励。训练需要把这一个奖励转化为每个 agent、每一步的学习信号，也就是判断任务的成败中哪个 agent、哪一步起了作用，这就是多智能体信用分配问题。本文依次介绍背景、LLM RL 的训练流程、经典 MARL 的信用分配方法和 LLM 多智能体训练中的新做法，并按“拿谁和谁比”归纳为一条主线。</p>
+
+    <section id="background">
+      <h2><span class="n">1</span>背景：LLM 多智能体系统的 RL 训练</h2>
+      <p>LLM 多智能体系统由多个 LLM agent 协作完成一个任务。常见的组织方式有三类：</p>
+      <div class="parts">
+        <div class="part"><div class="k">编排式</div><h4>orchestrator + sub-agent</h4><p>orchestrator 拆解任务、按需派生 sub-agent 并行执行，再汇总结果。例如 Kimi K2.5 的 Agent Swarm。</p></div>
+        <div class="part"><div class="k">协作式</div><h4>固定数量的 agent 共同求解</h4><p>多个 agent 各自作答或分工产出，经多轮交流后给出最终结果。例如 MAGRPO、MAPoRL。</p></div>
+        <div class="part"><div class="k">博弈式</div><h4>agent 在博弈中扮演角色</h4><p>agent 在多人游戏中扮演固定角色，相互对抗或合作。例如 SPIRAL、MARSHAL 的自我对弈。</p></div>
+      </div>
+      <p>这类系统起初多靠提示工程搭建，各个 agent 调用同一个不更新的模型。近期的工作开始用 RL 直接训练：把整个多智能体流程看作一次 rollout，以任务的最终结果（答案是否正确、游戏胜负）作为奖励，沿用单智能体 LLM RL 的 PPO 或 GRPO 框架更新参数。被训练的对象因工作而异：Kimi K2.5 只训练 orchestrator，sub-agent 冻结；MAGRPO 和 MAPoRL 联合训练所有 agent；SPIRAL 让同一个模型扮演所有角色自我对弈。</p>
+      <p>这种做法直接继承了单智能体 RL 的训练流程（第 2 节）。区别在于，单智能体的一条轨迹只有一个决策者，多智能体的一条轨迹里有多个决策者的输出，奖励却仍然只有一个。如何把这个奖励分给各个 agent 和各个步骤，是本文讨论的信用分配问题（第 3 节）。</p>
+    </section>
 
     <section id="paradigm">
-      <h2><span class="n">1</span>LLM RL 的训练流程</h2>
+      <h2><span class="n">2</span>LLM RL 的训练流程</h2>
       <p>以 GRPO 为代表的 LLM RL，一个训练步包含以下六步。对一道题 q 采样 G 条轨迹作为一个组；每条轨迹由模型输出 a 和环境或工具的返回 o 交替组成；verifier、judge 或环境给出奖励 r；把奖励累加成回报 R；用组内均值和标准差做 baseline 得到 advantage A；最后把 A 广播给这条轨迹的每个 token，做 clipped policy gradient 更新。</p>
       <figure class="wide">
         <div class="diagram">
@@ -302,7 +314,7 @@ main:has(.mca) .content { max-width: 1240px; }
     </section>
 
 <section id="problem">
-      <h2><span class="n">2</span>问题是什么</h2>
+      <h2><span class="n">3</span>问题是什么</h2>
       <p>图 2 用一个例子说明多智能体下第 ⑤ 步的问题。</p>
       <figure class="wide">
         <div class="diagram">
@@ -382,7 +394,7 @@ main:has(.mca) .content { max-width: 1240px; }
     </section>
 
     <section id="classic">
-      <h2><span class="n">3</span>经典 MARL 的五种答案</h2>
+      <h2><span class="n">4</span>经典 MARL 的五种答案</h2>
       <p>这些方法都建立在 actor-critic 或 Q-learning 上，靠集中式的价值函数做信用分配。训练时集中、执行时分散（CTDE）是共同框架。点工作名打开原文。</p>
 
       <div class="papers">
@@ -430,7 +442,7 @@ main:has(.mca) .content { max-width: 1240px; }
     </section>
 
     <section id="llm">
-      <h2><span class="n">4</span>LLM 多智能体训练里的六类做法</h2>
+      <h2><span class="n">5</span>LLM 多智能体训练里的六类做法</h2>
       <p>LLM 时代的主要变化是去掉了 critic。GRPO 系方法的 baseline 来自一组样本的均值，所以信用分配的问题变成了<strong>拿谁和谁比</strong>。以下按比较对象分类。</p>
 
       <h3>A. 不分配：只训 orchestrator</h3>
@@ -656,7 +668,7 @@ main:has(.mca) .content { max-width: 1240px; }
       </figure>
     </section>
     <section id="map">
-      <h2><span class="n">5</span>对照：每种做法拿谁和谁比</h2>
+      <h2><span class="n">6</span>对照：每种做法拿谁和谁比</h2>
       <div class="table"><table>
         <thead><tr><th>做法</th><th>比较对象（baseline 来源）</th><th>经典对应</th><th>额外成本</th><th>前提</th></tr></thead>
         <tbody>
@@ -671,7 +683,7 @@ main:has(.mca) .content { max-width: 1240px; }
     </section>
 
     <section id="takeaway">
-      <h2><span class="n">6</span>一条主线</h2>
+      <h2><span class="n">7</span>一条主线</h2>
       <p>综合以上工作，可归纳为三点：</p>
       <ol class="points">
         <li><strong>没有 critic 以后，信用分配就是构造比较组。</strong>经典方法靠学出来的 \(Q\) 或 \(V\) 提供 baseline；GRPO 系只能靠样本之间的比较。比较组里的样本在“别的因素”上越一致，算出来的信号越干净。</li>
@@ -681,7 +693,7 @@ main:has(.mca) .content { max-width: 1240px; }
     </section>
 
     <section id="refs">
-      <h2><span class="n">7</span>参考</h2>
+      <h2><span class="n">8</span>参考</h2>
       <ul class="refs">
         <li><a href="https://jmvidal.cse.sc.edu/library/wolpert01a.pdf" target="_blank" rel="noopener">Wolpert &amp; Tumer. Optimal payoff functions for members of collectives. Advances in Complex Systems 4(2–3), 2001.</a></li>
         <li><a href="https://ojs.aaai.org/index.php/AAAI/article/view/11794" target="_blank" rel="noopener">Foerster et al. Counterfactual Multi-Agent Policy Gradients. AAAI 2018.</a></li>

@@ -95,9 +95,9 @@
 <script defer src="{{ site.umami.script_url }}" data-website-id="{{ site.umami.website_id }}"></script>
 {%- endif -%}
 
-<!-- 不蒜子访问计数 -->
+<!-- 访问计数：Vercount（不蒜子停服后替换，首次访问时自动迁移不蒜子的历史计数） -->
 {%- if site.busuanzi -%}
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script defer src="https://events.vercount.one/js"></script>
 {%- endif -%}
 
 <!-- Fonts and Styles -->

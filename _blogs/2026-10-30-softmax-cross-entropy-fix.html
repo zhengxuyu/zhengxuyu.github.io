@@ -110,6 +110,8 @@ main:has(.sfx) .content { max-width: 1240px; }
 .sfx .code-h { font-size: 13px; font-weight: 600; padding: 6px 12px; border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; }
 .sfx .code-col.before .code-h { color: var(--std); background: var(--std-soft); }
 .sfx .code-col.after .code-h { color: var(--fix); background: var(--fix-soft); }
+.sfx .code-cols.impl .code-h { color: var(--ink); background: var(--surface); }
+.sfx .code-col .eq { margin: 0; border-top-left-radius: 0; border-top-right-radius: 0; display: flex; align-items: center; justify-content: center; }
 .sfx .cmp td { vertical-align: top; }
 .sfx .cmp td.st { white-space: nowrap; font-weight: 600; }
 .sfx .cmp td.bad { background: var(--std-soft); color: inherit; font-weight: 400; }
@@ -201,8 +203,11 @@ main:has(.sfx) .content { max-width: 1240px; }
 .sfx p, .sfx li { max-width: none; }
 .sfx blockquote.q { background: none; border-radius: 0; }
 .sfx figure img { margin: 0; box-shadow: none; }
+.sfx .repo-cta { margin: 0 0 20px; padding: 12px 16px; border: 1px solid var(--fix); border-radius: 8px; background: var(--fix-soft); line-height: 1.7; }
+.sfx .repo-cta a { color: var(--fix); font-weight: 600; }
 </style>
 <div class="sfx">
+<div class="repo-cta"><strong>代码已开源：</strong><a href="https://github.com/zhengxuyu/softmax1p" target="_blank" rel="noopener">github.com/zhengxuyu/softmax1p</a>。论文修复方法的 PyTorch、JAX、TensorFlow 实现，每个框架一个独立文件，可直接替换内置的 <code>log_softmax</code>、<code>softmax</code> 和 <code>cross_entropy</code>，避免 Softmax Collapse。欢迎大家使用。</div>
 <header>
   <div class="wrap">
     <p class="sub"><a href="https://arxiv.org/abs/2610.31642" target="_blank" rel="noopener">A Fix for Softmax and Cross-Entropy</a></p>
@@ -238,8 +243,34 @@ main:has(.sfx) .content { max-width: 1240px; }
 <section id="start">
   <h2><span class="n">1</span>起点：softmax 的标准实现</h2>
   <p><strong>记号。</strong>一个样本在 \(K\) 个类别上的 logit 是向量 \(\mathbf z = (z_1, \dots, z_K) \in \mathbb R^K\)（粗体表示向量）；\(z_k\) 是第 \(k\) 类的 logit，是一个标量。\(t \in \{1, \dots, K\}\) 是这个样本的正确类别，即训练数据给的标签，论文称为 target class，下文简称<strong>目标类</strong>；\(z_t\) 就是目标类那一个 logit 的数值。在图像分类里，目标类是图片的真实类别；在语言模型里，是训练文本中实际出现的下一个 token。交叉熵训练的作用就是把目标类的概率 \(q_t\) 推向 1。例如 \(\mathbf z = [9, -9, -9]\)、\(t = 1\) 时，\(z_t = 9\)。</p>
-  <p>对 logit \(\mathbf z\) 直接算 \(e^{z_k} / \sum_j e^{z_j}\)，只要某个 logit 超过约 88（fp32 指数上限），\(e^{z}\) 就会上溢。所以所有框架都先减去最大值 \(z_{\max} = \max_j z_j\)：</p>
-  <div class="eq">\[ \tilde z_k = z_k - z_{\max}, \qquad \operatorname{logsoftmax}(\mathbf z)_k = \tilde z_k - \log \sum_j e^{\tilde z_j}, \qquad q_k = \operatorname{softmax}(\mathbf z)_k = \frac{e^{\tilde z_k}}{\sum_j e^{\tilde z_j}} \]<span class="tag">式 (1)</span></div>
+  <p>对 logit \(\mathbf z\) 直接算 \(e^{z_k} / \sum_j e^{z_j}\)，只要某个 logit 超过约 88（fp32 指数上限），\(e^{z}\) 就会上溢。所以所有框架都先减去最大值 \(z_{\max} = \max_j z_j\)。下面左边是式 (1) 的逐步写法，右边是 PyTorch 的对应实现：CPU 内核（C++）逐行改写成 Python，变量名沿用源码，输出与 <code>torch.softmax</code>、<code>F.log_softmax</code> 逐位相同。</p>
+  <div class="code-cols impl">
+    <div class="code-col"><div class="code-h">公式 · 式 (1)</div><div class="eq">\[ \begin{aligned}
+    z_{\max} &= \max_j z_j \\
+    \tilde z_k &= z_k - z_{\max} \\
+    S &= \textstyle\sum_j e^{\tilde z_j} \\
+    q_k = \operatorname{softmax}(\mathbf z)_k &= e^{\tilde z_k} \cdot \dfrac{1}{S} \\
+    \operatorname{logsoftmax}(\mathbf z)_k &= z_k - z_{\max} - \log S \\&#91;4pt]
+    \text{反向：}\; \frac{\partial \mathcal L}{\partial z_k} &= \bar g_k - e^{\operatorname{logsoftmax}(\mathbf z)_k} \textstyle\sum_j \bar g_j
+    \end{aligned} \]</div></div>
+    <div class="code-col"><div class="code-h">PyTorch 实现 · CPU 内核改写</div><pre><span class="c"># torch.softmax(z, dim=-1)</span>
+<span class="c"># aten/src/ATen/native/cpu/SoftMaxKernel.cpp</span>
+z_max = z.max(dim=-1, keepdim=True).values  <span class="c"># max_input</span>
+e = torch.exp(z - z_max)             <span class="c"># 最大值处 exp(0) = 1</span>
+tmp_sum = e.sum(dim=-1, keepdim=True)  <span class="c"># = 1 + 其余项</span>
+q = e * (1 / tmp_sum)                <span class="c"># 先取倒数再相乘</span>
+
+<span class="c"># F.log_softmax(z, dim=-1)</span>
+<span class="c"># aten/src/ATen/native/cpu/LogSoftmaxKernelImpl.h</span>
+tmp_sum = torch.exp(z - z_max).sum(-1, keepdim=True).log()
+logp = z - z_max - tmp_sum           <span class="c"># 源码要求按此顺序相减</span>
+
+<span class="c"># 反向（SoftMaxKernel.cpp，log_softmax 分支）</span>
+<span class="c"># g_bar 是上游梯度；交叉熵时 g_bar = -onehot(t)</span>
+grad = g_bar - logp.exp() * g_bar.sum(-1, keepdim=True)
+<span class="c"># 代入得 grad = softmax(z) - onehot(t)</span></pre></div>
+  </div>
+  <p>两处值得注意。第一，减去最大值后，最大 logit 那一项变成 \(e^{0} = 1\)，求和 <code>tmp_sum</code> 里总有一个 1，其余项都加在它上面；第 2 节会看到，问题正出在这个“1 加小数”上。第二，反向不对前向逐步求导，而是直接用前向的输出 <code>logp</code> 套闭式 \(\mathbf q - \text{onehot}(t)\)，所以前向里的舍入会原样进入梯度。左栏中的 \(\bar g\) 是损失对 logsoftmax 输出的梯度（链式法则里从上游传下来的部分）。</p>
   <p>对目标分布 \(\mathbf p\)，交叉熵 \(\mathcal L(\mathbf z, \mathbf p) = -\sum_k p_k \operatorname{logsoftmax}(\mathbf z)_k\)，精确梯度是</p>
   <div class="eq">\[ \mathbf g = \nabla_{\mathbf z} \mathcal L = \mathbf q - \mathbf p, \qquad \textstyle\sum_k g_k = 1 - 1 = 0 . \]</div>
   <p>梯度各分量之和为 0 是 softmax 的结构性质：把所有 logit 同时加一个常数不改变输出。下文的两个 bug 都表现为这个性质在浮点下被破坏，或者该为 0 的梯度不为 0。</p>

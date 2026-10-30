@@ -1,0 +1,25 @@
+{%- assign blog = include.blog -%}
+{%- assign category = blog.categories | first -%}
+{%- assign words = blog.content | strip_html | number_of_words: "cjk" -%}
+{%- assign minutes = words | divided_by: 250 | at_least: 1 -%}
+<a class="bl-post-row" href="{{ blog.url | relative_url }}" data-category="{{ category }}">
+  <time class="bl-post-date" datetime="{{ blog.date | date_to_xmlschema }}">{{ blog.date | date: "%b %-d" }}</time>
+  <div class="bl-post-body">
+    <h2 class="bl-post-title">
+      <span>{{ blog.title | escape }}</span>
+      {%- if include.draft -%}<span class="badge badge-muted">Draft</span>
+      {%- elsif include.new and blog.pinned != true -%}<span class="badge">New</span>
+      {%- endif -%}
+    </h2>
+    {%- assign summary = blog.tldr | default: blog.excerpt | strip_html | strip -%}
+    {%- if summary != "" -%}
+    <p class="bl-post-summary">{{ summary }}</p>
+    {%- endif -%}
+    <div class="bl-post-meta">
+      <span class="kind">{% if category == "PaperReading" %}Paper Notes{% else %}Essay{% endif %}</span>
+      <span class="sep"></span>
+      <span>{{ minutes }} min read</span>
+      {%- if include.draft -%}<span class="sep"></span><span>{{ blog.date | date: "%Y" }}</span>{%- endif -%}
+    </div>
+  </div>
+</a>

@@ -383,10 +383,29 @@ layout: null
       <!-- Bento Grid -->
       <div class="home-bento">
 
+        <!-- Blogs (half width) -->
+        <div class="bento-card glass-panel">
+          <div class="bento-label">Recent Blogs</div>
+          {%- assign published_blogs = site.blogs | where_exp: "blog", "blog.draft != true" | sort: "date" | reverse -%}
+          {%- assign pinned_blogs = published_blogs | where: "pinned", true -%}
+          {%- assign unpinned_blogs = published_blogs | where_exp: "blog", "blog.pinned != true" -%}
+          {%- assign sorted_blogs = pinned_blogs | concat: unpinned_blogs -%}
+          {%- for blog in sorted_blogs limit:4 -%}
+          {%- assign blog_category = blog.categories | first -%}
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title"><a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a></span>
+              <div class="bento-item-desc">{% if blog_category == "PaperReading" %}Paper Notes{% else %}Essay{% endif %}</div>
+            </div>
+            <span class="bento-item-meta">{{ blog.date | date: "%b %Y" }}</span>
+          </div>
+          {%- endfor -%}
+          <a href="/pages/blog" class="bento-view-all">View all posts &rarr;</a>
+        </div>
+
         <!-- News (half width) -->
         <div class="bento-card glass-panel">
           <div class="bento-label">Latest News</div>
-          {%- assign date_format = site.plainwhite.date_format | default: "%b %-d, %Y" -%}
           {%- assign published_posts = site.posts | where_exp: "post", "post.draft != true" -%}
           {%- for post in published_posts limit:4 -%}
           <div class="bento-item">
@@ -396,51 +415,46 @@ layout: null
           {%- endfor -%}
         </div>
 
-        <!-- Open Source (half width) -->
-        <div class="bento-card glass-panel">
+        <!-- Projects (full width) -->
+        <div class="bento-card glass-panel bento-wide">
           <div class="bento-label">Projects</div>
-          <div class="bento-item">
-            <div>
-              <span class="bento-item-title"><a href="https://github.com/1mancompany/OneManCompany">OneManCompany (OMC)</a> <span style="font-size:0.7em;color:#E8B878;font-weight:600;">Pinned</span></span>
+          <div class="blog-cards">
+            <div class="blog-mini">
+              <div class="blog-mini-date">Pinned</div>
+              <div class="blog-mini-title"><a href="https://github.com/1mancompany/OneManCompany">OneManCompany (OMC)</a></div>
               <div class="bento-item-desc">Agentic OS for solo founders</div>
             </div>
-          </div>
-          <div class="bento-item">
-            <div>
-              <span class="bento-item-title"><a href="https://github.com/zhengxuyu/zforge">zforge</a> <span style="font-size:0.7em;color:#E8B878;font-weight:600;">Pinned</span></span>
+            <div class="blog-mini">
+              <div class="blog-mini-date">Pinned</div>
+              <div class="blog-mini-title"><a href="https://github.com/zhengxuyu/zforge">zforge</a></div>
               <div class="bento-item-desc">My AI workflow skill set — <a href="https://github.com/zhengxuyu/zforge" style="color:#E8B878;">give it a ⭐</a></div>
             </div>
-          </div>
-          <div class="bento-item">
-            <div>
-              <span class="bento-item-title"><a href="https://github.com/ZJULearning/PTL">PTL</a></span>
+            <div class="blog-mini">
+              <div class="blog-mini-date">Research</div>
+              <div class="blog-mini-title"><a href="https://github.com/ZJULearning/PTL">PTL</a></div>
               <div class="bento-item-desc">Progressive Transfer Learning</div>
             </div>
           </div>
           <a href="/pages/works" class="bento-view-all">View all &rarr;</a>
         </div>
 
-        <!-- Blogs (full width) -->
-        <div class="bento-card glass-panel bento-wide">
-          <div class="bento-label">Recent Blogs</div>
-          <div class="blog-cards">
-            {%- assign published_blogs = site.blogs | where_exp: "blog", "blog.draft != true" | sort: "date" | reverse -%}
-            {%- assign pinned_blogs = published_blogs | where: "pinned", true -%}
-            {%- assign unpinned_blogs = published_blogs | where_exp: "blog", "blog.pinned != true" -%}
-            {%- assign sorted_blogs = pinned_blogs | concat: unpinned_blogs -%}
-            {%- for blog in sorted_blogs limit:3 -%}
-            <div class="blog-mini">
-              <div class="blog-mini-date">{{ blog.date | date: "%b %Y" }}</div>
-              <div class="blog-mini-title"><a href="{{ blog.url | relative_url }}">{{ blog.title | escape }}</a></div>
-            </div>
-            {%- endfor -%}
-          </div>
-          <a href="/pages/blog" class="bento-view-all">View all posts &rarr;</a>
-        </div>
-
         <!-- Publications (full width) -->
         <div class="bento-card glass-panel bento-wide">
           <div class="bento-label">Selected Publications</div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title"><a href="https://arxiv.org/abs/2610.11794">Memento 3: Model-Based Recursive Self-Improvement through Reflective Rulebooks</a></span>
+              <div class="bento-item-desc">H. Zhao, <strong>Z. Yu</strong>, Z. He, M. Fang, R. Tutunov, H. Bou-Ammar, W. Luo, J. Wang</div>
+            </div>
+            <span class="pub-venue">arXiv preprint</span>
+          </div>
+          <div class="bento-item">
+            <div>
+              <span class="bento-item-title"><a href="https://arxiv.org/abs/2604.22446">From Skills to Talent: Organising Heterogeneous Agents as a Real-World Company</a></span>
+              <div class="bento-item-desc"><strong>Z. Yu</strong>, Y. Fu, Z. He, Y. Huang, K. Y. Lee, M. Fang, W. Luo, J. Wang</div>
+            </div>
+            <span class="pub-venue">arXiv preprint</span>
+          </div>
           <div class="bento-item">
             <div>
               <span class="bento-item-title">ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning</span>

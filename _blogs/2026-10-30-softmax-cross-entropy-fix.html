@@ -104,6 +104,22 @@ main:has(.sfx) .content { max-width: 1240px; }
 .sfx pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; margin: 10px 0 18px; }
 .sfx code { font-family: var(--font-mono); font-size: 0.9em; }
 .sfx pre .c { color: var(--muted); }
+.sfx .code-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin: 10px 0 18px; align-items: stretch; }
+.sfx .code-col { min-width: 0; display: grid; grid-template-rows: auto 1fr; }
+.sfx .code-col pre { margin: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
+.sfx .code-h { font-size: 13px; font-weight: 600; padding: 6px 12px; border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; }
+.sfx .code-col.before .code-h { color: var(--std); background: var(--std-soft); }
+.sfx .code-col.after .code-h { color: var(--fix); background: var(--fix-soft); }
+.sfx .cmp td { vertical-align: top; }
+.sfx .cmp td.st { white-space: nowrap; font-weight: 600; }
+.sfx .cmp td.bad { background: var(--std-soft); color: inherit; font-weight: 400; }
+.sfx .cmp td.ok { background: var(--fix-soft); }
+.sfx .cmp .val { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 4px; }
+.sfx .cmp td.bad .val { color: var(--std); }
+.sfx .note-s { font-size: 14px; color: var(--muted); }
+@media (max-width: 900px) {
+.sfx .code-cols { grid-template-columns: 1fr; }
+}
 .sfx pre .hl { color: var(--fix); font-weight: 600; }
 .sfx .lab-box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 14px; margin: 18px 0 24px; }
 .sfx .lab-box h4 { margin: 0; font-size: 15px; }
@@ -306,12 +322,12 @@ main:has(.sfx) .content { max-width: 1240px; }
     <p style="margin:0;font-size:13px;color:var(--muted)">每一步运算后都按所选格式舍入（fp32 用 <code>Math.fround</code>，bf16 在 fp32 基础上按就近偶数截到 7 位尾数）。初始值 m = 17.3 对应论文的例子 z = [9, −9, −9]：m = 18 − ln 2。</p>
   </div>
 
-  <p>论文的例子在 fp32 下运行 <code>jax.nn</code> 和 <code>optax</code>，结果与上面的演示一致：</p>
-<pre><span class="c"># z = [9.0, -9.0, -9.0], t = 0, fp32</span>
-jax.nn.log_softmax(z)                    <span class="c"># -> [ 0.0,       -18.0,     -18.0    ]</span>
-jax.value_and_grad(std_ce)(z, t)         <span class="c"># -> 0.0,       [ 0.0,       1.523e-8,  1.523e-8]   梯度和 &gt; 0</span>
-<span class="hl">log_softmax(z)</span>                           <span class="c"># -> [-3.046e-8,  -18.0,     -18.0    ]</span>
-<span class="hl">jax.value_and_grad(cross_entropy)(z, t)</span>  <span class="c"># -> 3.046e-8,  [-3.046e-8,  1.523e-8,  1.523e-8]   梯度和 = 0</span></pre>
+  <p>用 PyTorch 在 fp32 下复现论文的例子（修复函数的实现见第 5 节）：</p>
+<pre><span class="c"># z = [9.0, -9.0, -9.0], t = 0, fp32, PyTorch 2.11</span>
+F.log_softmax(z, dim=-1)     <span class="c"># -> [ 0.0,       -18.0,     -18.0    ]</span>
+F.cross_entropy(z, t)        <span class="c"># -> 0.0,       grad [ 0.0,       1.523e-8,  1.523e-8]   梯度和 &gt; 0</span>
+<span class="hl">log_softmax_fixed(z)</span>         <span class="c"># -> [-3.046e-8,  -18.0,     -18.0    ]</span>
+<span class="hl">cross_entropy_fixed(z, t)</span>    <span class="c"># -> 3.046e-8,  grad [-3.046e-8,  1.523e-8,  1.523e-8]   梯度和 = 0</span></pre>
 
   <h3>2.2 Softmax Cancellation：学生等于老师时梯度不为 0</h3>
   <p>知识蒸馏和 KL 正则里，目标分布来自另一组 logit：\(\mathbf p = \operatorname{softmax}(\mathbf z_T)\)。标准实现分别算出 \(\mathbf q = \operatorname{softmax}(\mathbf z_S)\) 和 \(\mathbf p\)，再相减得到梯度 \(\tilde{\mathbf g} = \mathbf q - \mathbf p\)。这里有两个问题：</p>
@@ -324,7 +340,7 @@ jax.value_and_grad(std_ce)(z, t)         <span class="c"># -> 0.0,       [ 0.0, 
   <div class="table"><table>
     <thead><tr><th>实现</th><th class="num">g<sub>1</sub></th><th class="num">g<sub>2</sub></th><th class="num">g<sub>3</sub></th><th>问题</th></tr></thead>
     <tbody>
-      <tr class="is-std"><td>标准 soft-target CE（fp32）</td><td class="num">−5.960464e-8</td><td class="num">1.451589e-8</td><td class="num bad">−1.123343e-9</td><td>第 2 项缩小约 3 倍，第 3 项符号反了，和不为 0</td></tr>
+      <tr class="is-std"><td>标准 soft-target CE（fp32，论文中 JAX 的结果）</td><td class="num">−5.960464e-8</td><td class="num">1.451589e-8</td><td class="num bad">−1.123343e-9</td><td>第 2 项缩小约 3 倍，第 3 项符号反了，和不为 0</td></tr>
       <tr class="is-fix"><td>修复版（fp32）</td><td class="num">−4.595504e-8</td><td class="num">4.144190e-8</td><td class="num">4.513142e-9</td><td>与 fp64 精确值一致</td></tr>
       <tr><td>精确值（fp64）</td><td class="num">−4.595504e-8</td><td class="num">4.144190e-8</td><td class="num">4.513142e-9</td><td></td></tr>
     </tbody>
@@ -478,41 +494,122 @@ jax.value_and_grad(std_ce)(z, t)         <span class="c"># -> 0.0,       [ 0.0, 
   <div class="eq">\[ m = -\operatorname*{LSE}_{j \ne t}(z_j - z_t), \qquad \mathcal L(\mathbf z, t) = \operatorname{softplus}(-m) . \]<span class="tag">式 (6)</span></div>
   <p>关键在于：第 \(t\) 个位置被替换成常数 0，而不是 \(z_t - z_t\)，于是 \(z_t\) 只通过 \(K-1\) 个差 \(z_j - z_t\) 进入损失。自动微分给出的目标梯度自然等于非目标梯度之和的相反数，和为 0 由构造保证，不依赖舍入：</p>
   <div class="eq">\[ g_j = \frac{e^{z_j - z_t}}{1+e^{-m}} \;(j \ne t), \qquad g_t = -\sum_{j \ne t} g_j = -\frac{e^{-m}}{1+e^{-m}} . \]<span class="tag">式 (7)</span></div>
-<pre><span class="c"># 论文给出的 JAX 实现（§2）</span>
-def log_softmax(z):
-  i_max = jnp.argmax(z, axis=-1)
-  z_max = jnp.take_along_axis(z, i_max[..., None], axis=-1)    <span class="c"># 最大 logit</span>
-  is_max = jax.nn.one_hot(i_max, z.shape[-1], dtype=bool)
-  shifted = jnp.where(is_max, 0.0, z - z_max)                  <span class="c"># argmax 处精确为 0</span>
-  others = jnp.where(is_max, -jnp.inf, shifted)                <span class="c"># 把 argmax 排除出求和</span>
-  m = -jax.nn.logsumexp(others, axis=-1, keepdims=True)        <span class="c"># logit margin</span>
-  return shifted - <span class="hl">jax.nn.softplus(-m)</span>
+  <p>把两种实现逐步摆在一起，以 \(\mathbf z = [9, -9, -9]\)、\(t = 1\)、fp32 为例，每格下方是实际算出的数值（PyTorch 2.11）。橙色格是舍入出错的步骤：</p>
+  <div class="table"><table class="cmp">
+    <thead><tr><th>步骤</th><th>修复前（标准实现）</th><th>修复后</th></tr></thead>
+    <tbody>
+      <tr><td class="st">① 平移</td><td class="">\(\tilde z_k = z_k - z_t\)，目标位置 \(\tilde z_t = z_t - z_t = 0\)<div class="val">[0, −18, −18]</div></td><td class="ok">只对非目标位置做差 \(z_j - z_t\)；目标位置直接放常数 0<div class="val">[0, −18, −18]，其中 0 不依赖 z_t</div></td></tr>
+      <tr><td class="st">② 合并</td><td class="bad">\(S = \sum_k e^{\tilde z_k} = 1 + e^{-m}\)：把 \(e^{-m}\) 加到 1 上<div class="val">1 + 3.046e-8 → 舍入为 1.0</div></td><td class="ok">\(m = -\operatorname{LSE}_{j \ne t}(z_j - z_t)\)：只对非目标项求 log-sum-exp，不出现 1<div class="val">m = 18 − ln 2 = 17.307</div></td></tr>
+      <tr><td class="st">③ 损失</td><td class="bad">\(\mathcal L = -\tilde z_t + \log S = \log(1 + e^{-m})\)<div class="val">log 1.0 = 0（真值 3.046e-8）</div></td><td class="ok">\(\mathcal L = \operatorname{softplus}(-m) = \operatorname{log1p}(e^{-m})\)<div class="val">3.046e-8</div></td></tr>
+      <tr><td class="st">④ 目标梯度</td><td class="bad">\(g_t = q_t - 1 = 1/S - 1\)<div class="val">1.0 − 1 = 0（真值 −3.046e-8）</div></td><td class="ok">\(g_t = -\sum_{j \ne t} g_j\)，由自动微分经 \(z_j - z_t\) 得到<div class="val">−3.046e-8</div></td></tr>
+      <tr><td class="st">⑤ 非目标梯度</td><td class="">\(g_j = e^{z_j - z_t}/S\)<div class="val">1.523e-8（分子准确）</div></td><td class="ok">\(g_j = e^{z_j - z_t}/(1 + e^{-m})\)<div class="val">1.523e-8</div></td></tr>
+      <tr><td class="st">⑥ 梯度和</td><td class="bad">\(\sum_k g_k = e^{-m}/(1+e^{-m})\)<div class="val">3.046e-8 ≠ 0</div></td><td class="ok">\(\sum_k g_k = 0\)，由构造保证<div class="val">0</div></td></tr>
+    </tbody>
+  </table></div>
+<p>左边是 PyTorch 内置函数（修复前），右边是按论文式 (5)–(7) 写的修复版。两边接口相同，可以直接替换。</p>
+  <div class="code-cols">
+    <div class="code-col before"><div class="code-h">修复前 · PyTorch 内置</div><pre>import torch
+import torch.nn.functional as F
 
-softmax = lambda z: jnp.exp(log_softmax(z))
+<span class="c"># 直接调用内置函数</span>
+logp = F.log_softmax(z, dim=-1)
+loss = F.cross_entropy(z, t)
 
-def cross_entropy(z, t):
-  z_t = jnp.take_along_axis(z, t[..., None], axis=-1)          <span class="c"># 目标 logit</span>
-  is_t = jax.nn.one_hot(t, z.shape[-1], dtype=bool)
-  others = jnp.where(is_t, -jnp.inf, z - z_t)                  <span class="c"># 把目标排除出求和</span>
-  m = -jax.nn.logsumexp(others, axis=-1)
-  return <span class="hl">jax.nn.softplus(-m)</span>                                   <span class="c"># = -log_softmax(z)_t</span></pre>
+<span class="c"># 内置实现等价于：</span>
+<span class="c">#   前向  log_softmax = (z - z_max) - log Σ exp(z - z_max)</span>
+<span class="c">#         目标位置 = 0 - log(1 + e^-m)</span>
+<span class="c">#         m 越过悬崖后 1 + e^-m 舍成 1，loss = 0</span>
+<span class="c">#   反向  grad = softmax(z) - onehot(t)</span>
+<span class="c">#         q_t 舍成 1，目标梯度 = 1 - 1 = 0</span>
+<span class="c">#         非目标梯度 q_j 仍为正，梯度和 &gt; 0</span></pre></div>
+    <div class="code-col after"><div class="code-h">修复后</div><pre>import torch
+import torch.nn.functional as F
+
+def log_softmax_fixed(z):
+    i_max = z.argmax(dim=-1, keepdim=True)
+    z_max = z.gather(-1, i_max)
+    is_max = torch.zeros_like(z, dtype=torch.bool)
+    is_max.scatter_(-1, i_max, True)
+    <span class="c"># argmax 处放常数 0，不经过 z_max - z_max</span>
+    shifted = torch.where(is_max, torch.zeros_like(z), z - z_max)
+    <span class="c"># 把 argmax 排除出求和，单独算 margin</span>
+    others = shifted.masked_fill(is_max, float("-inf"))
+    m = -torch.logsumexp(others, dim=-1, keepdim=True)
+    <span class="c"># softplus(-m) = log(1 + e^-m)，不把 e^-m 加到 1 上</span>
+    return shifted - F.softplus(-m)
+
+def cross_entropy_fixed(z, t):
+    z_t = z.gather(-1, t[..., None])
+    is_t = F.one_hot(t, z.shape[-1]).bool()
+    <span class="c"># 把目标排除出求和：m = -LSE_{j≠t}(z_j - z_t)</span>
+    others = (z - z_t).masked_fill(is_t, float("-inf"))
+    m = -torch.logsumexp(others, dim=-1)
+    return F.softplus(-m)    <span class="c"># = -log_softmax(z)&#91;t]</span></pre></div>
+  </div>
+  <p>在 fp32 下用论文的例子 \(\mathbf z = [9, -9, -9]\)、\(t = 0\) 运行（PyTorch 2.11，CPU）：</p>
+<pre><span class="c"># loss 及 z.grad</span>
+F.cross_entropy(z, t)        <span class="c"># -> 0.0,       [ 0.0,       1.523e-8,  1.523e-8]   梯度和 = 3.046e-8</span>
+<span class="hl">cross_entropy_fixed(z, t)</span>    <span class="c"># -> 3.046e-8,  [-3.046e-8,  1.523e-8,  1.523e-8]   梯度和 = 0</span>
+F.log_softmax(z, dim=-1)     <span class="c"># -> [ 0.0,       -18.0,     -18.0    ]</span>
+<span class="hl">log_softmax_fixed(z)</span>         <span class="c"># -> [-3.046e-8,  -18.0,     -18.0    ]</span></pre>
+  <p class="note-s">一个容易误解的细节：如果把标准公式 <code>(z - z_max) - log(exp(z - z_max).sum())</code> 自己写出来再交给 autograd，前向的 loss 仍会舍成 0，但 autograd 会经过 <code>z_max</code> 的梯度把目标梯度算对。梯度被清零的是内置函数的融合反向 <code>softmax(z) - onehot(t)</code>，它先把 \(q_t\) 舍成 1 再减 1。</p>
+
 
   <h3>5.2 修 Softmax Cancellation：直接从 logit 差算 q − p</h3>
   <p>不再分别算两个概率再相减，而是把老师 logit 直接传进损失函数，用 \(\boldsymbol\delta = \mathbf z_S - \mathbf z_T\) 在 log 空间里算 \(\mathbf q - \mathbf p\)。借助 \(\operatorname{expm1}(x) = e^x - 1\) 和 \(\operatorname{log1p}(x) = \log(1+x)\)，全程不出现“加 1”或“减 1”：</p>
   <div class="eq">\[ d_k = \delta_k - \sum_i p_i\delta_i, \qquad s_k = \log\frac{q_k}{p_k} = d_k - \operatorname{log1p}\Big(\sum_i p_i \operatorname{expm1}(d_i)\Big), \qquad u_k = q_k - p_k = p_k \operatorname{expm1}(s_k) . \]<span class="tag">式 (9)</span></div>
   <p>因为 \(\sum_i p_i d_i = 0\) 且 \(\operatorname{expm1}(x) \ge x\)，log1p 的输入总是非负。最后再做一次 \(g_k = u_k - q_k \sum_i u_i\)，消去剩余的浮点漂移，保证和为 0。\(\boldsymbol\delta = 0\) 时 \(\mathbf d = \mathbf s = \mathbf u = \mathbf 0\)，梯度精确为 0。</p>
-<pre><span class="c"># 论文给出的 JAX 实现（§3）：前向返回普通 loss，反向用 stop_gradient 替换成 g</span>
-def soft_target_cross_entropy(z_S, z_T):
-  log_q = log_softmax(z_S)
-  q, p = jnp.exp(log_q), softmax(z_T)
-  delta = z_S - z_T                                                     <span class="c"># logit 差</span>
-  d = delta - jnp.sum(p * delta, axis=-1, keepdims=True)                <span class="c"># 在 p 下居中</span>
-  s = d - <span class="hl">jnp.log1p</span>(jnp.sum(p * <span class="hl">jnp.expm1</span>(d), axis=-1, keepdims=True))  <span class="c"># log(q / p)</span>
-  u = p * <span class="hl">jnp.expm1</span>(s)                                                  <span class="c"># q - p</span>
-  g = u - q * jnp.sum(u, axis=-1, keepdims=True)                        <span class="c"># 保证 sum(g) = 0</span>
-  sg = jax.lax.stop_gradient
-  loss = -jnp.sum(p * sg(log_q), axis=-1)
-  return loss + jnp.sum(sg(g) * (z_S - sg(z_S)), axis=-1)</pre>
+  <p>同样逐步对照，以 §2.2 的例子为例（\(\mathbf z_T = [2, 1, 0]\)，fp32，PyTorch 2.11）；第 ⑥ 行换成学生等于老师的情形：</p>
+  <div class="table"><table class="cmp">
+    <thead><tr><th>步骤</th><th>修复前（标准实现）</th><th>修复后</th></tr></thead>
+    <tbody>
+      <tr><td class="st">① 起点</td><td class="">先分别算概率 \(\mathbf q = \exp(\operatorname{logsoftmax}(\mathbf z_S))\)，\(\mathbf p = \operatorname{softmax}(\mathbf z_T)\)，各自舍入<div class="val">p ≈ [0.665, 0.245, 0.090]</div></td><td class="ok">直接在 logit 上做差 \(\boldsymbol\delta = \mathbf z_S - \mathbf z_T\)<div class="val">δ = [−1e-7, 1e-7, 0]</div></td></tr>
+      <tr><td class="st">② 居中</td><td class="">—</td><td class="ok">\(d_k = \delta_k - \sum_i p_i \delta_i\)</td></tr>
+      <tr><td class="st">③ 对数比</td><td class="">—</td><td class="ok">\(s_k = \log(q_k/p_k) = d_k - \operatorname{log1p}\big(\sum_i p_i \operatorname{expm1}(d_i)\big)\)</td></tr>
+      <tr><td class="st">④ 求差</td><td class="bad">\(g_k = q_k - p_k\)：两个约 0.1–0.7 的数相减，结果约 \(10^{-8}\)，有效位几乎全部抵消<div class="val">[−5.960e-8, 4.470e-8, 7.451e-9]</div></td><td class="ok">\(u_k = q_k - p_k = p_k \operatorname{expm1}(s_k)\)：expm1 对小量精确<div class="val">[−4.596e-8, 4.144e-8, 4.513e-9]</div></td></tr>
+      <tr><td class="st">⑤ 零和</td><td class="bad">不保证<div class="val">和 = −7.5e-9</div></td><td class="ok">\(g_k = u_k - q_k \sum_i u_i\)<div class="val">和 ≈ 2e-15</div></td></tr>
+      <tr><td class="st">⑥ \(\mathbf z_S = \mathbf z_T\) 时</td><td class="bad">两条路径舍入不同，\(\mathbf q \ne \mathbf p\)<div class="val">[5.960e-8, 1.490e-8, 7.451e-9]</div></td><td class="ok">\(\boldsymbol\delta = 0 \Rightarrow \mathbf d = \mathbf s = \mathbf u = \mathbf g = 0\)<div class="val">[0, 0, 0]</div></td></tr>
+    </tbody>
+  </table></div>
+  <div class="code-cols">
+    <div class="code-col before"><div class="code-h">修复前 · 标准写法</div><pre>import torch
+import torch.nn.functional as F
+
+def soft_target_ce_std(z_S, z_T):
+    <span class="c"># 前向用 softmax 算 p</span>
+    p = torch.softmax(z_T, dim=-1)
+    return -(p * F.log_softmax(z_S, dim=-1)).sum(-1)
+
+<span class="c"># 反向：grad = q - p</span>
+<span class="c">#   q 来自 exp(log_softmax(z_S))，p 来自 softmax(z_T)</span>
+<span class="c">#   两个已舍入的概率相减，z_S ≈ z_T 时丢精度</span>
+<span class="c">#   两条路径舍入不同，z_S = z_T 时也不为 0</span></pre></div>
+    <div class="code-col after"><div class="code-h">修复后</div><pre>def soft_target_ce_fixed(z_S, z_T):
+    log_q = log_softmax_fixed(z_S)
+    q, p = log_q.exp(), log_softmax_fixed(z_T).exp()
+    delta = z_S - z_T
+    <span class="c"># 在 p 下居中</span>
+    d = delta - (p * delta).sum(-1, keepdim=True)
+    <span class="c"># s = log(q / p)，用 expm1 / log1p 避免加减 1</span>
+    s = d - torch.log1p((p * torch.expm1(d)).sum(-1, keepdim=True))
+    <span class="c"># u = q - p</span>
+    u = p * torch.expm1(s)
+    <span class="c"># 消去浮点漂移，保证 sum(g) = 0</span>
+    g = u - q * u.sum(-1, keepdim=True)
+    <span class="c"># 前向值不变，反向梯度替换成 g</span>
+    loss = -(p * log_q.detach()).sum(-1)
+    return loss + (g.detach() * (z_S - z_S.detach())).sum(-1)</pre></div>
+  </div>
+  <p>用 §2.2 的例子运行（fp32，PyTorch 2.11，CPU）。PyTorch 标准写法的数值与论文的 JAX 结果不完全相同，但问题一样：第 3 项偏大约 65%，梯度和不为 0，学生等于老师时梯度也不为 0。</p>
+<pre><span class="c"># z_T = [2, 1, 0]，z_S = z_T + [-1e-7, 1e-7, 0]：z_S.grad</span>
+soft_target_ce_std     <span class="c"># -> [-5.960e-8,  4.470e-8,  7.451e-9]   和 = -7.5e-9</span>
+<span class="hl">soft_target_ce_fixed</span>   <span class="c"># -> [-4.596e-8,  4.144e-8,  4.513e-9]   和 ≈ 2e-15</span>
+<span class="c"># 精确值（fp64）           [-4.596e-8,  4.144e-8,  4.513e-9]</span>
+
+<span class="c"># z_S = z_T：真实梯度为 0</span>
+soft_target_ce_std     <span class="c"># -> [ 5.960e-8,  1.490e-8,  7.451e-9]</span>
+<span class="hl">soft_target_ce_fixed</span>   <span class="c"># -> [ 0.0,       0.0,       0.0     ]</span></pre>
+
 
   <h3>5.3 与已有补救方法比较</h3>
   <div class="table"><table>
@@ -556,7 +653,7 @@ def soft_target_cross_entropy(z_S, z_T):
 </div>
 </main>
 
-<footer><div class="wrap">图、表、代码和引文均来自原文（arXiv 2610.31642v1），点击可跳到原文对应位置。精度悬崖的公式 (p+1) ln 2、margin 轴示意图和交互演示为本页所加，演示中的数值由浏览器按所选格式逐步舍入算出。</div></footer>
+<footer><div class="wrap">图、表和引文均来自原文（arXiv 2610.31642v1），代码由论文的 JAX 实现改写为 PyTorch 并实际运行验证，点击可跳到原文对应位置。精度悬崖的公式 (p+1) ln 2、margin 轴示意图和交互演示为本页所加，演示中的数值由浏览器按所选格式逐步舍入算出。</div></footer>
 
 <script>
 (function () {

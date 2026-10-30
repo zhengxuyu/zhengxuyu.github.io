@@ -462,6 +462,16 @@ jax.value_and_grad(std_ce)(z, t)         <span class="c"># -> 0.0,       [ 0.0, 
   <h2><span class="n">5</span>修复：在 log 空间里重写，永远不把 1 加到小数上</h2>
 
   <h3>5.1 修 Softmax Collapse：用 softplus 代替 1 + e<sup>−m</sup></h3>
+  <p><strong>记号 LSE。</strong>LSE 是 log-sum-exp 的缩写：先对每个数取指数，求和，再取对数，</p>
+  <div class="eq">\[ \operatorname{LSE}(x_1, \dots, x_n) = \log \sum_{i=1}^{n} e^{x_i}, \qquad \max_i x_i \;\le\; \operatorname{LSE}(x_1, \dots, x_n) \;\le\; \max_i x_i + \log n . \]</div>
+  <p>右边的不等式说明 LSE 是“平滑的最大值”：结果总落在最大值和最大值加 \(\log n\) 之间。框架里的 <code>logsumexp</code> 会先减去最大值再取指数，所以不会上溢。用 LSE 可以把式 (2) 的 margin 改写成只含 logit 差的形式：</p>
+  <div class="eq">\[ \begin{aligned}
+  \operatorname*{LSE}_{j \ne t}(z_j - z_t) &= \log \sum_{j \ne t} e^{z_j - z_t} && \text{LSE 的定义} \\
+  &= \log\Big(e^{-z_t} \sum_{j \ne t} e^{z_j}\Big) && e^{z_j - z_t} = e^{z_j} e^{-z_t}\text{，提到求和外} \\
+  &= -z_t + \log \sum_{j \ne t} e^{z_j} && \log(ab) = \log a + \log b,\; \log e^{-z_t} = -z_t \\
+  &= -m && \text{式 (2)：} m = z_t - \log \textstyle\sum_{j \ne t} e^{z_j}
+  \end{aligned} \]</div>
+  <p>所以 \(m = -\operatorname{LSE}_{j \ne t}(z_j - z_t)\)。以 \(\mathbf z = [9, -9, -9]\)、\(t = 1\) 为例：两个非目标类的差都是 \(-18\)，\(\operatorname{LSE}(-18, -18) = \log(2e^{-18}) = -18 + \ln 2 \approx -17.3\)，于是 \(m \approx 17.3\)，与前面一致。</p>
   <p>只有最大的 logit 被平移成 0（贡献分母里的那个 1）。修复的做法是把它从 log-sum-exp 中拿出来，单独算 margin，再用数值稳定的 \(\operatorname{softplus}(x) = \log(1+e^x)\) 合并：</p>
   <div class="eq">\[ \tilde z_k = \mathbb 1[k \ne i_{\max}]\,(z_k - z_{i_{\max}}), \qquad m = -\operatorname*{LSE}_{j \ne i_{\max}} \tilde z_j, \qquad \operatorname{logsoftmax}(\mathbf z)_k = \tilde z_k - \operatorname{softplus}(-m) . \]<span class="tag">式 (5)</span></div>
   <p>硬目标交叉熵可以直接用 \(t\) 代替 \(i_{\max}\)，省掉 argmax：</p>

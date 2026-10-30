@@ -48,14 +48,20 @@ main:has(.sfx) .content { max-width: 1240px; }
 .sfx .byline { font-size: 14px; color: var(--muted); margin: 0; }
 .sfx .byline a { color: inherit; }
 .sfx .lede { margin: 0; }
-.sfx .bits { display: grid; gap: 8px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
-.sfx .bits .row { display: flex; align-items: center; gap: 2px; font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
-.sfx .bits .lab { width: 7.5em; flex: none; color: var(--muted); font-size: 12px; }
-.sfx .bit { display: inline-grid; place-items: center; width: 17px; height: 22px; border: 1px solid var(--line); background: var(--surface); border-radius: 3px; }
-.sfx .bit.one { border-color: var(--fix); color: var(--fix); font-weight: 600; }
+.sfx .bits { display: grid; gap: 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.sfx .bits .bits-h { margin: 0; font-size: 14px; }
+.sfx .bitgrid-wrap { overflow-x: auto; }
+.sfx .bitgrid { display: grid; grid-template-columns: repeat(32, 18px) 10px 18px; column-gap: 2px; row-gap: 4px; font-family: var(--font-mono); font-size: 12px; width: max-content; }
+.sfx .bitgrid .byte { grid-row: 1; text-align: center; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 2px; white-space: nowrap; }
+.sfx .bit { grid-row: 2; display: grid; place-items: center; height: 24px; border: 1px solid var(--line); background: var(--surface); border-radius: 3px; }
+.sfx .bit.sgn { background: var(--line); }
+.sfx .bit.exp { background: var(--fix-soft); }
+.sfx .bit.one { color: var(--fix); font-weight: 600; border-color: var(--fix); }
 .sfx .bit.lost { border-style: dashed; border-color: var(--std); color: var(--std); background: var(--std-soft); }
-.sfx .bit.gap { border: 0; background: none; width: 10px; }
-.sfx .bits .note { font-size: 13px; color: var(--muted); white-space: normal; }
+.sfx .bitgrid .fl { grid-row: 3; text-align: center; font-size: 11px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 2px; white-space: nowrap; }
+.sfx .bitgrid .fl.lostl { color: var(--std); border-top-color: var(--std); }
+.sfx .bits-notes { margin: 0; padding-left: 1.2em; font-size: 13.5px; color: var(--muted); }
+.sfx .bits-notes li { margin-bottom: 4px; }
 .sfx nav.toc { border-bottom: 1px solid var(--line); }
 .sfx nav.toc .wrap { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-block: 12px; font-size: 14px; }
 .sfx nav.toc a { color: var(--muted); text-decoration: none; }
@@ -186,10 +192,20 @@ main:has(.sfx) .content { max-width: 1240px; }
     <p class="sub">softmax 与交叉熵标准实现里的两个数值 bug</p>
     <p class="byline">Jonathan T. Barron, Dan Gnanapragasam, Michael Tschannen · Google DeepMind · 2026-10-22 · <a href="https://arxiv.org/abs/2610.31642" target="_blank" rel="noopener">arXiv</a> · <a href="https://arxiv.org/html/2610.31642v1" target="_blank" rel="noopener">HTML 全文</a></p>
     <p class="lede">JAX、PyTorch、TensorFlow 里 softmax、log-softmax 和交叉熵的标准写法在浮点下有两个 bug。模型对正确类别非常自信时，目标 logit 的梯度被舍成 0，而其他梯度没有，梯度之和不再为 0；蒸馏时学生逼近老师，梯度本该趋于 0，却停在一个非零的噪声底上。作者用 Adam 的归一化解释了这两个 bug 如何被放大成训练中的 loss 尖峰和参数漂移，并给出只改几行代码的修复。</p>
-    <div class="bits" aria-label="fp32 在 1.0 附近能表示的精度">
-      <div class="row"><span class="lab">1.0</span><span class="bit one">1</span><span class="bit gap">.</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit gap"></span><span class="bit lost">?</span></div>
-      <div class="row"><span class="lab">fp32 尾数</span><span class="note">32 位 = 1 符号位 + 8 指数位 + 23 尾数位，所以小数点后只有 23 位。加到 1.0 上的数若小于 2<sup>−24</sup> ≈ 6.0×10<sup>−8</sup>（最低位 2<sup>−23</sup> 的一半），就会被舍掉。</span></div>
-      <div class="row"><span class="lab">1 + e<sup>−17.3</sup></span><span class="note">e<sup>−17.3</sup> ≈ 3.05×10<sup>−8</sup>，落在虚线格里，结果仍是 1.0。这一个舍入就是 Softmax Collapse 的全部起因。</span></div>
+    <div class="bits" aria-label="fp32 的位划分与 1.0 的存法">
+      <p class="bits-h">fp32 共 32 位，即 4 字节：1 位符号 S、8 位指数、23 位尾数。下面是 1.0 的存法（十六进制 0x3F800000）：</p>
+      <div class="bitgrid-wrap"><div class="bitgrid">
+        <span class="byte" style="grid-column:1 / span 8">字节 1 · 0x3F</span><span class="byte" style="grid-column:9 / span 8">字节 2 · 0x80</span><span class="byte" style="grid-column:17 / span 8">字节 3 · 0x00</span><span class="byte" style="grid-column:25 / span 8">字节 4 · 0x00</span>
+        <span class="bit sgn" style="grid-column:1">0</span><span class="bit exp" style="grid-column:2">0</span><span class="bit exp one" style="grid-column:3">1</span><span class="bit exp one" style="grid-column:4">1</span><span class="bit exp one" style="grid-column:5">1</span><span class="bit exp one" style="grid-column:6">1</span><span class="bit exp one" style="grid-column:7">1</span><span class="bit exp one" style="grid-column:8">1</span><span class="bit exp one" style="grid-column:9">1</span><span class="bit man" style="grid-column:10">0</span><span class="bit man" style="grid-column:11">0</span><span class="bit man" style="grid-column:12">0</span><span class="bit man" style="grid-column:13">0</span><span class="bit man" style="grid-column:14">0</span><span class="bit man" style="grid-column:15">0</span><span class="bit man" style="grid-column:16">0</span><span class="bit man" style="grid-column:17">0</span><span class="bit man" style="grid-column:18">0</span><span class="bit man" style="grid-column:19">0</span><span class="bit man" style="grid-column:20">0</span><span class="bit man" style="grid-column:21">0</span><span class="bit man" style="grid-column:22">0</span><span class="bit man" style="grid-column:23">0</span><span class="bit man" style="grid-column:24">0</span><span class="bit man" style="grid-column:25">0</span><span class="bit man" style="grid-column:26">0</span><span class="bit man" style="grid-column:27">0</span><span class="bit man" style="grid-column:28">0</span><span class="bit man" style="grid-column:29">0</span><span class="bit man" style="grid-column:30">0</span><span class="bit man" style="grid-column:31">0</span><span class="bit man" style="grid-column:32">0</span><span class="bit lost" style="grid-column:34">?</span>
+        <span class="fl" style="grid-column:1">S</span><span class="fl" style="grid-column:2 / span 8">指数 8 位</span><span class="fl" style="grid-column:10 / span 23">尾数 23 位</span><span class="fl lostl" style="grid-column:34">第 24 位</span>
+      </div></div>
+      <ul class="bits-notes">
+        <li>数值 = (−1)<sup>S</sup> × 1.尾数 × 2<sup>指数 − 127</sup>。1.0 的 S = 0，指数 = 01111111₂ = 127，尾数全 0，所以值是 1.0 × 2<sup>0</sup>。</li>
+        <li><strong>指数位</strong>决定数的量级，相当于科学计数法里的“× 10 的几次方”，只是底数是 2。8 位能存 0 到 255 的整数，减去偏置 127 得到真正的指数；0 和 255 留作特殊用途（零、次正规数、无穷和 NaN），所以正常数的指数范围是 −126 到 127，对应约 10<sup>−38</sup> 到 3.4×10<sup>38</sup>。</li>
+        <li><strong>尾数位</strong>决定在同一量级内能分多细。相邻两个可表示数的间距是 2<sup>指数 − 127 − 23</sup>：数越小，间距越小。所以 fp32 在 0 附近能表示 10<sup>−38</sup>，在 1 附近的间距却是 2<sup>−23</sup>。</li>
+        <li>小数点前的 1 总是存在，标准省掉不存（隐含位），所以尾数只占小数点后的 23 位。最低位代表 2<sup>−23</sup> ≈ 1.19×10<sup>−7</sup>：1.0 的下一个可表示数是 1 + 2<sup>−23</sup>。</li>
+        <li>1 + e<sup>−17.3</sup>：e<sup>−17.3</sup> ≈ 3.05×10<sup>−8</sup>，比半个最低位 2<sup>−24</sup> ≈ 5.96×10<sup>−8</sup> 还小，只能落在第 24 位的虚线格里，就近舍入后结果仍是 1.0。这一个舍入就是 Softmax Collapse 的起因。</li>
+      </ul>
     </div>
   </div>
 </header>

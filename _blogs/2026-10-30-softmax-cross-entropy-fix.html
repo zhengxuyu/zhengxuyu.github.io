@@ -205,7 +205,7 @@ main:has(.sfx) .content { max-width: 1240px; }
 <div class="sfx">
 <header>
   <div class="wrap">
-    <p class="sub">softmax 与交叉熵标准实现里的两个数值 bug</p>
+    <p class="sub"><a href="https://arxiv.org/abs/2610.31642" target="_blank" rel="noopener">A Fix for Softmax and Cross-Entropy</a></p>
     <p class="byline">Jonathan T. Barron, Dan Gnanapragasam, Michael Tschannen · Google DeepMind · 2026-10-22 · <a href="https://arxiv.org/abs/2610.31642" target="_blank" rel="noopener">arXiv</a> · <a href="https://arxiv.org/html/2610.31642v1" target="_blank" rel="noopener">HTML 全文</a></p>
     <p class="lede">JAX、PyTorch、TensorFlow 里 softmax、log-softmax 和交叉熵的标准写法在浮点下有两个 bug。模型对正确类别非常自信时，目标 logit 的梯度被舍成 0，而其他梯度没有，梯度之和不再为 0；蒸馏时学生逼近老师，梯度本该趋于 0，却停在一个非零的噪声底上。作者用 Adam 的归一化解释了这两个 bug 如何被放大成训练中的 loss 尖峰和参数漂移，并给出只改几行代码的修复。</p>
     <div class="bits" aria-label="fp32 的位划分与 1.0 的存法">

@@ -32,7 +32,7 @@ module Jekyll
         end
         
         if references.empty?
-          return "<p>No references found.</p>"
+          return ""  # posts without BibTeX citations (e.g. ones with their own reference list) show nothing
         end
         
         # Generate references without outer numbering

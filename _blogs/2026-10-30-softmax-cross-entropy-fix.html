@@ -1,0 +1,677 @@
+---
+layout: blog-post
+title: "Softmax 与交叉熵的两个数值 bug"
+date: 2026-10-30 00:00:00 +0000
+categories: PaperReading
+tags: [Numerical Stability, Softmax, Cross-Entropy, Grokking, Adam, Mixed Precision]
+draft: false
+keywords: "softmax, cross-entropy, numerical stability, softmax collapse, softmax cancellation, slingshot, grokking, Adam epsilon, bf16, fp32, distillation, Zhengxu Yu"
+description: "精读 Barron 等人的 A Fix for Softmax and Cross-Entropy：标准实现里的 Softmax Collapse 与 Softmax Cancellation，从发现、现象、影响到修复。"
+tldr: "JAX、PyTorch、TensorFlow 的 softmax 和交叉熵在减去最大 logit 后，分母是 1 + e^(−m)。模型足够自信时 e^(−m) 小于 1 附近的浮点间距，加法被舍入，目标类梯度变成 0 而其他梯度不变（Softmax Collapse）；蒸馏中学生等于老师时梯度也不为 0（Softmax Cancellation）。Adam 的归一化把这些微小误差放大成 Slingshot 尖峰和参数漂移。修复是用 softplus、expm1、log1p 在 log 空间重写，不再把 1 加到小数上。"
+---
+{% raw %}
+<style>
+
+/* This post only: use the full content width instead of the theme's 800px column. */
+main:has(.sfx) { max-width: calc(var(--sidebar-width) + 1240px + 80px); }
+main:has(.sfx) .content { max-width: 1240px; }
+.article-container:has(.sfx) { max-width: none; }
+/* Colors follow the site's glass theme (light text on a dark landscape); orange = standard implementation, blue = fixed, as in the paper. */
+.sfx {
+  --paper: rgba(0, 0, 0, 0.18);
+  --surface: rgba(255, 255, 255, 0.07);
+  --ink: var(--color-text-primary);
+  --muted: var(--color-text-secondary);
+  --line: var(--color-border);
+  --std: #f29a6a;
+  --std-soft: rgba(242, 154, 106, 0.16);
+  --fix: #93b6f6;
+  --fix-soft: rgba(147, 182, 246, 0.16);
+  --code-bg: rgba(0, 0, 0, 0.28);
+  --on-ink: #1b2126;
+  --font-display: var(--font-family);
+  --font-body: var(--font-family);
+}
+.sfx { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.8; }
+.sfx .wrap {
+    max-width: 1080px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+.sfx a { color: var(--fix); }
+.sfx a:focus-visible, .sfx input:focus-visible, .sfx button:focus-visible { outline: 2px solid var(--fix); outline-offset: 2px; }
+.sfx header { border-bottom: 1px solid var(--line); background: var(--surface); }
+.sfx header .wrap { padding-block: 44px 32px; display: grid; gap: 16px; }
+.sfx .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.sfx h1 { font-family: var(--font-mono); font-weight: 600; font-size: clamp(26px, 4.6vw, 40px); line-height: 1.2; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.sfx .sub { font-family: var(--font-display); font-size: clamp(18px, 2.6vw, 22px); margin: 0; }
+.sfx .byline { font-size: 14px; color: var(--muted); margin: 0; }
+.sfx .byline a { color: inherit; }
+.sfx .lede { margin: 0; }
+.sfx .bits { display: grid; gap: 8px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; overflow-x: auto; }
+.sfx .bits .row { display: flex; align-items: center; gap: 2px; font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
+.sfx .bits .lab { width: 7.5em; flex: none; color: var(--muted); font-size: 12px; }
+.sfx .bit { display: inline-grid; place-items: center; width: 17px; height: 22px; border: 1px solid var(--line); background: var(--surface); border-radius: 3px; }
+.sfx .bit.one { border-color: var(--fix); color: var(--fix); font-weight: 600; }
+.sfx .bit.lost { border-style: dashed; border-color: var(--std); color: var(--std); background: var(--std-soft); }
+.sfx .bit.gap { border: 0; background: none; width: 10px; }
+.sfx .bits .note { font-size: 13px; color: var(--muted); white-space: normal; }
+.sfx nav.toc { border-bottom: 1px solid var(--line); }
+.sfx nav.toc .wrap { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-block: 12px; font-size: 14px; }
+.sfx nav.toc a { color: var(--muted); text-decoration: none; }
+.sfx nav.toc a:hover { color: var(--ink); }
+.sfx main .wrap { padding-block: 8px 64px; }
+.sfx section { margin-top: 48px; }
+.sfx h2 { font-family: var(--font-display); font-size: clamp(22px, 3vw, 28px); line-height: 1.35; margin: 0 0 14px; display: flex; gap: 12px; align-items: baseline; text-wrap: balance; }
+.sfx h2 .n { font-family: var(--font-mono); font-size: 14px; color: var(--muted); font-weight: 400; }
+.sfx h3 { font-family: var(--font-display); font-size: 19px; margin: 32px 0 10px; text-wrap: balance; }
+.sfx p { margin: 0 0 14px; }
+.sfx ul, .sfx ol { padding-left: 1.4em; margin: 0 0 14px; }
+.sfx li { margin-bottom: 6px; }
+.sfx .std { color: var(--std); font-weight: 600; }
+.sfx .fix { color: var(--fix); font-weight: 600; }
+.sfx mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+.sfx .eq { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 16px; margin: 10px 0 16px; overflow-x: auto; }
+.sfx .eq .tag { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.sfx .callout { border-left: 3px solid var(--fix); background: var(--fix-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+.sfx .callout.warn { border-left-color: var(--std); background: var(--std-soft); }
+.sfx .callout p:last-child { margin-bottom: 0; }
+.sfx blockquote.q { margin: 12px 0 16px; padding: 2px 0 2px 14px; border-left: 2px solid var(--line); color: var(--muted); font-size: 14px; font-style: italic; }
+.sfx blockquote.q a { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--muted); }
+.sfx blockquote.q a:hover { color: var(--fix); border-bottom-color: var(--fix); }
+.sfx blockquote.q a::after { content: " ↗"; font-style: normal; color: var(--fix); }
+.sfx blockquote.q cite { font-style: normal; font-family: var(--font-mono); font-size: 12px; margin-left: 6px; }
+.sfx figure { margin: 18px 0 24px; }
+.sfx figure img { display: block; width: 100%; height: auto; background: #ffffff; border: 1px solid var(--line); border-radius: 6px; padding: 8px; box-sizing: border-box; }
+.sfx figure.narrow img { max-width: 420px; }
+.sfx figcaption { font-size: 13.5px; color: var(--muted); margin-top: 8px; max-width: 90ch; line-height: 1.65; }
+.sfx figcaption .src { font-family: var(--font-mono); font-size: 12px; }
+.sfx .table { overflow-x: auto; margin: 12px 0 20px; }
+.sfx table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+.sfx th, .sfx td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.sfx th { font-size: 12.5px; color: var(--muted); font-weight: 500; white-space: nowrap; }
+.sfx td.num, .sfx th.num { text-align: right; font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
+.sfx tr.is-std td:first-child { color: var(--std); }
+.sfx tr.is-fix td:first-child { color: var(--fix); }
+.sfx td.bad { color: var(--std); font-weight: 600; }
+.sfx td.good { color: var(--fix); font-weight: 600; }
+.sfx pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; margin: 10px 0 18px; }
+.sfx code { font-family: var(--font-mono); font-size: 0.9em; }
+.sfx pre .c { color: var(--muted); }
+.sfx pre .hl { color: var(--fix); font-weight: 600; }
+.sfx .lab-box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 14px; margin: 18px 0 24px; }
+.sfx .lab-box h4 { margin: 0; font-size: 15px; }
+.sfx .controls { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; font-size: 14px; }
+.sfx .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.sfx .seg button { font: inherit; font-family: var(--font-mono); font-size: 13px; border: 0; background: var(--surface); color: var(--muted); padding: 5px 12px; cursor: pointer; }
+.sfx .seg button + button { border-left: 1px solid var(--line); }
+.sfx .seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.sfx .slider { display: flex; align-items: center; gap: 10px; flex: 1 1 280px; min-width: 0; }
+.sfx .slider input { flex: 1; min-width: 0; accent-color: var(--fix); }
+.sfx .slider output { font-family: var(--font-mono); font-size: 14px; min-width: 6.5em; }
+.sfx .demo-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.sfx .chart { overflow-x: auto; }
+.sfx .chart svg { display: block; width: 100%; min-width: 420px; height: auto; }
+.sfx .chart .ax { stroke: var(--line); stroke-width: 1; }
+.sfx .chart .tx { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.sfx .chart .cs { fill: none; stroke: var(--std); stroke-width: 2.4; }
+.sfx .chart .cf { fill: none; stroke: var(--fix); stroke-width: 2; stroke-dasharray: 6 4; }
+.sfx .chart .cliff { stroke: var(--std); stroke-width: 1; stroke-dasharray: 3 3; }
+.sfx .chart .cur { stroke: var(--ink); stroke-width: 1; }
+.sfx .chart .zero { fill: var(--std-soft); }
+.sfx .chart .lg { font-family: var(--font-body); font-size: 12px; }
+.sfx .readout table { font-size: 13px; }
+.sfx .readout td { padding: 5px 8px; }
+.sfx .readout td.v { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
+.sfx .readout .zero-hit { color: var(--std); font-weight: 600; }
+.sfx .verdict { font-size: 14px; border-radius: 6px; padding: 8px 12px; background: var(--fix-soft); }
+.sfx .verdict.bad { background: var(--std-soft); }
+.sfx .cycle { list-style: none; padding: 0; margin: 16px 0 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; counter-reset: step; }
+.sfx .cycle li { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px 12px; margin: 0; max-width: none; font-size: 14px; counter-increment: step; }
+.sfx .cycle li::before { content: counter(step); display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--surface); font-family: var(--font-mono); font-size: 12px; margin-bottom: 6px; }
+.sfx .cycle li:not(:last-child)::after { content: "→"; position: absolute; right: -11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; background: var(--paper); line-height: 1; }
+.sfx .cycle li strong { display: block; margin-bottom: 4px; }
+.sfx .cycle-back { font-size: 13px; color: var(--muted); margin-top: -8px; }
+.sfx .line-fig { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; overflow-x: auto; margin: 14px 0 6px; }
+.sfx .line-fig svg { display: block; width: 100%; min-width: 760px; height: auto; }
+.sfx .line-fig .ax { stroke: var(--ink); stroke-width: 1.2; }
+.sfx .line-fig .tk { stroke: var(--muted); stroke-width: 1; }
+.sfx .line-fig .tx { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.sfx .line-fig .cl { stroke: var(--std); stroke-width: 2; }
+.sfx .line-fig .clt { fill: var(--std); font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+.sfx .line-fig .eqd { fill: var(--fix); }
+.sfx .line-fig .eqt { fill: var(--fix); font-family: var(--font-mono); font-size: 12px; }
+.sfx .line-fig .lead { stroke: var(--fix); stroke-width: 1; stroke-dasharray: 2 2; }
+.sfx .line-fig .note { fill: var(--muted); font-family: var(--font-body); font-size: 12px; }
+.sfx .three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 20px; }
+.sfx .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-size: 14px; min-width: 0; }
+.sfx .card .k { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.sfx .card h4 { margin: 2px 0 6px; font-size: 15px; }
+.sfx .card p { margin: 0; }
+.sfx .big { font-family: var(--font-mono); font-size: 20px; font-weight: 600; }
+.sfx ol.qs li { margin-bottom: 12px; }
+.sfx .refs { font-size: 14px; }
+.sfx .refs li { margin-bottom: 4px; }
+.sfx footer { border-top: 1px solid var(--line); }
+.sfx footer .wrap { padding-block: 20px; font-size: 13px; color: var(--muted); }
+@media (max-width: 860px) {
+.sfx .demo-grid { grid-template-columns: 1fr; }
+.sfx .cycle { grid-template-columns: 1fr 1fr; }
+.sfx .cycle li:nth-child(2)::after { content: none; }
+.sfx .three { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+.sfx { font-size: 15px; }
+.sfx .cycle { grid-template-columns: 1fr; }
+.sfx .cycle li::after { content: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+.sfx * { scroll-behavior: auto !important; }
+}
+
+.sfx { background: none; font-size: inherit; }
+.sfx header, .sfx nav.toc, .sfx footer { background: none; }
+.sfx .wrap { max-width: none; padding-left: 0; padding-right: 0; }
+.sfx header .wrap { padding-block: 0 20px; }
+.sfx .seg button[aria-pressed="true"] { color: var(--on-ink); }
+.sfx .cycle li::before { color: var(--on-ink); }
+.sfx .cycle li:not(:last-child)::after { background: none; }
+.sfx p, .sfx li { max-width: none; }
+.sfx blockquote.q { background: none; border-radius: 0; }
+.sfx figure img { margin: 0; box-shadow: none; }
+</style>
+<div class="sfx">
+<header>
+  <div class="wrap">
+    <p class="sub">softmax 与交叉熵标准实现里的两个数值 bug</p>
+    <p class="byline">Jonathan T. Barron, Dan Gnanapragasam, Michael Tschannen · Google DeepMind · 2026-10-22 · <a href="https://arxiv.org/abs/2610.31642" target="_blank" rel="noopener">arXiv</a> · <a href="https://arxiv.org/html/2610.31642v1" target="_blank" rel="noopener">HTML 全文</a></p>
+    <p class="lede">JAX、PyTorch、TensorFlow 里 softmax、log-softmax 和交叉熵的标准写法在浮点下有两个 bug。模型对正确类别非常自信时，目标 logit 的梯度被舍成 0，而其他梯度没有，梯度之和不再为 0；蒸馏时学生逼近老师，梯度本该趋于 0，却停在一个非零的噪声底上。作者用 Adam 的归一化解释了这两个 bug 如何被放大成训练中的 loss 尖峰和参数漂移，并给出只改几行代码的修复。</p>
+    <div class="bits" aria-label="fp32 在 1.0 附近能表示的精度">
+      <div class="row"><span class="lab">1.0</span><span class="bit one">1</span><span class="bit gap">.</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit gap"></span><span class="bit lost">?</span></div>
+      <div class="row"><span class="lab">fp32 尾数</span><span class="note">32 位 = 1 符号位 + 8 指数位 + 23 尾数位，所以小数点后只有 23 位。加到 1.0 上的数若小于 2<sup>−24</sup> ≈ 6.0×10<sup>−8</sup>（最低位 2<sup>−23</sup> 的一半），就会被舍掉。</span></div>
+      <div class="row"><span class="lab">1 + e<sup>−17.3</sup></span><span class="note">e<sup>−17.3</sup> ≈ 3.05×10<sup>−8</sup>，落在虚线格里，结果仍是 1.0。这一个舍入就是 Softmax Collapse 的全部起因。</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="目录">
+  <div class="wrap">
+    <a href="#start">1 起点</a><a href="#bugs">2 发现：两个 bug</a><a href="#slingshot">3 现象：Slingshot</a><a href="#impact">4 影响</a><a href="#fix">5 修复</a><a href="#discuss">6 讨论</a>
+  </div>
+</nav>
+
+<main>
+<div class="wrap">
+
+<section id="start">
+  <h2><span class="n">1</span>起点：softmax 的标准实现</h2>
+  <p><strong>记号。</strong>一个样本在 \(K\) 个类别上的 logit 是向量 \(\mathbf z = (z_1, \dots, z_K) \in \mathbb R^K\)（粗体表示向量）；\(z_k\) 是第 \(k\) 类的 logit，是一个标量。\(t \in \{1, \dots, K\}\) 是这个样本的正确类别，即训练数据给的标签，论文称为 target class，下文简称<strong>目标类</strong>；\(z_t\) 就是目标类那一个 logit 的数值。在图像分类里，目标类是图片的真实类别；在语言模型里，是训练文本中实际出现的下一个 token。交叉熵训练的作用就是把目标类的概率 \(q_t\) 推向 1。例如 \(\mathbf z = [9, -9, -9]\)、\(t = 1\) 时，\(z_t = 9\)。</p>
+  <p>对 logit \(\mathbf z\) 直接算 \(e^{z_k} / \sum_j e^{z_j}\)，只要某个 logit 超过约 88（fp32 指数上限），\(e^{z}\) 就会上溢。所以所有框架都先减去最大值 \(z_{\max} = \max_j z_j\)：</p>
+  <div class="eq">\[ \tilde z_k = z_k - z_{\max}, \qquad \operatorname{logsoftmax}(\mathbf z)_k = \tilde z_k - \log \sum_j e^{\tilde z_j}, \qquad q_k = \operatorname{softmax}(\mathbf z)_k = \frac{e^{\tilde z_k}}{\sum_j e^{\tilde z_j}} \]<span class="tag">式 (1)</span></div>
+  <p>对目标分布 \(\mathbf p\)，交叉熵 \(\mathcal L(\mathbf z, \mathbf p) = -\sum_k p_k \operatorname{logsoftmax}(\mathbf z)_k\)，精确梯度是</p>
+  <div class="eq">\[ \mathbf g = \nabla_{\mathbf z} \mathcal L = \mathbf q - \mathbf p, \qquad \textstyle\sum_k g_k = 1 - 1 = 0 . \]</div>
+  <p>梯度各分量之和为 0 是 softmax 的结构性质：把所有 logit 同时加一个常数不改变输出。下文的两个 bug 都表现为这个性质在浮点下被破坏，或者该为 0 的梯度不为 0。</p>
+</section>
+
+<section id="bugs">
+  <h2><span class="n">2</span>发现：两个数值 bug</h2>
+
+  <h3>2.1 Softmax Collapse：自信的预测让目标梯度变成 0</h3>
+  <p>设目标类别 \(t\) 的 logit 最大。用 <strong>logit margin</strong> 衡量模型有多自信，即目标 logit 比其余 logit 的 log-sum-exp 大多少：</p>
+  <div class="eq">\[ m = z_t - \log \sum_{j \ne t} e^{z_j} . \]<span class="tag">式 (2)</span></div>
+  <p>下面从 softmax 的定义出发，推出“减去最大值”之后分母恰好是 \(1 + e^{-m}\)。目标类 \(t\) 的 logit 最大，所以 \(z_{\max} = z_t\)。每一步右侧注明所用的变换：</p>
+  <div class="eq">\[ \begin{aligned}
+  q_k &= \frac{e^{z_k}}{\sum_{i=1}^{K} e^{z_i}} && \text{softmax 的定义} \\
+  &= \frac{e^{z_k}\, e^{-z_t}}{\sum_{i} e^{z_i}\, e^{-z_t}} && \text{分子分母同乘正数 } e^{-z_t}\text{，比值不变} \\
+  &= \frac{e^{z_k - z_t}}{\sum_{i} e^{z_i - z_t}} && e^{a} e^{b} = e^{a+b}\text{：这一步就是“每个 logit 减去最大值”} \\
+  \sum_{i} e^{z_i - z_t} &= e^{z_t - z_t} + \sum_{j \ne t} e^{z_j - z_t} && \text{取上一行的分母，把 } i = t \text{ 的一项单独写出} \\
+  &= 1 + \sum_{j \ne t} e^{z_j - z_t} && z_t - z_t = 0,\; e^{0} = 1 \\
+  &= 1 + e^{-z_t} \sum_{j \ne t} e^{z_j} && e^{z_j - z_t} = e^{z_j} e^{-z_t}\text{，} e^{-z_t} \text{ 与 } j \text{ 无关，提到求和外} \\
+  &= 1 + e^{-z_t}\, e^{\log \sum_{j \ne t} e^{z_j}} && \text{任何正数 } S = e^{\log S} \\
+  &= 1 + e^{-\left(z_t - \log \sum_{j \ne t} e^{z_j}\right)} && \text{合并指数：} e^{a} e^{b} = e^{a+b} \\
+  &= 1 + e^{-m} && \text{括号里正是式 (2) 定义的 } m
+  \end{aligned} \]</div>
+  <p>再看分子：\(k = t\) 时分子是 \(e^{z_t - z_t} = 1\)。所以目标类的概率是 \(q_t = 1/(1 + e^{-m})\)，损失是 \(\mathcal L = -\log q_t = \log(1 + e^{-m})\)。以论文的例子 \(\mathbf z = [9, -9, -9]\) 验证：减去 9 后为 \([0, -18, -18]\)，取指数为 \([1, e^{-18}, e^{-18}]\)，其余两项之和 \(2e^{-18} = e^{-(18 - \ln 2)} \approx e^{-17.3}\)；按式 (2)，\(m = 9 - \log(2e^{-9}) = 18 - \ln 2 \approx 17.3\)，两者一致。</p>
+  <p>对 \(\mathcal L = \log(1 + e^{-m})\) 求导，得到损失和梯度：</p>
+  <div class="eq">\[ \mathcal L = \log(1 + e^{-m}), \qquad g_t = \underbrace{\frac{1}{1+e^{-m}} - 1}_{\text{标准写法}} = \underbrace{-\frac{e^{-m}}{1+e^{-m}}}_{\text{修复写法}}, \qquad g_j = \frac{e^{z_j - z_t}}{1+e^{-m}} \;(j \ne t). \]<span class="tag">式 (3)</span></div>
+  <p>两种写法在实数上相等，在浮点上不同。这里的<strong>浮点格式</strong>指计算机用二进制存储实数的方式，深度学习里常用 bf16、fp32、fp64 三种。一个浮点数存成 \(\pm 1.f \times 2^{e}\)：指数 \(e\) 决定数的量级范围，尾数 \(f\) 的位数 \(p\) 决定精度。每种格式的总位数固定，按 IEEE 754 等标准分给符号、指数和尾数三部分：</p>
+  <div class="table"><table>
+    <thead><tr><th>格式</th><th class="num">总位数</th><th class="num">符号</th><th class="num">指数</th><th class="num">尾数 p</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>bf16</td><td class="num">16</td><td class="num">1</td><td class="num">8</td><td class="num">7</td><td>指数位与 fp32 相同，量级范围一样大，精度低得多</td></tr>
+      <tr><td>fp32</td><td class="num">32</td><td class="num">1</td><td class="num">8</td><td class="num">23</td><td>32 − 1 − 8 = 23，所以小数点后只有 23 位</td></tr>
+      <tr><td>fp64</td><td class="num">64</td><td class="num">1</td><td class="num">11</td><td class="num">52</td><td></td></tr>
+    </tbody>
+  </table></div>
+  <p>小数点前的那个 1 不需要存：规格化的二进制数首位总是 1，标准把它省掉（隐含位），所以 fp32 实际有 24 位有效数字，但小数点后只有 23 位。给指数多分一位，能表示的量级就翻倍；给尾数多分一位，精度就翻倍。总位数固定时只能二选一，bf16 选择保住范围、牺牲精度。</p>
+  <p>这带来精度的不对称。在 \([1, 2)\) 区间里指数固定为 0，相邻两个可表示的数相差尾数最低位 \(2^{-p}\)，fp32 中约为 \(1.2 \times 10^{-7}\)；在 0 附近，指数可以取很小的负数，fp32 能表示到 \(10^{-38}\)。所以 \(e^{-m}\) 单独存放时很精确，加到 1 上之后只能保留到 \(2^{-p}\) 的整数倍。按就近舍入，当 \(e^{-m}\) 小于间距的一半 \(2^{-(p+1)}\) 时，\(1 + e^{-m}\) 被舍入为 1，即</p>
+  <div class="eq">\[ e^{-m} < 2^{-(p+1)} \iff m > c_d = (p+1)\ln 2 . \]</div>
+  <div class="table"><table>
+    <thead><tr><th>格式</th><th class="num">尾数位 p</th><th class="num">精度悬崖 c<sub>d</sub> = (p+1) ln 2</th><th>此时 e<sup>−m</sup> 的大小</th></tr></thead>
+    <tbody>
+      <tr><td>bf16</td><td class="num">7</td><td class="num">≈ 5.5</td><td>约 0.4%，模型给目标类 99.6% 的概率就到了</td></tr>
+      <tr><td>fp32</td><td class="num">23</td><td class="num">≈ 16.6</td><td>约 6×10<sup>−8</sup></td></tr>
+      <tr><td>fp64</td><td class="num">52</td><td class="num">≈ 36.7</td><td>约 1×10<sup>−16</sup></td></tr>
+    </tbody>
+  </table></div>
+  <p>论文给出的三个悬崖值与上式一致，作者称之为 precision cliff。越过悬崖后，两种写法分道扬镳：</p>
+  <ul>
+    <li><span class="std">标准写法</span>先算 \(q_t = 1/(1+e^{-m}) = 1/1 = 1\)，再减 1，得到 \(\tilde g_t = 0\)；前向的 \(\log(1+e^{-m})\) 也变成 \(\log 1 = 0\)。</li>
+    <li>非目标梯度 \(\tilde g_j = e^{z_j - z_t}/(1+e^{-m})\) 的分子直接由负数差算指数，不经过“加 1”，一直准确到指数下溢（\(m \approx 88\)），所以仍然为正。</li>
+    <li>结果：只有目标位置被清零，梯度之和变成 \(\sum_k \tilde g_k = e^{-m}/(1+e^{-m}) > 0\)（式 4）。</li>
+    <li><span class="fix">修复写法</span> \(-e^{-m}/(1+e^{-m})\) 把 \(e^{-m}\) 留在分子：分母舍成 1 也无妨，\(g_t \approx -e^{-m}\) 一直准确到下溢。</li>
+  </ul>
+  <p><strong>训练中各个 logit 怎么变。</strong>梯度下降沿 \(-\mathbf g\) 的方向更新 logit。目标类的 \(g_t = q_t - 1 < 0\)，所以 \(z_t\) 被推高；非目标类的 \(g_j = q_j > 0\)，所以每个 \(z_j\) 被压低。因为 \(\sum_k g_k = 0\)，推高 \(z_t\) 的量正好等于压低所有 \(z_j\) 的总量，logit 的平均值不变，变的是差值 \(z_j - z_t\)：它越来越负，margin \(m\) 越来越大。推力本身是 \(q_j = e^{z_j - z_t}/(1+e^{-m})\)，随 margin 指数衰减，所以 \(z_j\) 被压低得越来越慢。实际训练更新的是网络参数，logit 只是间接改变，但方向由这里的梯度决定。越过悬崖后，标准写法中 \(z_t\) 的推力变成 0，\(z_j\) 仍被压低，两边不再平衡。</p>
+  <blockquote class="q"><a href="https://arxiv.org/html/2610.31642v1#:~:text=rounds%20the%20target%20logit%E2%80%99s%20gradient%20to%20zero%20if%20that%20one%20logit%20is%20much%20larger%20than%20the%20others" target="_blank" rel="noopener">“[Softmax Collapse] rounds the target logit’s gradient to zero if that one logit is much larger than the others”</a><cite>摘要</cite></blockquote>
+
+  <div class="lab-box" id="cliff-lab">
+    <h4>动手看悬崖：拖动 margin，比较两种写法</h4>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="浮点格式">
+        <button type="button" id="p-bf16" data-p="bf16" aria-pressed="false">bf16</button>
+        <button type="button" id="p-fp32" data-p="fp32" aria-pressed="true">fp32</button>
+        <button type="button" id="p-fp64" data-p="fp64" aria-pressed="false">fp64</button>
+      </div>
+      <label class="slider" for="m-range">margin m
+        <input type="range" id="m-range" min="0" max="40" step="0.1" value="17.3">
+        <output id="m-out" for="m-range">17.3</output>
+      </label>
+    </div>
+    <div class="demo-grid">
+      <div class="chart" id="cliff-chart" aria-label="目标梯度绝对值随 margin 的变化"></div>
+      <div class="readout">
+        <table>
+          <thead><tr><th></th><th class="num"><span class="std">标准</span></th><th class="num"><span class="fix">修复</span></th></tr></thead>
+          <tbody id="readout-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="verdict" id="verdict" role="status"></div>
+    <p style="margin:0;font-size:13px;color:var(--muted)">每一步运算后都按所选格式舍入（fp32 用 <code>Math.fround</code>，bf16 在 fp32 基础上按就近偶数截到 7 位尾数）。初始值 m = 17.3 对应论文的例子 z = [9, −9, −9]：m = 18 − ln 2。</p>
+  </div>
+
+  <p>论文的例子在 fp32 下运行 <code>jax.nn</code> 和 <code>optax</code>，结果与上面的演示一致：</p>
+<pre><span class="c"># z = [9.0, -9.0, -9.0], t = 0, fp32</span>
+jax.nn.log_softmax(z)                    <span class="c"># -> [ 0.0,       -18.0,     -18.0    ]</span>
+jax.value_and_grad(std_ce)(z, t)         <span class="c"># -> 0.0,       [ 0.0,       1.523e-8,  1.523e-8]   梯度和 &gt; 0</span>
+<span class="hl">log_softmax(z)</span>                           <span class="c"># -> [-3.046e-8,  -18.0,     -18.0    ]</span>
+<span class="hl">jax.value_and_grad(cross_entropy)(z, t)</span>  <span class="c"># -> 3.046e-8,  [-3.046e-8,  1.523e-8,  1.523e-8]   梯度和 = 0</span></pre>
+
+  <h3>2.2 Softmax Cancellation：学生等于老师时梯度不为 0</h3>
+  <p>知识蒸馏和 KL 正则里，目标分布来自另一组 logit：\(\mathbf p = \operatorname{softmax}(\mathbf z_T)\)。标准实现分别算出 \(\mathbf q = \operatorname{softmax}(\mathbf z_S)\) 和 \(\mathbf p\)，再相减得到梯度 \(\tilde{\mathbf g} = \mathbf q - \mathbf p\)。这里有两个问题：</p>
+  <ol>
+    <li><strong>相近数相减。</strong>学生 logit 逼近老师时，\(\boldsymbol\delta = \mathbf z_S - \mathbf z_T\) 很小，但 \(\mathbf q\) 和 \(\mathbf p\) 先被舍入成概率，\(\boldsymbol\delta\) 的信息在相减前已经丢了。</li>
+    <li><strong>前向与反向的公式不同。</strong>前向用 \(\operatorname{softmax}(\mathbf z_T)\) 算 \(\mathbf p\)，反向用 \(\exp(\operatorname{logsoftmax}(\mathbf z_S))\) 算 \(\mathbf q\)。两条运算路径的舍入误差不同，即使 \(\mathbf z_S = \mathbf z_T\)，\(\mathbf q - \mathbf p\) 也不为 0。</li>
+  </ol>
+  <blockquote class="q"><a href="https://arxiv.org/html/2610.31642v1#:~:text=slight%20differences%20between%20the%20forward%2Dpass%20softmax%20and%20backward%2Dpass%20log%2Dsoftmax%20formulas" target="_blank" rel="noopener">“slight differences between the forward-pass softmax and backward-pass log-softmax formulas leave a non-zero gradient even when z<sub>S</sub> = z<sub>T</sub>”</a><cite>§1</cite></blockquote>
+  <p>论文的例子：老师 logit \(\mathbf z_T = [2, 1, 0]\)，学生在 fp32 下差一个微小扰动 \([-10^{-7}, 10^{-7}, 0]\)。</p>
+  <div class="table"><table>
+    <thead><tr><th>实现</th><th class="num">g<sub>1</sub></th><th class="num">g<sub>2</sub></th><th class="num">g<sub>3</sub></th><th>问题</th></tr></thead>
+    <tbody>
+      <tr class="is-std"><td>标准 soft-target CE（fp32）</td><td class="num">−5.960464e-8</td><td class="num">1.451589e-8</td><td class="num bad">−1.123343e-9</td><td>第 2 项缩小约 3 倍，第 3 项符号反了，和不为 0</td></tr>
+      <tr class="is-fix"><td>修复版（fp32）</td><td class="num">−4.595504e-8</td><td class="num">4.144190e-8</td><td class="num">4.513142e-9</td><td>与 fp64 精确值一致</td></tr>
+      <tr><td>精确值（fp64）</td><td class="num">−4.595504e-8</td><td class="num">4.144190e-8</td><td class="num">4.513142e-9</td><td></td></tr>
+    </tbody>
+  </table></div>
+  <figure>
+    <a href="https://arxiv.org/html/2610.31642v1#S1.F1" target="_blank" rel="noopener"><img src="/images/softmax-fix/fig1.jpg" alt="Figure 1：两个 bug。左：目标梯度绝对值随 margin 指数下降，标准实现在各精度的悬崖处跌到 0；右：学生–老师 logit 差趋于 0 时，真实梯度趋于 0，标准实现停在非零噪声底。" loading="lazy"></a>
+    <figcaption><span class="src">原文 Figure 1</span>　(a) Softmax Collapse：目标梯度 \(|g_t|\) 本应随 margin 指数下降（虚线斜坡），标准实现（实线）在 bf16、fp32、fp64 的悬崖 5.5、16.6、36.7 处直接跌到 0。(b) Softmax Cancellation：学生–老师 logit 差 \(\|\mathbf z_S - \mathbf z_T\|_\infty\) 趋于 0 时，真实梯度范数随之趋于 0；标准实现停在一个非零的平台上，bf16 约 \(10^{-3}\)，fp32 约 \(10^{-8}\)。</figcaption>
+  </figure>
+</section>
+
+<section id="slingshot">
+  <h2><span class="n">3</span>现象：Slingshot 尖峰</h2>
+  <p>Grokking（Power et al., 2022）指网络很快记住训练集（\(q_t \to 1\)），很久以后才在测试集上泛化。Thilak et al.（2022）在模加法上用 Adam 训练时观察到 <strong>Slingshot 机制</strong>：记住训练集之后，训练 loss 在接近 0 的平台和突然的尖峰之间反复交替，尖峰常与测试准确率的跳升同时出现。这篇论文把它归因到 Softmax Collapse。</p>
+  <blockquote class="q"><a href="https://arxiv.org/html/2610.31642v1#:~:text=These%20Slingshot%20spikes%20are%20a%20direct%20consequence%20of%20Softmax%20Collapse" target="_blank" rel="noopener">“These Slingshot spikes are a direct consequence of Softmax Collapse”</a><cite>§4</cite></blockquote>
+  <p>关键在 AdamW 的更新 \(\theta \leftarrow \theta - \eta\,\hat m / (\sqrt{\hat v} + \epsilon) - \lambda\theta\)（写法同原文）：它用梯度平方的滑动平均 \(\hat v\) 做归一化。一个循环如下：</p>
+  <ol class="cycle">
+    <li><strong>越过悬崖</strong>记住训练集后 margin 持续增长。一批样本都越过 \(c_d\) 后，目标梯度被舍为 0，参数梯度几乎消失。</li>
+    <li><strong>二阶矩衰减</strong>梯度接近 0，Adam 的 \(\hat v\) 按 \(\beta_2\) 指数衰减到很小；权重衰减同时慢慢缩小参数。</li>
+    <li><strong>梯度恢复</strong>权重衰减或残余的非目标梯度把部分样本拉回悬崖以下，目标梯度 \(\approx -e^{-m}\) 突然恢复。</li>
+    <li><strong>巨步更新</strong>恢复的梯度除以极小的 \(\sqrt{\hat v} + \epsilon\)，得到一个很大的参数步：训练 loss 尖峰，\(\hat v\) 被重置。</li>
+  </ol>
+  <p class="cycle-back">④ 之后 margin 重新增长，回到 ①，循环往复。</p>
+  <blockquote class="q"><a href="https://arxiv.org/html/2610.31642v1#:~:text=Adam%20divides%20the%20restored%20gradients%20by%20a%20very%20small%20denominator" target="_blank" rel="noopener">“Adam divides the restored gradients by a very small denominator”</a><cite>§4</cite></blockquote>
+  <p>修复后，目标梯度 \(-e^{-m}/(1+e^{-m})\) 在悬崖处不会归零，\(\hat m\) 与 \(\hat v\) 平滑地一同衰减，尖峰随之消失。</p>
+  <figure>
+    <a href="https://arxiv.org/html/2610.31642v1#S4.F2" target="_blank" rel="noopener"><img src="/images/softmax-fix/fig2.jpg" alt="Figure 2：有无权重衰减时的 Slingshot。上：a+b mod 31，λ=1；下：a²+b² mod 97，λ=0。" loading="lazy"></a>
+    <figcaption><span class="src">原文 Figure 2</span>　5 个随机种子，fp32。<strong>上行</strong>（\(a+b \bmod 31\)，\(\lambda = 1\)，\(\epsilon = 10^{-8}\)）：<span class="std">标准 CE</span> 的 margin 撞上 \(c_{32} \approx 16.6\) 后反复跌落、回弹，grokking 变慢变差；<span class="fix">修复 CE</span> 平滑越过悬崖，5 个种子都更快 grok，margin 停在 \(\approx 18.4\)。<strong>下行</strong>（\(a^2+b^2 \bmod 97\)，\(\lambda = 0\)，\(\epsilon = 10^{-16}\)）：约第 1250 步撞上悬崖的一次尖峰，把标准 CE 的测试准确率从 61% 打到 23%，修复 CE 平滑升到 85%。</figcaption>
+  </figure>
+</section>
+
+<section id="impact">
+  <h2><span class="n">4</span>影响</h2>
+
+  <h3>4.1 尖峰是帮倒忙还是帮忙，取决于权重范数怎么控制</h3>
+  <div class="three">
+    <div class="card"><div class="k">LayerNorm，无权重衰减</div><h4>尖峰看起来有益</h4><p>输出层前有 LayerNorm 时，放大权重不改变 logit，但会缩小有效步长 \(\eta/\|\theta\|_2\)。每次尖峰都会放大 \(\|\theta\|_2\)，相当于一次意外的学习率衰减。</p></div>
+    <div class="card"><div class="k">有权重衰减（λ = 1）</div><h4>尖峰减慢 grokking</h4><p>权重范数已由权重衰减控制，尖峰只会拖慢并损害泛化：\(a+b \bmod 31\) 上测试准确率为 <span class="big">94 ± 5%</span>，修复后为 <span class="big">100 ± 0%</span>。</p></div>
+    <div class="card"><div class="k">两者都没有</div><h4>一次尖峰就是灾难</h4><p>\(a^2+b^2 \bmod 97\) 上测试准确率从 <span class="big">61% → 23%</span>，\(a^3+b \bmod 97\) 上从 60% → 21%；修复版继续升到 85%。</p></div>
+  </div>
+  <blockquote class="q"><a href="https://arxiv.org/html/2610.31642v1#:~:text=acts%20as%20an%20accidental%20learning%2Drate%20decay" target="_blank" rel="noopener">“each Slingshot spike inflates ‖θ‖<sub>2</sub> and acts as an accidental learning-rate decay”</a><cite>§4</cite></blockquote>
+  <p>这解释了为什么先前文献对 Slingshot 的评价不一：有人看到它伴随泛化，有人看到它破坏训练，区别在于实验设置里是否有 LayerNorm 和权重衰减。</p>
+
+  <h3>4.2 修复之后，margin 停在哪：\(m^\star \approx \log(1/\epsilon)\)</h3>
+  <p>Figure 2 上行里，修复版越过悬崖后 margin 停在 18.4 附近，不再增长；没有权重衰减时（下行）则一直增长。这个平台与浮点精度无关：</p>
+  <blockquote class="q"><a href="https://arxiv.org/html/2610.31642v1#:~:text=This%20plateau%20has%20nothing%20to%20do%20with%20fp32%20precision" target="_blank" rel="noopener">“This plateau has nothing to do with fp32 precision”</a><cite>§5</cite></blockquote>
+  <p>推导分三步。</p>
+  <ol>
+    <li><strong>平稳点条件。</strong>参数不再变化时，滑动平均收敛到 \(\hat m_i = g_i\)，\(\sqrt{\hat v_i} = |g_i|\)。令 AdamW 更新为 0：
+      <div class="eq">\[ \frac{g_i}{|g_i| + \epsilon} + \lambda\theta_i = 0 \quad \forall i . \]<span class="tag">式 (10)</span></div>
+      学习率 \(\eta\) 和 \(\beta_1, \beta_2\) 都消掉了，所以 RMSProp 和 LaProp 有同样的平稳点。</li>
+    <li><strong>归一化步长随 margin 衰减。</strong>记住训练集后梯度随 margin 指数缩小，\(|g_i| \propto e^{-m}\)。若 \(\epsilon = 0\)，归一化后的步长 \(g_i/|g_i| = \operatorname{sign}(g_i)\) 恒为 1，margin 会一直涨到梯度下溢；若 \(\epsilon > 0\)，当 \(|g_i| \gg \epsilon\) 时步长约为 1，当 \(|g_i| \ll \epsilon\) 时步长约为 \(g_i/\epsilon \propto e^{-m}\)。</li>
+    <li><strong>与权重衰减平衡。</strong>缩小的步长与 \(\lambda\theta_i\) 平衡需要 \(|g_i| \approx \epsilon\lambda|\theta_i|\)，代入 \(|g_i| \propto e^{-m}\)：
+      <div class="eq">\[ m^\star(\epsilon) \approx \log(1/\epsilon) . \]<span class="tag">式 (11)</span></div></li>
+  </ol>
+  <p>把三种格式的悬崖和几个 \(\epsilon\) 的平衡点画在同一条 margin 轴上，就能看出标准 CE 什么时候出事：<strong>平衡点在悬崖右边，margin 就会在到达平衡之前先撞上悬崖。</strong></p>
+  <div class="line-fig">
+    <svg viewBox="0 0 900 190" role="img" aria-labelledby="ml-t"><title id="ml-t">margin 轴上的精度悬崖与平衡点</title>
+      <line x1="40" y1="92" x2="870" y2="92" class="ax"/>
+      <g id="ml-ticks"></g>
+      <line x1="155.1" y1="44" x2="155.1" y2="92" class="cl"/><text x="155.1" y="36" text-anchor="middle" class="clt">bf16 悬崖 5.5</text>
+      <line x1="385.2" y1="44" x2="385.2" y2="92" class="cl"/><text x="392" y="22" text-anchor="middle" class="clt">fp32 悬崖 16.6</text>
+      <line x1="802.3" y1="44" x2="802.3" y2="92" class="cl"/><text x="770" y="36" text-anchor="middle" class="clt">fp64 悬崖 36.7</text>
+      <circle cx="374.4" cy="92" r="5" class="eqd"/><line x1="374.4" y1="97" x2="330" y2="130" class="lead"/><text x="330" y="145" text-anchor="middle" class="eqt">ε=1e-7 → 16.1</text>
+      <circle cx="422.2" cy="92" r="5" class="eqd"/><line x1="422.2" y1="97" x2="445" y2="130" class="lead"/><text x="455" y="145" text-anchor="middle" class="eqt">ε=1e-8 → 18.4</text>
+      <circle cx="613.3" cy="92" r="5" class="eqd"/><line x1="613.3" y1="97" x2="606" y2="130" class="lead"/><text x="606" y="145" text-anchor="middle" class="eqt">ε=1e-12 → 27.6</text>
+      <circle cx="804.5" cy="92" r="5" class="eqd"/><line x1="804.5" y1="97" x2="800" y2="130" class="lead"/><text x="800" y="145" text-anchor="middle" class="eqt">ε=1e-16 → 36.8</text>
+      <text x="40" y="178" class="note">橙线：标准 CE 的梯度在这里被舍为 0；蓝点：修复 CE 在 AdamW + 权重衰减下的平衡 margin log(1/ε)。横轴为 logit margin m。</text>
+    </svg>
+  </div>
+  <ul>
+    <li><strong>默认 \(\epsilon = 10^{-8}\) 恰好坏在 fp32：</strong>平衡点 18.4 在 fp32 悬崖 16.6 的右边，所以标准 CE 在 fp32 下几乎必然触发 Slingshot。若 \(\epsilon \ge 10^{-7}\)，平衡点 \(\le 16.1\)，在悬崖左边，标准 CE 不会出尖峰。</li>
+    <li><strong>bf16 的悬崖 5.5 在所有平衡点左边：</strong>标准 CE 在 bf16 下总会卡在 5.5 附近（表 1 中 bf16 标准 CE 的最终 margin 为 5.1–5.8）。</li>
+    <li><strong>fp64 也不安全：</strong>\(\epsilon = 10^{-16}\) 时平衡点 36.8 刚好越过 fp64 悬崖 36.7，fp64 标准 CE 也会出问题。</li>
+  </ul>
+  <figure class="narrow">
+    <a href="https://arxiv.org/html/2610.31642v1#S5.F3" target="_blank" rel="noopener"><img src="/images/softmax-fix/fig3.jpg" alt="Figure 3：ε=1e-8 时 Adam 归一化步长随 margin 的变化。" loading="lazy"></a>
+    <figcaption><span class="src">原文 Figure 3</span>　\(\epsilon = 10^{-8}\) 时 Adam 的归一化步长 \(|g_t|/(|g_t|+\epsilon)\) 随 margin 的变化。<span class="fix">修复 CE</span> 的步长在 \(\log(1/\epsilon) \approx 18.4\) 附近平滑衰减；<span class="std">标准 CE</span> 在 \(c_{16} \approx 5.5\) 和 \(c_{32} \approx 16.6\) 处直接归零。</figcaption>
+  </figure>
+  <figure>
+    <a href="https://arxiv.org/html/2610.31642v1#S5.F4" target="_blank" rel="noopener"><img src="/images/softmax-fix/fig4.jpg" alt="Figure 4：不同 ε 下修复 CE 的 margin 轨迹，有无权重衰减。" loading="lazy"></a>
+    <figcaption><span class="src">原文 Figure 4</span>　修复 CE + LaProp，\(a+b \bmod 31\)，fp32。实线为 3 个种子，虚线为式 (11) 的预测。(a) 有权重衰减（\(\lambda = 1\)）：每个 \(\epsilon > 0\) 都沿着 \(\epsilon = 0\) 的轨迹上升，然后停在预测的 \(\log(1/\epsilon)\)；\(\epsilon = 0\) 一直涨到 fp32 梯度下溢的 \(m \approx 81.2\)。(b) 无权重衰减：没有东西平衡 \(g_i/\epsilon\) 的步长，margin 越过 \(\log(1/\epsilon)\) 后继续漂移上升。</figcaption>
+  </figure>
+
+  <h3>4.3 跨精度、跨基准</h3>
+  <p>设置沿用 Varma et al.（2023）：1 层、宽 64 的 ReLU Transformer，\(a+b \bmod 31\)，50% 训练集，全批量 AdamW 训练 10,000 epoch。只改变损失函数、浮点格式和 \(\epsilon\)，另外对比两种已有的补救方法。</p>
+  <div class="table"><table>
+    <thead><tr><th>方法</th><th class="num">ε = 1e-8</th><th class="num">1e-12</th><th class="num">1e-16</th><th class="num">最终 margin（1e-8 / 1e-12 / 1e-16）</th></tr></thead>
+    <tbody>
+      <tr class="is-fix"><td>fp32 修复 CE</td><td class="num good">100.0 ± 0.0</td><td class="num good">99.6 ± 0.7</td><td class="num good">99.0 ± 2.3</td><td class="num">17.9 / 27.4 / 36.8</td></tr>
+      <tr class="is-std"><td>fp32 标准 CE</td><td class="num">94.3 ± 5.4</td><td class="num">96.4 ± 5.1</td><td class="num">96.5 ± 4.3</td><td class="num">13.0 / 15.1 / 12.7</td></tr>
+      <tr class="is-fix"><td>bf16 修复 CE</td><td class="num good">100.0 ± 0.1</td><td class="num good">99.8 ± 0.2</td><td class="num good">98.9 ± 2.4</td><td class="num">17.9 / 27.4 / 36.8</td></tr>
+      <tr class="is-std"><td>bf16 标准 CE</td><td class="num">93.3 ± 7.4</td><td class="num">94.9 ± 4.9</td><td class="num">94.2 ± 8.3</td><td class="num">5.1 / 5.6 / 5.8</td></tr>
+      <tr class="is-fix"><td>fp64 修复 CE</td><td class="num good">100.0 ± 0.0</td><td class="num good">99.5 ± 1.1</td><td class="num good">99.0 ± 2.0</td><td class="num">17.9 / 27.4 / 36.8</td></tr>
+      <tr class="is-std"><td>fp64 标准 CE</td><td class="num">100.0 ± 0.0</td><td class="num">100.0 ± 0.1</td><td class="num">97.2 ± 3.2</td><td class="num">17.9 / 27.4 / 30.1</td></tr>
+      <tr><td>fp32 零和投影（Liu et al., 2026）</td><td class="num">97.9 ± 3.2</td><td class="num bad">48.9 ± 2.6</td><td class="num bad">49.3 ± 2.5</td><td class="num">17.0 / 18.9 / 18.9</td></tr>
+      <tr><td>fp32 StableMax（Prieto et al., 2025）</td><td class="num">97.3 ± 4.7</td><td class="num">95.6 ± 2.0</td><td class="num">97.3 ± 4.3</td><td class="num">3200 / 5661 / 6313</td></tr>
+      <tr><td>fp64 StableMax（Prieto et al., 2025）</td><td class="num">97.4 ± 4.2</td><td class="num">96.7 ± 5.3</td><td class="num">95.6 ± 2.7</td><td class="num">3170 / 21252 / 2322</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:13.5px;color:var(--muted)">原文 Table 1，测试准确率（%），5 个种子。修复 CE 的最终 margin 与预测的 \(\log(1/\epsilon) = 18.4, 27.6, 36.8\) 吻合，且三种精度完全相同；标准 CE 停在各自悬崖附近。</p>
+  <p>读表的三个要点：</p>
+  <ul>
+    <li><strong>修复后，bf16 和 fp64 的结果一样好。</strong>这里的失败来自实现，而非低精度本身。</li>
+    <li><strong>零和投影</strong>把梯度均值减掉，强制和为 0。但目标梯度已经是 0 时，它只分到非目标梯度总和的 \(-1/K\)，margin 卡在 18 附近，\(\epsilon \le 10^{-12}\) 时准确率跌到 50% 以下。</li>
+    <li><strong>StableMax</strong> 把 softmax 里的 \(\exp(x)\) 换成分段有理函数（\(x \ge 0\) 时为 \(x+1\)，\(x < 0\) 时为 \(1/(1-x)\)）。它线性增长，margin 涨到 \(10^3\)–\(10^4\)，准确率在所有 \(\epsilon\) 下都低于修复 CE。</li>
+  </ul>
+  <figure>
+    <a href="https://arxiv.org/html/2610.31642v1#S6.F5" target="_blank" rel="noopener"><img src="/images/softmax-fix/fig5.jpg" alt="Figure 5：不同精度下标准 CE 与修复 CE 的 margin、训练 loss、测试准确率。" loading="lazy"></a>
+    <figcaption><span class="src">原文 Figure 5</span>　上：\(\epsilon = 10^{-8}\)，<span class="std">标准 CE</span> 在 bf16 卡在 \(c_{16}\)，在 fp32 于 \(c_{32}\) 反复尖峰；<span class="fix">修复 CE</span> 三种精度都平滑到达 18.4。下：\(\epsilon = 10^{-16}\)，平衡点升到 36.8，连 fp64 标准 CE 也在 \(c_{64}\) 处失败。</figcaption>
+  </figure>
+  <figure>
+    <a href="https://arxiv.org/html/2610.31642v1#S6.F6" target="_blank" rel="noopener"><img src="/images/softmax-fix/fig6.jpg" alt="Figure 6：四个 grokking 基准上的结果。" loading="lazy"></a>
+    <figcaption><span class="src">原文 Figure 6</span>　文献中的四个 grokking 基准，\(\epsilon = 10^{-12}\)：1 层 Transformer（\(a+b \bmod 113\)、\(a+b \bmod 31\)）和 2 层 MLP（\(a^2+b^2 \bmod 97\)、\(a^3+b \bmod 97\)）。fp32 <span class="fix">修复 CE</span>（蓝）与 fp64 标准 CE（红）重合，fp32 <span class="std">标准 CE</span>（橙）在 \(c_{32}\) 处反复失败。</figcaption>
+  </figure>
+
+  <h3>4.4 蒸馏：学生从老师身边漂走</h3>
+  <p>实验设计很直接：先把老师训到 \(a+b \bmod 53\) 上 100% 测试准确率，再用老师的权重初始化学生（\(\theta_S^{(0)} = \theta_T\)），在温度 \(T = 4\) 下用 Adam（\(\eta = 2\times10^{-3}\)，\(\lambda = 0\)，\(\epsilon = 10^{-8}\)）蒸馏 2000 步。初始时 \(\mathbf z_S = \mathbf z_T\)，真实梯度为 0，学生本该一动不动。</p>
+  <p>标准实现在 \(\mathbf z_S = \mathbf z_T\) 处留有残余梯度。只要残余大于 \(\epsilon\)，Adam 就会把它归一化成大小约为 \(\eta\) 的步长：</p>
+  <div class="table"><table>
+    <thead><tr><th>格式</th><th class="num">残余梯度</th><th>与 ε = 1e-8 比</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr><td>fp64</td><td class="num">~1e-17</td><td>远小于 ε</td><td>学生基本不动，KL ≈ 0</td></tr>
+      <tr><td>fp32</td><td class="num">~1e-8</td><td>与 ε 相当</td><td>KL 短暂尖峰</td></tr>
+      <tr><td>bf16</td><td class="num">~1e-3</td><td>远大于 ε</td><td class="bad">学生被推离老师，测试准确率下降</td></tr>
+    </tbody>
+  </table></div>
+  <p>修复版在 \(\mathbf z_S = \mathbf z_T\) 时梯度精确为 0，三种精度下学生都停在 KL = 0、准确率 100%。</p>
+  <figure>
+    <a href="https://arxiv.org/html/2610.31642v1#S7.F7" target="_blank" rel="noopener"><img src="/images/softmax-fix/fig7.jpg" alt="Figure 7：学生用老师权重初始化时的蒸馏，held-out KL 与测试准确率。" loading="lazy"></a>
+    <figcaption><span class="src">原文 Figure 7</span>　(a) held-out \(\mathrm{KL}(\mathbf p_T \,\|\, \mathbf q_S)\)；(b) 测试准确率。<span class="fix">修复 soft-CE</span> 在所有精度下都保持 KL = 0；<span class="std">标准 soft-CE</span> 在 bf16 下 KL 持续上升、准确率下降，在 fp32 下出现一次 KL 尖峰。</figcaption>
+  </figure>
+</section>
+
+<section id="fix">
+  <h2><span class="n">5</span>修复：在 log 空间里重写，永远不把 1 加到小数上</h2>
+
+  <h3>5.1 修 Softmax Collapse：用 softplus 代替 1 + e<sup>−m</sup></h3>
+  <p>只有最大的 logit 被平移成 0（贡献分母里的那个 1）。修复的做法是把它从 log-sum-exp 中拿出来，单独算 margin，再用数值稳定的 \(\operatorname{softplus}(x) = \log(1+e^x)\) 合并：</p>
+  <div class="eq">\[ \tilde z_k = \mathbb 1[k \ne i_{\max}]\,(z_k - z_{i_{\max}}), \qquad m = -\operatorname*{LSE}_{j \ne i_{\max}} \tilde z_j, \qquad \operatorname{logsoftmax}(\mathbf z)_k = \tilde z_k - \operatorname{softplus}(-m) . \]<span class="tag">式 (5)</span></div>
+  <p>硬目标交叉熵可以直接用 \(t\) 代替 \(i_{\max}\)，省掉 argmax：</p>
+  <div class="eq">\[ m = -\operatorname*{LSE}_{j \ne t}(z_j - z_t), \qquad \mathcal L(\mathbf z, t) = \operatorname{softplus}(-m) . \]<span class="tag">式 (6)</span></div>
+  <p>关键在于：第 \(t\) 个位置被替换成常数 0，而不是 \(z_t - z_t\)，于是 \(z_t\) 只通过 \(K-1\) 个差 \(z_j - z_t\) 进入损失。自动微分给出的目标梯度自然等于非目标梯度之和的相反数，和为 0 由构造保证，不依赖舍入：</p>
+  <div class="eq">\[ g_j = \frac{e^{z_j - z_t}}{1+e^{-m}} \;(j \ne t), \qquad g_t = -\sum_{j \ne t} g_j = -\frac{e^{-m}}{1+e^{-m}} . \]<span class="tag">式 (7)</span></div>
+<pre><span class="c"># 论文给出的 JAX 实现（§2）</span>
+def log_softmax(z):
+  i_max = jnp.argmax(z, axis=-1)
+  z_max = jnp.take_along_axis(z, i_max[..., None], axis=-1)    <span class="c"># 最大 logit</span>
+  is_max = jax.nn.one_hot(i_max, z.shape[-1], dtype=bool)
+  shifted = jnp.where(is_max, 0.0, z - z_max)                  <span class="c"># argmax 处精确为 0</span>
+  others = jnp.where(is_max, -jnp.inf, shifted)                <span class="c"># 把 argmax 排除出求和</span>
+  m = -jax.nn.logsumexp(others, axis=-1, keepdims=True)        <span class="c"># logit margin</span>
+  return shifted - <span class="hl">jax.nn.softplus(-m)</span>
+
+softmax = lambda z: jnp.exp(log_softmax(z))
+
+def cross_entropy(z, t):
+  z_t = jnp.take_along_axis(z, t[..., None], axis=-1)          <span class="c"># 目标 logit</span>
+  is_t = jax.nn.one_hot(t, z.shape[-1], dtype=bool)
+  others = jnp.where(is_t, -jnp.inf, z - z_t)                  <span class="c"># 把目标排除出求和</span>
+  m = -jax.nn.logsumexp(others, axis=-1)
+  return <span class="hl">jax.nn.softplus(-m)</span>                                   <span class="c"># = -log_softmax(z)_t</span></pre>
+
+  <h3>5.2 修 Softmax Cancellation：直接从 logit 差算 q − p</h3>
+  <p>不再分别算两个概率再相减，而是把老师 logit 直接传进损失函数，用 \(\boldsymbol\delta = \mathbf z_S - \mathbf z_T\) 在 log 空间里算 \(\mathbf q - \mathbf p\)。借助 \(\operatorname{expm1}(x) = e^x - 1\) 和 \(\operatorname{log1p}(x) = \log(1+x)\)，全程不出现“加 1”或“减 1”：</p>
+  <div class="eq">\[ d_k = \delta_k - \sum_i p_i\delta_i, \qquad s_k = \log\frac{q_k}{p_k} = d_k - \operatorname{log1p}\Big(\sum_i p_i \operatorname{expm1}(d_i)\Big), \qquad u_k = q_k - p_k = p_k \operatorname{expm1}(s_k) . \]<span class="tag">式 (9)</span></div>
+  <p>因为 \(\sum_i p_i d_i = 0\) 且 \(\operatorname{expm1}(x) \ge x\)，log1p 的输入总是非负。最后再做一次 \(g_k = u_k - q_k \sum_i u_i\)，消去剩余的浮点漂移，保证和为 0。\(\boldsymbol\delta = 0\) 时 \(\mathbf d = \mathbf s = \mathbf u = \mathbf 0\)，梯度精确为 0。</p>
+<pre><span class="c"># 论文给出的 JAX 实现（§3）：前向返回普通 loss，反向用 stop_gradient 替换成 g</span>
+def soft_target_cross_entropy(z_S, z_T):
+  log_q = log_softmax(z_S)
+  q, p = jnp.exp(log_q), softmax(z_T)
+  delta = z_S - z_T                                                     <span class="c"># logit 差</span>
+  d = delta - jnp.sum(p * delta, axis=-1, keepdims=True)                <span class="c"># 在 p 下居中</span>
+  s = d - <span class="hl">jnp.log1p</span>(jnp.sum(p * <span class="hl">jnp.expm1</span>(d), axis=-1, keepdims=True))  <span class="c"># log(q / p)</span>
+  u = p * <span class="hl">jnp.expm1</span>(s)                                                  <span class="c"># q - p</span>
+  g = u - q * jnp.sum(u, axis=-1, keepdims=True)                        <span class="c"># 保证 sum(g) = 0</span>
+  sg = jax.lax.stop_gradient
+  loss = -jnp.sum(p * sg(log_q), axis=-1)
+  return loss + jnp.sum(sg(g) * (z_S - sg(z_S)), axis=-1)</pre>
+
+  <h3>5.3 与已有补救方法比较</h3>
+  <div class="table"><table>
+    <thead><tr><th>方法</th><th>做法</th><th>局限</th></tr></thead>
+    <tbody>
+      <tr><td>转成 fp64（Nanda et al., 2023；Varma et al., 2023）</td><td>在更高精度下算 softmax 和 CE</td><td>只是把悬崖从 16.6 推到 36.7；\(\epsilon = 10^{-16}\) 时 fp64 也失败</td></tr>
+      <tr><td>零和投影（Liu et al., 2026）</td><td>梯度减去均值，强制和为 0</td><td>目标梯度为 0 时只分到 \(-1/K\)，margin 卡在约 18</td></tr>
+      <tr><td>StableMax（Prieto et al., 2025）</td><td>用线性增长的函数代替 exp</td><td>改变了损失本身，margin 涨到 \(10^3\)–\(10^4\)，准确率更低</td></tr>
+      <tr class="is-fix"><td>本文</td><td>用 softplus / expm1 / log1p 在 log 空间重写</td><td>损失在数学上不变，可以直接替换，没有明显的额外开销</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="discuss">
+  <h2><span class="n">6</span>讨论</h2>
+  <p>作者自己也指出了适用范围：</p>
+  <blockquote class="q"><a href="https://arxiv.org/html/2610.31642v1#:~:text=Though%20the%20extreme%20margins%20and%20near%2Dzero%20student%E2%80%93teacher%20gaps%20probed%20by%20our%20experiments%20are%20uncommon%20in%20standard%20large%2Dscale%20training" target="_blank" rel="noopener">“Though the extreme margins and near-zero student–teacher gaps probed by our experiments are uncommon in standard large-scale training, our fixed functions are easy drop-in replacements”</a><cite>§8</cite></blockquote>
+  <ol class="qs">
+    <li><strong>大模型训练会碰到悬崖吗？</strong>实验全部在小型 grokking 任务上。LLM 预训练里 CE 通常在什么精度下算？高频、确定性强的 token 的 margin 能否超过 16.6？如果 logits 在 bf16 下算 CE，悬崖只有 5.5，即目标类概率约 99.6%。</li>
+    <li><strong>RL 微调里的 KL 项是 Softmax Cancellation 的典型场景。</strong>训练初期策略 \(\pi\) 与参考模型 \(\pi_{\text{ref}}\) 几乎相同，KL 及其梯度本应接近 0。PPO / GRPO 的重要性比率 \(\pi/\pi_{\text{old}}\) 在每轮第一个更新步也恰好等于 1。我们的实现是怎么算这两项的？</li>
+    <li><strong>Adam 的 \(\epsilon\) 隐式限定了自信程度。</strong>式 (11) 说明 \(\epsilon\) 与权重衰减共同决定 margin 的上限 \(\log(1/\epsilon)\)。它和 label smoothing、z-loss 这类显式控制 logit 的手段是什么关系？调 \(\epsilon\) 是否等价于调一个正则项？</li>
+    <li><strong>“低精度不稳定”有多少是实现问题？</strong>修复后 bf16 与 fp64 结果一样。我们见过的 bf16 训练尖峰里，有多少可以归到类似的“加 1 再减 1”式写法？</li>
+  </ol>
+</section>
+
+<section id="refs">
+  <h2><span class="n">7</span>参考</h2>
+  <ul class="refs">
+    <li>Barron, Gnanapragasam, Tschannen. A Fix for Softmax and Cross-Entropy. <a href="https://arxiv.org/abs/2610.31642" target="_blank" rel="noopener">arXiv 2610.31642</a>, 2026.</li>
+    <li>Thilak et al. The Slingshot Mechanism: An Empirical Study of Adaptive Optimizers and the Grokking Phenomenon. <a href="https://arxiv.org/abs/2206.04817" target="_blank" rel="noopener">arXiv 2206.04817</a>, 2022.</li>
+    <li>Power et al. Grokking: Generalization Beyond Overfitting on Small Algorithmic Datasets. <a href="https://arxiv.org/abs/2201.02177" target="_blank" rel="noopener">arXiv 2201.02177</a>, 2022.</li>
+    <li>Prieto et al. Grokking at the Edge of Numerical Stability（StableMax）. ICLR 2025.</li>
+    <li>Liu et al. Grokking or Glitching? How Low-Precision Drives Slingshot Loss Spikes（零和投影）. <a href="https://arxiv.org/abs/2605.06152" target="_blank" rel="noopener">arXiv 2605.06152</a>, 2026.</li>
+    <li>Varma et al. Explaining Grokking through Circuit Efficiency. <a href="https://arxiv.org/abs/2309.02390" target="_blank" rel="noopener">arXiv 2309.02390</a>, 2023.</li>
+    <li>Nanda et al. Progress Measures for Grokking via Mechanistic Interpretability. ICLR 2023.</li>
+    <li>Doshi et al. Grokking Modular Polynomials. <a href="https://arxiv.org/abs/2406.03495" target="_blank" rel="noopener">arXiv 2406.03495</a>, 2024.</li>
+    <li>Hinton, Vinyals, Dean. Distilling the Knowledge in a Neural Network. <a href="https://arxiv.org/abs/1503.02531" target="_blank" rel="noopener">arXiv 1503.02531</a>, 2015.</li>
+  </ul>
+</section>
+
+</div>
+</main>
+
+<footer><div class="wrap">图、表、代码和引文均来自原文（arXiv 2610.31642v1），点击可跳到原文对应位置。精度悬崖的公式 (p+1) ln 2、margin 轴示意图和交互演示为本页所加，演示中的数值由浏览器按所选格式逐步舍入算出。</div></footer>
+
+<script>
+(function () {
+  // Rounding to the selected floating-point format after every operation.
+  var f32 = new Float32Array(1), u32 = new Uint32Array(f32.buffer);
+  function bf16(x) {
+    f32[ 0 ] = x;
+    if (!isFinite(f32[ 0 ]) || f32[ 0 ] === 0) return f32[ 0 ];
+    var b = u32[ 0 ];
+    b = (b + 0x7FFF + ((b >>> 16) & 1)) >>> 0;
+    u32[ 0 ] = (b & 0xFFFF0000) >>> 0;
+    return f32[ 0 ];
+  }
+  var R = { fp64: function (x) { return x; }, fp32: Math.fround, bf16: bf16 };
+  var CLIFF = { bf16: 8 * Math.LN2, fp32: 24 * Math.LN2, fp64: 53 * Math.LN2 };
+
+  function compute(m, p) {
+    var r = R[ p ];
+    var em = r(Math.exp(-m));                 // sum of non-target exponentials after shifting by z_t
+    var denom = r(1 + em);                    // standard: 1 + e^{-m}
+    var qt = r(1 / denom);
+    var gtStd = r(qt - 1);
+    var gNon = r(em / denom);                 // sum of non-target gradients (same in both)
+    var lossStd = r(Math.log(denom));
+    var gtFix = r(-r(em / denom));            // fixed: -e^{-m} / (1 + e^{-m})
+    var lossFix = r(Math.log1p(em));          // softplus(-m)
+    return { em: em, denom: denom, gtStd: gtStd, gtFix: gtFix, gNon: gNon,
+             sumStd: r(gtStd + gNon), sumFix: r(gtFix + gNon), lossStd: lossStd, lossFix: lossFix };
+  }
+
+  function fmt(x) {
+    if (x === 0) return '0';
+    if (x === 1) return '1';
+    var a = Math.abs(x);
+    if (a >= 0.001 && a < 1000) return x.toPrecision(4);
+    return x.toExponential(3).replace('e', 'e');
+  }
+
+  var state = { p: 'fp32', m: 17.3 };
+  var NS = 'http://www.w3.org/2000/svg';
+  var W = 640, H = 270, L = 58, Rr = 14, T = 14, B = 40;
+  var x = function (m) { return L + m / 40 * (W - L - Rr); };
+  var yFloor = H - B;                         // "exactly zero" band
+  var yTop = T, yMin = -19;                   // log10 range [yMin, 0]
+  var yPlot = function (lg) { return yTop + (-lg) / (-yMin) * (yFloor - 18 - yTop); };
+
+  function el(name, attrs, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[ k ]);
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function drawChart() {
+    var host = document.getElementById('cliff-chart');
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img' });
+    svg.appendChild(el('title', {}, '目标梯度 |g_t| 随 margin 的变化（' + state.p + '）'));
+    svg.appendChild(el('rect', { x: L, y: yFloor - 12, width: W - L - Rr, height: 16, class: 'zero' }));
+    svg.appendChild(el('text', { x: L - 6, y: yFloor, 'text-anchor': 'end', class: 'tx' }, '= 0'));
+    [0, -5, -10, -15].forEach(function (lg) {
+      var yy = yPlot(lg);
+      svg.appendChild(el('line', { x1: L, y1: yy, x2: W - Rr, y2: yy, class: 'ax' }));
+      svg.appendChild(el('text', { x: L - 6, y: yy + 4, 'text-anchor': 'end', class: 'tx' }, lg === 0 ? '1' : '1e' + lg));
+    });
+    [0, 10, 20, 30, 40].forEach(function (mm) {
+      svg.appendChild(el('text', { x: x(mm), y: H - 20, 'text-anchor': 'middle', class: 'tx' }, String(mm)));
+    });
+    svg.appendChild(el('text', { x: (L + W - Rr) / 2, y: H - 4, 'text-anchor': 'middle', class: 'tx' }, 'logit margin m'));
+    var ptsS = [], ptsF = [];
+    for (var i = 0; i <= 400; i++) {
+      var mm = i / 10, c = compute(mm, state.p);
+      var ys = c.gtStd === 0 ? yFloor - 4 : yPlot(Math.log10(Math.abs(c.gtStd)));
+      var yf = c.gtFix === 0 ? yFloor - 4 : yPlot(Math.log10(Math.abs(c.gtFix)));
+      ptsS.push(x(mm).toFixed(1) + ',' + ys.toFixed(1));
+      ptsF.push(x(mm).toFixed(1) + ',' + yf.toFixed(1));
+    }
+    var cl = CLIFF[state.p];
+    svg.appendChild(el('line', { x1: x(cl), y1: yTop, x2: x(cl), y2: yFloor + 4, class: 'cliff' }));
+    svg.appendChild(el('text', { x: x(cl) + 4, y: yTop + 10, class: 'tx', fill: 'var(--std)' }, 'c = ' + cl.toFixed(1)));
+    svg.appendChild(el('polyline', { points: ptsS.join(' '), class: 'cs' }));
+    svg.appendChild(el('polyline', { points: ptsF.join(' '), class: 'cf' }));
+    svg.appendChild(el('line', { x1: x(state.m), y1: yTop, x2: x(state.m), y2: yFloor + 4, class: 'cur' }));
+    svg.appendChild(el('text', { x: W - Rr - 4, y: yTop + 24, 'text-anchor': 'end', class: 'lg', fill: 'var(--std)' }, '标准写法 |q_t − 1|'));
+    svg.appendChild(el('text', { x: W - Rr - 4, y: yTop + 40, 'text-anchor': 'end', class: 'lg', fill: 'var(--fix)' }, '修复写法 e^{−m}/(1+e^{−m})'));
+    host.replaceChildren(svg);
+  }
+
+  function drawReadout() {
+    var c = compute(state.m, state.p);
+    var rows = [
+      ['分母 1 + e<sup>−m</sup>', c.denom, c.denom, false],
+      ['损失 L', c.lossStd, c.lossFix, true],
+      ['目标梯度 g<sub>t</sub>', c.gtStd, c.gtFix, true],
+      ['非目标梯度之和', c.gNon, c.gNon, false],
+      ['梯度总和 Σg', c.sumStd, c.sumFix, false]
+    ];
+    var body = document.getElementById('readout-body');
+    body.innerHTML = rows.map(function (r) {
+      var s = fmt(r[ 1 ]), f = fmt(r[ 2 ]);
+      var bad = (r[ 3 ] && r[ 1 ] === 0 && r[ 2 ] !== 0) || (r[ 0 ].indexOf('总和') >= 0 && r[ 1 ] !== 0);
+      return '<tr><td>' + r[ 0 ] + '</td><td class="v' + (bad ? ' zero-hit' : '') + '">' + s + '</td><td class="v">' + f + '</td></tr>';
+    }).join('');
+    var v = document.getElementById('verdict');
+    var cl = CLIFF[state.p];
+    if (c.gtStd === 0 && c.gNon > 0) {
+      v.className = 'verdict bad';
+      v.innerHTML = 'm = ' + state.m.toFixed(1) + ' 已越过 ' + state.p + ' 的悬崖 ' + cl.toFixed(1) + '：1 + e<sup>−m</sup> 被舍成 1，标准写法的目标梯度和损失都变成 0，非目标梯度仍为正，梯度和 = ' + fmt(c.sumStd) + '。修复写法的目标梯度仍是 ' + fmt(c.gtFix) + '。';
+    } else if (c.gNon === 0) {
+      v.className = 'verdict';
+      v.innerHTML = 'm = ' + state.m.toFixed(1) + '：e<sup>−m</sup> 已在指数上下溢，两种写法的梯度都为 0。';
+    } else {
+      v.className = 'verdict';
+      v.innerHTML = 'm = ' + state.m.toFixed(1) + ' 在 ' + state.p + ' 的悬崖 ' + cl.toFixed(1) + ' 以内：两种写法给出的目标梯度相同（差别只在末位舍入）。';
+    }
+  }
+
+  function render() {
+    document.getElementById('m-out').textContent = state.m.toFixed(1);
+    drawChart(); drawReadout();
+  }
+
+  document.querySelectorAll('.seg button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.p = b.dataset.p;
+      document.querySelectorAll('.seg button').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+      render();
+    });
+  });
+  document.getElementById('m-range').addEventListener('input', function (e) {
+    state.m = parseFloat(e.target.value); render();
+  });
+
+  // margin-axis ticks
+  var g = document.getElementById('ml-ticks');
+  for (var t = 0; t <= 40; t += 5) {
+    var xx = 40 + t / 40 * 830;
+    g.appendChild(el('line', { x1: xx, y1: 88, x2: xx, y2: 96, class: 'tk' }));
+    g.appendChild(el('text', { x: xx, y: 112, 'text-anchor': 'middle', class: 'tx' }, String(t)));
+  }
+  render();
+})();
+</script>
+</div>
+{% endraw %}

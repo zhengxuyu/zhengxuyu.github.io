@@ -36,7 +36,7 @@ keywords: "CV, curriculum vitae, resume, Zhengxu Yu, research scientist, Huawei,
 </style>
 
 <div class="cv-download-bar">
-  <a class="cv-download-btn" href="/assets/ZhengxuYu-cv-20260904.pdf" download>
+  <a class="cv-download-btn" href="/assets/ZhengxuYu-cv-20261113.pdf" download>
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
     Download PDF
   </a>
@@ -120,6 +120,7 @@ The \* symbol denotes equal contribution.
 
 ### Technical Reports
 
+- **P3.** **Zhengxu Yu**, Ke Xu, Meng Fang, Haitham Ammar, Weilin Luo, Jun Wang. "The Value of Thinking: Learning When to Reason in Hybrid Decision Models." ***arXiv preprint arXiv:2611.16961***, 2026. [Paper](https://arxiv.org/abs/2611.16961).
 - **P2.** Weihang Pan, **Zhengxu Yu**, Yuxiang Zhang, Zhongming Jin, Binbin Lin, Xiaofei He, Jieping Ye. "ChainPrune: Evaluating and Reducing Redundancy in Long Chain-of-Thought Reasoning." ***arXiv preprint arXiv:2608.21860***, 2026. [Paper](https://arxiv.org/abs/2608.21860).
 - **P1.** **Zhengxu Yu**, Yu Fu, Zhiyuan He, Yuxuan Huang, Ka Yiu Lee, Meng Fang, Weilin Luo, Jun Wang. "OneManCompany: An Open-Source Operating System for Self-Organizing Multi-Agent Systems." ***arXiv preprint arXiv:2604.22446***, 2026. [Paper](https://arxiv.org/abs/2604.22446).
 

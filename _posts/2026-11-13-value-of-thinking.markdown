@@ -6,6 +6,12 @@ categories: NewPublication
 ---
 Our new work, ["The Value of Thinking: Learning When to Reason in Hybrid Decision Models"](https://arxiv.org/abs/2611.16961), is now on arXiv!
 
-We introduce a hybrid decision model that learns when explicit reasoning is worth its cost, choosing between a token-free decision in a single forward pass and full autoregressive reasoning within the same model. For agentic tasks, our Calibrated Decision Policy Optimisation (CDPO) trains this routing from episode-level returns.
+## Abstract
+
+Existing adaptive-reasoning methods shorten the explicit reasoning a model writes, or skip it by switching modes; either way the answer is still written out token by token. *Rather than deciding how much to think*, we explore a different paradigm, *zero-or-T thinking*: a single model either answers from the implicit thinking inside one forward pass, generating no token, or performs full autoregressive reasoning at a cost of T tokens when that is worth paying.
+
+We realise it in a *hybrid decision model* (HDM), where one frozen backbone serves both modes and a lightweight *self-routing block* chooses between them. The block estimates the *value of thinking*, the utility the slow mode is expected to add over the fast one, from what that implicit thinking has already produced, and the slow mode runs only where that value exceeds a price λ set per request.
+
+Where no per-decision label exists, as in episodic agentic tasks, we introduce *Calibrated Decision Policy Optimisation* (CDPO), a reinforcement-learning recipe that trains the block from episode-level returns. We evaluate HDM on MMLU-Pro, AGIEval, GPQA-Diamond, JevBench, BANKING77 and MiniWoB. Specifically, on JevBench HDM-4B scores 0.857 against Jev's 0.851 (+0.7%) at a median 0.179 s against 0.652 (−72.5%). On the agentic venue MiniWoB HDM-27B cuts token cost by 80.1%.
 
 [Read the paper (PDF)](https://arxiv.org/pdf/2611.16961).
